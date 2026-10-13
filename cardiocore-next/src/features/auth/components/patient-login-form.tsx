@@ -2,15 +2,19 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "./password-input";
 import { OtpInput } from "./otp-input";
 import { authApi } from "@/lib/api/auth";
+import { useAuth } from "../context/auth-context";
 
 export const PatientLoginForm: React.FC<{
   onAuthError: (msg: string) => void;
 }> = ({ onAuthError }) => {
+  const router = useRouter();
+  const { refreshSession } = useAuth();
   const [authMode, setAuthMode] = useState<"password" | "otp">("password");
   const [identifier, setIdentifier] = useState("aarav.menon@example.com");
   const [password, setPassword] = useState("cardiocore");
@@ -39,13 +43,15 @@ export const PatientLoginForm: React.FC<{
     }
 
     setLoading(true);
+    onAuthError("");
     try {
       await authApi.signInPatient({
         identifier: identifier.trim(),
         password,
         rememberMe,
       });
-      // In production, router.push("/app-patient") would occur upon session establishment.
+      await refreshSession();
+      router.push("/patient");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Authentication failed";
       onAuthError(msg);
@@ -80,11 +86,14 @@ export const PatientLoginForm: React.FC<{
       return;
     }
     setLoading(true);
+    onAuthError("");
     try {
       await authApi.verifyOtp({
         phoneNumber: phoneNumber.trim(),
         code: otpCode,
       });
+      await refreshSession();
+      router.push("/patient");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Verification failed";
       onAuthError(msg);

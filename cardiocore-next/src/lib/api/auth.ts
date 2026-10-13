@@ -1,11 +1,8 @@
 /**
  * CardioCore Authentication Client
  * 
- * Target: FastAPI Authentication Endpoints (/api/v1/auth)
+ * Target: FastAPI Backend or Next.js Integrated Authentication Endpoints (/api/v1/auth)
  * Transmits and receives credentials via secure HTTP-Only session cookies.
- * 
- * IMPORTANT: In Phase 3, this client represents proposed contracts.
- * Zero client-side fake logins or hardcoded tokens are implemented.
  */
 
 import {
@@ -19,8 +16,19 @@ import {
   SessionResponse,
 } from "./types";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+function getInitialBaseUrl(): string {
+  if (typeof window !== "undefined") {
+    // In browser, default to same-origin relative /api/v1 unless an explicit non-localhost URL is provided
+    const envUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (envUrl && !envUrl.includes("localhost") && !envUrl.includes("127.0.0.1")) {
+      return envUrl;
+    }
+    return "/api/v1";
+  }
+  return process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api/v1";
+}
+
+const API_BASE_URL = getInitialBaseUrl();
 
 export class AuthApiClient {
   private baseUrl: string;
@@ -70,35 +78,35 @@ export class AuthApiClient {
   }
 
   /**
-   * Proposed contract: Patient password sign-in
+   * Patient password sign-in
    */
   async signInPatient(credentials: PatientSignInRequest): Promise<AuthSuccessResponse> {
     return this.post<AuthSuccessResponse>("/auth/login/patient", credentials);
   }
 
   /**
-   * Proposed contract: Clinician credential & 2FA sign-in
+   * Clinician credential & 2FA sign-in
    */
   async signInDoctor(credentials: DoctorSignInRequest): Promise<AuthSuccessResponse> {
     return this.post<AuthSuccessResponse>("/auth/login/doctor", credentials);
   }
 
   /**
-   * Proposed contract: Request one-time password (OTP)
+   * Request one-time password (OTP)
    */
   async sendOtp(req: OtpSendRequest): Promise<{ success: boolean; message: string }> {
     return this.post<{ success: boolean; message: string }>("/auth/otp/send", req);
   }
 
   /**
-   * Proposed contract: Verify one-time password (OTP)
+   * Verify one-time password (OTP)
    */
   async verifyOtp(req: OtpVerifyRequest): Promise<AuthSuccessResponse> {
     return this.post<AuthSuccessResponse>("/auth/otp/verify", req);
   }
 
   /**
-   * Proposed contract: Retrieve current active session
+   * Retrieve current active session
    */
   async getSession(): Promise<SessionResponse> {
     const url = `${this.baseUrl}/auth/session`;
@@ -122,21 +130,21 @@ export class AuthApiClient {
   }
 
   /**
-   * Proposed contract: Terminate active session
+   * Terminate active session
    */
   async signOut(): Promise<{ success: boolean }> {
     return this.post<{ success: boolean }>("/auth/logout", {});
   }
 
   /**
-   * Proposed contract: Request password recovery
+   * Request password recovery
    */
   async forgotPassword(req: ForgotPasswordRequest): Promise<{ success: boolean; message: string }> {
     return this.post<{ success: boolean; message: string }>("/auth/forgot-password", req);
   }
 
   /**
-   * Proposed contract: Reset password with token
+   * Reset password with token
    */
   async resetPassword(req: ResetPasswordRequest): Promise<{ success: boolean; message: string }> {
     return this.post<{ success: boolean; message: string }>("/auth/reset-password", req);

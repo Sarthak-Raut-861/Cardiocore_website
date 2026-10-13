@@ -2,14 +2,18 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "./password-input";
 import { authApi } from "@/lib/api/auth";
+import { useAuth } from "../context/auth-context";
 
 export const DoctorLoginForm: React.FC<{
   onAuthError: (msg: string) => void;
 }> = ({ onAuthError }) => {
+  const router = useRouter();
+  const { refreshSession } = useAuth();
   const [email, setEmail] = useState("neha.raghavan@meridianheart.in");
   const [password, setPassword] = useState("clinician");
   const [council, setCouncil] = useState("Maharashtra Medical Council");
@@ -41,6 +45,7 @@ export const DoctorLoginForm: React.FC<{
     }
 
     setLoading(true);
+    onAuthError("");
     try {
       await authApi.signInDoctor({
         email: email.trim(),
@@ -51,6 +56,8 @@ export const DoctorLoginForm: React.FC<{
         totpCode: totpCode.trim(),
         consentAgreement,
       });
+      await refreshSession();
+      router.push("/doctor");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Authentication failed";
       onAuthError(msg);

@@ -15,7 +15,13 @@ function LoginContent() {
   const [authError, setAuthError] = useState<string | null>(null);
 
   return (
-    <AuthLayout activeRole={activeRole} onRoleChange={setSelectedRole}>
+    <AuthLayout
+      activeRole={activeRole}
+      onRoleChange={(role) => {
+        setSelectedRole(role);
+        setAuthError(null);
+      }}
+    >
       <div className="mb-6">
         <h1 className="h1 text-[var(--hi)] mb-2">
           {activeRole === "doctor" ? "Clinician portal." : "Welcome back."}
