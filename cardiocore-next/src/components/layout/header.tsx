@@ -73,12 +73,6 @@ export const Header: React.FC = () => {
           >
             Privacy
           </button>
-          <button
-            onClick={() => scrollTo("faq")}
-            className="hover:text-[var(--hi)] transition-colors cursor-pointer"
-          >
-            FAQ
-          </button>
         </nav>
 
         {/* Right Action Bar */}
@@ -151,12 +145,6 @@ export const Header: React.FC = () => {
               className="text-left py-2 px-3 rounded-lg hover:bg-[var(--tint)] transition-colors"
             >
               Privacy &amp; Consent
-            </button>
-            <button
-              onClick={() => scrollTo("faq")}
-              className="text-left py-2 px-3 rounded-lg hover:bg-[var(--tint)] transition-colors"
-            >
-              FAQ
             </button>
             <div className="pt-3 border-t border-[var(--border)] flex flex-col gap-2">
               <Link href="/login?role=patient" onClick={() => setMobileMenuOpen(false)}>

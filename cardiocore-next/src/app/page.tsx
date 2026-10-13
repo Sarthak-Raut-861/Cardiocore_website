@@ -7,7 +7,6 @@ import { FeaturesSection } from "@/features/landing/components/features-section"
 import { SpecialistsSection } from "@/features/landing/components/specialists-section";
 import { StatsBand } from "@/features/landing/components/stats-band";
 import { SecuritySection } from "@/features/landing/components/security-section";
-import { FaqSection } from "@/features/landing/components/faq-section";
 
 export default function LandingPage() {
   return (
@@ -20,7 +19,6 @@ export default function LandingPage() {
         <SpecialistsSection />
         <StatsBand />
         <SecuritySection />
-        <FaqSection />
       </main>
       <Footer />
     </div>
