@@ -1,13 +1,26 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Container } from "@/components/ui/container";
 import { ThemeToggle } from "./theme-toggle";
-import { Button } from "@/components/ui/button";
 
 export const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 24) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const scrollTo = (id: string) => {
     setMobileMenuOpen(false);
@@ -18,14 +31,28 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--surface)]/85 backdrop-blur-md transition-colors duration-200">
-      <Container className="h-16 flex items-center justify-between">
+    <div
+      className={`sticky top-0 z-50 w-full flex justify-center pointer-events-none transition-all duration-300 ease-in-out ${
+        isScrolled ? "pt-3 sm:pt-4 px-4 sm:px-6" : "pt-0 px-0"
+      }`}
+    >
+      <header
+        className={`pointer-events-auto transition-all duration-300 ease-in-out flex items-center justify-between ${
+          isScrolled
+            ? "w-full max-w-2xl sm:max-w-3xl rounded-full border border-[var(--border)] bg-[var(--surface)]/90 backdrop-blur-xl shadow-lg shadow-black/5 dark:shadow-black/35 px-4 sm:px-6 h-12 sm:h-13"
+            : "w-full border-b border-[var(--border)] bg-[var(--surface)]/85 backdrop-blur-md px-4 sm:px-8 lg:px-12 h-16"
+        }`}
+      >
         {/* Brand Logo */}
         <Link
           href="/"
-          className="flex items-center gap-2.5 group select-none cursor-pointer"
+          className="flex items-center gap-2.5 group select-none cursor-pointer shrink-0"
         >
-          <span className="w-8 h-8 rounded-lg bg-[var(--teal)] flex items-center justify-center text-white shadow-[0_2px_8px_rgba(14,158,158,0.3)]">
+          <span
+            className={`rounded-lg bg-[var(--teal)] flex items-center justify-center text-white shadow-[0_2px_8px_rgba(14,158,158,0.3)] transition-all duration-200 ${
+              isScrolled ? "w-7 h-7" : "w-8 h-8"
+            }`}
+          >
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -33,7 +60,7 @@ export const Header: React.FC = () => {
               strokeWidth="2.1"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="w-5 h-5"
+              className={isScrolled ? "w-4 h-4" : "w-5 h-5"}
             >
               <path d="M12 20.5S3.8 15 3.8 9.2A4.4 4.4 0 0 1 12 6.6a4.4 4.4 0 0 1 8.2 2.6c0 5.8-8.2 11.3-8.2 11.3Z" />
               <path
@@ -42,66 +69,57 @@ export const Header: React.FC = () => {
               />
             </svg>
           </span>
-          <span className="font-bold text-lg tracking-tight font-display text-[var(--hi)] group-hover:text-[var(--teal-700)] dark:group-hover:text-[var(--teal)] transition-colors">
+          <span
+            className={`font-bold tracking-tight font-display text-[var(--hi)] group-hover:text-[var(--teal-700)] dark:group-hover:text-[var(--teal)] transition-colors ${
+              isScrolled ? "text-base" : "text-lg"
+            }`}
+          >
             CardioCore
           </span>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-[var(--mid)]">
+        <nav className="hidden md:flex items-center gap-1 sm:gap-2">
           <button
             onClick={() => scrollTo("features")}
-            className="hover:text-[var(--hi)] transition-colors cursor-pointer"
+            className="px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold font-display text-[var(--mid)] hover:text-[var(--hi)] hover:bg-[var(--surface-2)] transition-colors cursor-pointer"
           >
             Features
           </button>
           <button
             onClick={() => scrollTo("clinical")}
-            className="hover:text-[var(--hi)] transition-colors cursor-pointer"
+            className="px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold font-display text-[var(--mid)] hover:text-[var(--hi)] hover:bg-[var(--surface-2)] transition-colors cursor-pointer"
           >
             Clinical
           </button>
           <button
             onClick={() => scrollTo("doctors")}
-            className="hover:text-[var(--hi)] transition-colors cursor-pointer"
+            className="px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold font-display text-[var(--mid)] hover:text-[var(--hi)] hover:bg-[var(--surface-2)] transition-colors cursor-pointer"
           >
             Specialists
           </button>
           <button
             onClick={() => scrollTo("security")}
-            className="hover:text-[var(--hi)] transition-colors cursor-pointer"
+            className="px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold font-display text-[var(--mid)] hover:text-[var(--hi)] hover:bg-[var(--surface-2)] transition-colors cursor-pointer"
           >
             Privacy
           </button>
         </nav>
 
-        {/* Right Action Bar */}
-        <div className="flex items-center gap-3">
-          <div className="hidden lg:flex items-center gap-2">
-            <Link href="/login?role=patient">
-              <Button variant="ghost" size="sm" className="text-xs">
-                Patient sign in
-              </Button>
-            </Link>
-            <Link href="/login?role=doctor">
-              <Button variant="primary" size="sm" className="text-xs">
-                Doctor portal
-              </Button>
-            </Link>
-          </div>
-
+        {/* Right Action Bar (Dark Mode Icon Only + Mobile Hamburger) */}
+        <div className="flex items-center gap-2">
           <ThemeToggle />
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg border border-[var(--border)] text-[var(--hi)] hover:bg-[var(--tint)] transition-colors"
+            className="md:hidden w-9 h-9 rounded-full border border-[var(--border)] text-[var(--hi)] hover:bg-[var(--tint)] flex items-center justify-center transition-colors"
             aria-label="Toggle navigation menu"
             aria-expanded={mobileMenuOpen}
           >
             <svg
-              width="20"
-              height="20"
+              width="18"
+              height="18"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -116,12 +134,12 @@ export const Header: React.FC = () => {
             </svg>
           </button>
         </div>
-      </Container>
+      </header>
 
       {/* Mobile Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-[var(--border)] bg-[var(--surface)] px-4 py-5 shadow-lg animate-in slide-in-from-top-2 duration-200">
-          <div className="flex flex-col space-y-3 font-semibold text-sm text-[var(--hi)]">
+        <div className="pointer-events-auto md:hidden absolute top-full mt-2 w-[calc(100%-2rem)] max-w-sm rounded-2xl border border-[var(--border)] bg-[var(--surface)]/95 backdrop-blur-xl px-4 py-5 shadow-xl animate-in slide-in-from-top-2 duration-200">
+          <div className="flex flex-col space-y-2 font-semibold text-sm font-display text-[var(--hi)]">
             <button
               onClick={() => scrollTo("features")}
               className="text-left py-2 px-3 rounded-lg hover:bg-[var(--tint)] transition-colors"
@@ -147,28 +165,24 @@ export const Header: React.FC = () => {
               Privacy &amp; Consent
             </button>
             <div className="pt-3 border-t border-[var(--border)] flex flex-col gap-2">
-              <Link href="/login?role=patient" onClick={() => setMobileMenuOpen(false)}>
-                <Button
-                  variant="ghost"
-                  size="md"
-                  className="w-full justify-center"
-                >
-                  Patient sign in
-                </Button>
+              <Link
+                href="/login?role=patient"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-xs text-center py-2 px-3 rounded-lg bg-[var(--surface-2)] text-[var(--hi)] hover:bg-[var(--tint)] transition-colors font-medium"
+              >
+                Patient sign in
               </Link>
-              <Link href="/login?role=doctor" onClick={() => setMobileMenuOpen(false)}>
-                <Button
-                  variant="primary"
-                  size="md"
-                  className="w-full justify-center"
-                >
-                  Doctor portal
-                </Button>
+              <Link
+                href="/login?role=doctor"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-xs text-center py-2 px-3 rounded-lg bg-[var(--teal)] text-white hover:bg-[var(--teal-700)] transition-colors font-medium shadow-sm"
+              >
+                Doctor portal
               </Link>
             </div>
           </div>
         </div>
       )}
-    </header>
+    </div>
   );
 };
