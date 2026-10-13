@@ -61,6 +61,12 @@ export const Footer: React.FC = () => {
               Privacy
             </a>
             <Link
+              href="/faq"
+              className="hover:text-[var(--hi)] transition-colors"
+            >
+              FAQ
+            </Link>
+            <Link
               href="/login?role=patient"
               className="hover:text-[var(--teal-700)] dark:hover:text-[var(--teal)] font-semibold transition-colors"
             >
