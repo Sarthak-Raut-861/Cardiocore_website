@@ -1,0 +1,50 @@
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+*/node_modules/
+.pnp
+.pnp.js
+
+# Build artifacts & outputs
+dist/
+build/
+.next/
+*/.next/
+out/
+.vercel/
+
+# Python & testing caches
+__pycache__/
+*/__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*/.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+venv/
+.venv/
+env/
+
+# Local databases & WAL/SHM (preserve on disk, do not track in Git)
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# TypeScript & tooling caches
+*.tsbuildinfo
+next-env.d.ts
+
+# OS & editor artifacts
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

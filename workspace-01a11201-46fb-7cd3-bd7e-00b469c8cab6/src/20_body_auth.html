@@ -1,0 +1,178 @@
+<!-- ══════════════════════════════════════════════════════════
+     AUTH  ·  PATIENT
+     ══════════════════════════════════════════════════════════ -->
+<div id="login-patient" class="screen hidden">
+  <div class="auth">
+    <div class="auth-left">
+      <a class="brand" data-go="home" style="margin-bottom:32px">
+        <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round"><path d="M12 20.5S3.8 15 3.8 9.2A4.4 4.4 0 0 1 12 6.6a4.4 4.4 0 0 1 8.2 2.6c0 5.8-8.2 11.3-8.2 11.3Z"/><path d="M4.6 11.6h3.2l1.3-2.4 1.9 4.6 1.6-3.2 1 1h5.8" stroke="#C9FBEF"/></svg></span>
+        CardioCore
+      </a>
+      <div class="seg mb3">
+        <button class="on" data-go="login-patient">Patient</button>
+        <button data-go="login-doctor">Clinician</button>
+      </div>
+      <h1 class="h1 mb1">Welcome back.</h1>
+      <p class="mid mb3">Sign in to see your cardiovascular state, trends and care plan.</p>
+
+      <div class="auth-card">
+        <div class="seg mb3" style="display:flex;width:100%">
+          <button class="on grow" data-mode="password">Password</button>
+          <button class="grow" data-mode="otp">One-time code</button>
+        </div>
+
+        <!-- password mode -->
+        <form id="pFormPass" onsubmit="return CC.patientLogin(event)">
+          <div class="field">
+            <label>Email or mobile</label>
+            <input class="input" id="pIdent" value="aarav.menon@example.com" required>
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <input class="input" id="pPass" type="password" value="cardiocore" required>
+          </div>
+          <div class="row row-b mb3">
+            <label class="check"><input type="checkbox" checked> Keep me signed in</label>
+            <button class="btn-ghostlink fs13" type="button">Forgot password?</button>
+          </div>
+          <button class="btn block lg" type="submit">Sign in to CardioCore</button>
+        </form>
+
+        <!-- otp mode -->
+        <form id="pFormOtp" class="hidden" onsubmit="return CC.patientLogin(event,true)">
+          <div class="field">
+            <label>Mobile number</label>
+            <input class="input" id="pPhone" value="+91 98200 00000" required>
+          </div>
+          <button class="btn ghost block mb2" type="button" onclick="CC.sendOtp()">Send 6-digit code</button>
+          <div id="otpBlock" class="hidden">
+            <label class="caption" style="display:block;margin-bottom:6px">Enter code — demo code is 4 8 1 2 0 0</label>
+            <div class="otp-row">
+              <input class="otp" maxlength="1" inputmode="numeric"><input class="otp" maxlength="1" inputmode="numeric"><input class="otp" maxlength="1" inputmode="numeric">
+              <input class="otp" maxlength="1" inputmode="numeric"><input class="otp" maxlength="1" inputmode="numeric"><input class="otp" maxlength="1" inputmode="numeric">
+            </div>
+            <button class="btn block lg" type="submit">Verify &amp; continue</button>
+          </div>
+        </form>
+
+        <div class="divider">or</div>
+        <button class="btn ghost block" onclick="CC.patientLogin(event)">Continue with demo profile · Aarav Menon, 44</button>
+        <p class="small center mt3">New here? <button class="btn-ghostlink" data-go="login-patient">Create an account</button> — takes 8 short steps.</p>
+      </div>
+
+      <p class="small mt3" style="max-width:470px">By continuing you agree that CardioCore provides monitoring support and does not diagnose conditions or replace a healthcare professional.</p>
+    </div>
+
+    <div class="auth-right">
+      <div class="blob b1" style="width:420px;height:420px;background:#9BEDE0;top:-120px;right:-100px"></div>
+      <div class="blob b2" style="width:380px;height:380px;background:#BFEAF5;bottom:-140px;left:-90px"></div>
+      <div class="row row-b" style="position:relative;z-index:2">
+        <span class="chip" style="background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.3)"><span class="dot"></span> Wearable connected</span>
+        <span class="fs13" style="color:rgba(255,255,255,.75)">Demo environment</span>
+      </div>
+      <div style="position:relative;z-index:2;display:grid;place-items:center;flex:1">
+        <img src="{{HEART}}" alt="" style="width:min(320px,58%);filter:drop-shadow(0 30px 55px rgba(0,0,0,.3))">
+      </div>
+      <div style="position:relative;z-index:2">
+        <div style="background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.24);border-radius:20px;padding:18px;backdrop-filter:blur(10px)">
+          <div class="row row-b mb1"><span class="fs12" style="font-weight:800;letter-spacing:.1em;color:rgba(255,255,255,.75)">LIVE ECG · LEAD I</span><span class="dot-live"></span></div>
+          <canvas class="ecg-strip" width="420" height="60" data-ecg="auth"></canvas>
+        </div>
+        <p class="mt3" style="font-size:19px;font-weight:600;line-height:1.5;max-width:430px;font-family:var(--font-display)">"It didn't tell me I was dying. It told me my resting rate had drifted for two days — and that was the conversation worth having."</p>
+        <p class="fs13 mt2" style="color:rgba(255,255,255,.7)">Aarav M. · Digital Twin user since 2024</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     AUTH  ·  CLINICIAN
+     ══════════════════════════════════════════════════════════ -->
+<div id="login-doctor" class="screen hidden">
+  <div class="auth">
+    <div class="auth-left">
+      <a class="brand" data-go="home" style="margin-bottom:32px">
+        <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round"><path d="M12 20.5S3.8 15 3.8 9.2A4.4 4.4 0 0 1 12 6.6a4.4 4.4 0 0 1 8.2 2.6c0 5.8-8.2 11.3-8.2 11.3Z"/><path d="M4.6 11.6h3.2l1.3-2.4 1.9 4.6 1.6-3.2 1 1h5.8" stroke="#C9FBEF"/></svg></span>
+        CardioCore <span class="chip data" style="margin-left:6px">Clinician</span>
+      </a>
+      <div class="seg mb3">
+        <button data-go="login-patient">Patient</button>
+        <button class="on" data-go="login-doctor">Clinician</button>
+      </div>
+      <h1 class="h1 mb1">Clinician portal.</h1>
+      <p class="mid mb3">Access consented patient records, validated ECG strips and your triage roster.</p>
+
+      <div class="auth-card">
+        <div class="chip attention mb3" style="width:100%;justify-content:flex-start;padding:11px 14px;font-weight:600;border-radius:14px">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#94600B" stroke-width="2.2" stroke-linecap="round" style="flex:none"><path d="M12 3 2.5 20h19L12 3z"/><path d="M12 9v5M12 17.2v.1"/></svg>
+          <span>Demo credentials are prefilled. In production, access requires verified medical registration.</span>
+        </div>
+        <form onsubmit="return CC.doctorLogin(event)">
+          <div class="field">
+            <label>Work email</label>
+            <input class="input" value="neha.raghavan@meridianheart.in" required>
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <input class="input" type="password" value="clinician" required>
+          </div>
+          <div class="grid g2" style="gap:12px">
+            <div class="field">
+              <label>Medical council</label>
+              <select class="input"><option>Maharashtra Medical Council</option><option>Delhi Medical Council</option><option>Karnataka Medical Council</option><option>General Medical Council (UK)</option></select>
+            </div>
+            <div class="field">
+              <label>Registration no.</label>
+              <input class="input" value="MMC-2010-44821" required>
+            </div>
+          </div>
+          <div class="field">
+            <label>Affiliated institution</label>
+            <select class="input"><option>Meridian Heart Institute</option><option>Northbridge Clinic</option><option>City Care Hospital</option><option>Riverside Medical</option></select>
+          </div>
+          <div class="field">
+            <label>Second factor (TOTP)</label>
+            <input class="input mono" value="482 001" required>
+          </div>
+          <label class="check mb3"><input type="checkbox" checked> I will only access records with documented patient consent, and I accept the clinical data-handling policy.</label>
+          <button class="btn block lg dark" type="submit">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M9 3v4a3 3 0 0 0 3 3 3 3 0 0 0 3-3V3"/><path d="M12 10v3a5 5 0 0 0 5 5h1"/><circle cx="19" cy="18" r="3"/></svg>
+            Enter clinician portal
+          </button>
+        </form>
+        <div class="divider">or</div>
+        <button class="btn ghost block" onclick="CC.doctorLogin(event)">Continue as demo clinician · Dr Neha Raghavan</button>
+        <p class="small center mt3">New to CardioCore? <button class="btn-ghostlink">Request institutional access</button></p>
+      </div>
+      <p class="small mt3" style="max-width:470px">Every record access is logged and visible to the patient. Cardiac emergencies should always be handled through your institution's protocol.</p>
+    </div>
+
+    <div class="auth-right" style="background:linear-gradient(150deg,#06303A,#0A5C68 50%,#0E7F8C)">
+      <div class="blob b1" style="width:420px;height:420px;background:#7FE3DA;top:-140px;right:-110px"></div>
+      <div class="row row-b" style="position:relative;z-index:2">
+        <span class="chip" style="background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.3)"><span class="dot"></span> Roster synced · 6 patients</span>
+        <span class="fs13" style="color:rgba(255,255,255,.75)">Meridian Heart Institute</span>
+      </div>
+      <div style="position:relative;z-index:2;flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px">
+        <div style="background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.24);border-radius:20px;padding:18px 20px;backdrop-filter:blur(10px)">
+          <div class="row row-b mb2"><span class="fs12" style="font-weight:800;letter-spacing:.1em;color:rgba(255,255,255,.75)">TRIAGE QUEUE</span><span class="chip urgent" style="background:rgba(224,69,63,.22);color:#FFD7D5;border-color:rgba(255,255,255,.25)">1 urgent</span></div>
+          <div class="row gap12 mb2"><span class="dot-live" style="background:#FF8A80"></span><div><b>Aarav Menon, 44</b><div class="fs12" style="color:rgba(255,255,255,.72)">HR 138 at rest · HRV 19 ms · 9 min persistence</div></div></div>
+          <div class="row gap12 mb2"><span class="dot-live" style="background:#FFD08A"></span><div><b>Rohit Sharma, 61</b><div class="fs12" style="color:rgba(255,255,255,.72)">Resting HR above usual range · 2 days</div></div></div>
+          <div class="row gap12"><span class="dot-live"></span><div><b>Meera Iyer, 52</b><div class="fs12" style="color:rgba(255,255,255,.72)">12-day stable · routine review due</div></div></div>
+        </div>
+        <div class="grid g3" style="gap:12px">
+          <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:14px">
+            <b style="font-family:var(--font-display);font-size:24px;display:block">250 Hz</b><span class="fs12" style="color:rgba(255,255,255,.7)">ECG fidelity</span>
+          </div>
+          <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:14px">
+            <b style="font-family:var(--font-display);font-size:24px;display:block">42 s</b><span class="fs12" style="color:rgba(255,255,255,.7)">Median triage time</span>
+          </div>
+          <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:14px">
+            <b style="font-family:var(--font-display);font-size:24px;display:block">100%</b><span class="fs12" style="color:rgba(255,255,255,.7)">Access-logged</span>
+          </div>
+        </div>
+      </div>
+      <p class="fs13" style="position:relative;z-index:2;color:rgba(255,255,255,.7)">CardioCore surfaces patterns. Interpretation, diagnosis and treatment remain yours.</p>
+    </div>
+  </div>
+</div>

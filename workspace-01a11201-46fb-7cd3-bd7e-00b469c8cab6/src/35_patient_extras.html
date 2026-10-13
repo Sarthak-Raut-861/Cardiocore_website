@@ -1,0 +1,275 @@
+<!-- ───────── VIEW · NOTIFICATIONS ───────── -->
+    <div class="view" data-view="notifications">
+      <div class="page-h">
+        <div><h1>Notifications</h1><div class="sub">Everything CardioCore told you, grouped by day. Nothing here is urgent unless it says so.</div></div>
+        <div class="row gap8">
+          <button class="btn ghost" onclick="CC.markAllRead()">Mark all read</button>
+          <button class="btn ghost" data-pview="profile">Notification settings</button>
+        </div>
+      </div>
+
+      <div class="grid" style="grid-template-columns:1.6fr 1fr">
+        <div>
+          <div class="tabs mb3">
+            <button class="tab on" data-nfilter="all">All</button>
+            <button class="tab" data-nfilter="health">Health</button>
+            <button class="tab" data-nfilter="insights">Insights</button>
+            <button class="tab" data-nfilter="appts">Appointments</button>
+            <button class="tab" data-nfilter="device">Device</button>
+          </div>
+          <div id="notifList"></div>
+        </div>
+
+        <div class="col gap16">
+          <div class="card">
+            <div class="caption mb2">Delivery</div>
+            <label class="check mb2"><input type="checkbox" checked data-pref="push"> Push notifications</label>
+            <label class="check mb2"><input type="checkbox" checked data-pref="sms"> SMS for urgent only</label>
+            <label class="check mb2"><input type="checkbox" data-pref="email"> Daily email digest</label>
+            <label class="check"><input type="checkbox" checked data-pref="quiet"> Quiet hours 22:00 – 07:00 (urgent breaks through)</label>
+            <div class="info-note mt3">Level 3 alerts always break through quiet hours. Everything else waits for your digest.</div>
+          </div>
+          <div class="card">
+            <div class="caption mb2">How each level reaches you</div>
+            <div class="lrow" style="padding:10px 0"><div class="grow"><b class="fs14">Informational</b><div class="fs12 muted">In-app only · never notifies</div></div><span class="chip neutral">Level 1</span></div>
+            <div class="lrow" style="padding:10px 0"><div class="grow"><b class="fs14">Attention</b><div class="fs12 muted">Daily digest · in-app</div></div><span class="chip attention">Level 2</span></div>
+            <div class="lrow" style="padding:10px 0"><div class="grow"><b class="fs14">Urgent</b><div class="fs12 muted">Immediate push + SMS</div></div><span class="chip urgent">Level 3</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── VIEW · LDL DETAIL ───────── -->
+    <div class="view" data-view="marker">
+      <div class="page-h">
+        <div>
+          <button class="btn-ghostlink fs13 mb1" data-pview="records">← Health record</button>
+          <h1>LDL cholesterol</h1>
+          <div class="sub">Lab result — entered manually, not measured by your wearable.</div>
+        </div>
+        <div class="row gap8">
+          <button class="btn ghost" onclick="CC.toast('Ranges shown are general guidance. Your clinician sets the targets that apply to you.','warn')">Reference ranges</button>
+          <button class="btn" onclick="CC.addLabModal()">Add new lab result</button>
+        </div>
+      </div>
+
+      <div class="grid" style="grid-template-columns:1fr 1.5fr">
+        <div class="card pad-lg">
+          <div class="caption">Current value</div>
+          <div class="row gap12 mt1"><span class="metric-value" style="font-size:44px" id="ldlValue">112</span><span class="metric-unit" style="align-self:flex-end;padding-bottom:8px">mg/dL</span></div>
+          <span class="chip attention mt2"><span class="dot"></span> Above target</span>
+          <div class="hr-scan"></div>
+          <div class="kv"><span class="mid">Target set by clinician</span><b>&lt; 100 mg/dL</b></div>
+          <div class="kv"><span class="mid">Last updated</span><b>24 Sep 2026</b></div>
+          <div class="kv"><span class="mid">Source</span><b>Apollo Diagnostics</b></div>
+          <div class="kv"><span class="mid">Change vs previous</span><b class="amberc">↑ 4 mg/dL</b></div>
+          <div class="info-note mt3">This is lab information, not a wearable measurement. Any change to treatment is a clinical decision.</div>
+        </div>
+
+        <div class="col gap16">
+          <div class="card">
+            <div class="card-h"><span class="card-t">Trend — last 4 results</span><span class="chip neutral">target line 100</span></div>
+            <canvas class="svg-chart" width="760" height="230" data-chart="ldlTrend"></canvas>
+            <p class="fs14 mid mt2">LDL has stayed above your clinician's target across four reports. That is a pattern worth discussing, not a diagnosis.</p>
+          </div>
+          <div class="card">
+            <div class="caption mb2">Reference range</div>
+            <div class="row gap16 wrapf">
+              <div class="chip stable lg">Below 100 · optimal</div>
+              <div class="chip attention lg">100 – 159 · above target</div>
+              <div class="chip urgent lg">160 + · high</div>
+            </div>
+            <div class="hr-scan"></div>
+            <div class="row gap8">
+              <button class="btn sm ghost" data-pview="lipids">View full lipid history</button>
+              <button class="btn sm ghost" onclick="CC.shareModal()">Share with Dr Raghavan</button>
+              <button class="btn sm ghost" onclick="CC.toast('Exported LDL history as PDF with reference bands.','ok')">Export</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── VIEW · LIPID HISTORY ───────── -->
+    <div class="view" data-view="lipids">
+      <div class="page-h">
+        <div>
+          <button class="btn-ghostlink fs13 mb1" data-pview="records">← Health record</button>
+          <h1>Lipid profile</h1>
+          <div class="sub">Lab data updated manually — distinct from continuous wearable measurements.</div>
+        </div>
+        <div class="row gap8">
+          <button class="btn ghost" onclick="CC.addLabModal()">Add result</button>
+          <button class="btn ghost" onclick="CC.printReport('lipids')">Export history as PDF</button>
+        </div>
+      </div>
+
+      <div class="grid g4 mb3" id="lipidTiles"></div>
+
+      <div class="grid" style="grid-template-columns:1.5fr 1fr">
+        <div class="card">
+          <div class="card-h">
+            <div class="tabs"><button class="tab" data-lipid="all">All</button><button class="tab on" data-lipid="ldl">LDL</button><button class="tab" data-lipid="hdl">HDL</button><button class="tab" data-lipid="trigs">Triglycerides</button></div>
+            <span class="chip neutral">LDL &amp; HDL over time</span>
+          </div>
+          <canvas class="svg-chart" width="800" height="260" data-chart="lipidOverlay"></canvas>
+          <p class="small mt2">Units: mg/dL. Trend lines connect laboratory results you entered — no interpolation between visits.</p>
+        </div>
+        <div class="card">
+          <div class="card-h"><span class="card-t">All results</span><span class="chip neutral">4 reports</span></div>
+          <div class="scroll-x">
+            <table class="tbl" style="min-width:420px">
+              <thead><tr><th>Date</th><th>Total</th><th>LDL</th><th>HDL</th><th>Trigs</th></tr></thead>
+              <tbody id="lipidRows"></tbody>
+            </table>
+          </div>
+          <div class="hr-scan"></div>
+          <div class="caption mb2">Clinician targets</div>
+          <div class="kv"><span class="mid">LDL target</span><b>&lt; 100 mg/dL</b></div>
+          <div class="kv"><span class="mid">Non-HDL target</span><b>&lt; 130 mg/dL</b></div>
+          <div class="kv"><span class="mid">Set by</span><b>Dr Neha Raghavan · 12 Jun 2026</b></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── VIEW · SYMPTOMS ───────── -->
+    <div class="view" data-view="symptoms">
+      <div class="page-h">
+        <div><h1>Symptom log</h1><div class="sub">How you felt, timestamped against your signals. Context your clinician can actually use.</div></div>
+        <button class="btn" onclick="CC.symptomModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          Log a symptom
+        </button>
+      </div>
+
+      <div class="grid" style="grid-template-columns:1.5fr 1fr">
+        <div class="card">
+          <div class="card-h"><span class="card-t">Recent entries</span><span class="chip neutral" id="symptomCount">3 entries</span></div>
+          <div id="symptomList"></div>
+        </div>
+        <div class="col gap16">
+          <div class="card">
+            <div class="caption mb2">Overlap with your signals</div>
+            <canvas class="svg-chart" width="520" height="170" data-chart="symptomOverlap"></canvas>
+            <p class="fs14 mid mt2">Two of your three light-headed episodes fell within 10 minutes of a heart-rate deviation. That coincidence is useful context — not a diagnosis.</p>
+          </div>
+          <div class="card">
+            <div class="caption mb2">How symptoms are used</div>
+            <ul class="bullets">
+              <li><span class="tick"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B7A50" stroke-width="3.4" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>Compared against your measurements in the same window.</span></li>
+              <li><span class="tick"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B7A50" stroke-width="3.4" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>Shared with a clinician only when you choose to share.</span></li>
+              <li><span class="tick"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B7A50" stroke-width="3.4" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>Never used to raise an alert on its own.</span></li>
+            </ul>
+            <div class="warn-note mt3">Chest pain, severe breathlessness or fainting are emergencies. Call local emergency services — do not log them here first.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── VIEW · DEVICE ───────── -->
+    <div class="view" data-view="device">
+      <div class="page-h">
+        <div><h1>Device &amp; sync</h1><div class="sub">CardioCore Band 2 · firmware 2.4.1 · paired over BLE with rotating keys.</div></div>
+        <div class="row gap8">
+          <button class="btn ghost" onclick="CC.syncNow()">Sync now</button>
+          <button class="btn ghost" onclick="CC.toggleOnline()">Simulate offline</button>
+        </div>
+      </div>
+
+      <div class="grid" style="grid-template-columns:1fr 1.6fr">
+        <div class="card pad-lg center">
+          <div class="state-ring" style="margin:4px auto 14px;width:180px;height:180px">
+            <svg viewBox="0 0 210 210">
+              <circle cx="105" cy="105" r="88" fill="none" stroke="var(--tint)" stroke-width="14"/>
+              <circle cx="105" cy="105" r="88" fill="none" stroke="url(#g3)" stroke-width="14" stroke-linecap="round" stroke-dasharray="553" stroke-dashoffset="122"/>
+              <defs><linearGradient id="g3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0E9E9E"/><stop offset="100%" stop-color="#12A6CF"/></linearGradient></defs>
+            </svg>
+            <div class="in"><b id="battPct">78</b><span>% battery</span></div>
+          </div>
+          <span class="chip stable"><span class="dot"></span> Skin contact good</span>
+          <div class="hr-scan"></div>
+          <div class="kv"><span class="mid">Estimated remaining</span><b id="battEta">2 days 4 h</b></div>
+          <div class="kv"><span class="mid">Charging</span><b>not charging</b></div>
+          <div class="kv"><span class="mid">Last full charge</span><b>2 Oct · 21:40</b></div>
+          <button class="btn ghost sm w100 mt3" onclick="CC.toast('Charging guidance sent to your phone.','ok')">Charging guidance</button>
+        </div>
+
+        <div class="col gap16">
+          <div class="card">
+            <div class="card-h"><span class="card-t">Connection</span><span class="chip stable" id="connChip"><span class="dot"></span> Connected</span></div>
+            <div class="grid g2" style="gap:12px">
+              <div class="card flat" style="background:var(--surface-2);padding:14px"><div class="caption">Sync interval</div><b class="fs14">every 15 minutes</b></div>
+              <div class="card flat" style="background:var(--surface-2);padding:14px"><div class="caption">Last sync</div><b class="fs14" id="lastSync">2 minutes ago</b></div>
+              <div class="card flat" style="background:var(--surface-2);padding:14px"><div class="caption">Buffered on device</div><b class="fs14" id="bufferCount">12 measurements</b></div>
+              <div class="card flat" style="background:var(--surface-2);padding:14px"><div class="caption">Pairing</div><b class="fs14">rotating keys · verified</b></div>
+            </div>
+            <div class="hr-scan"></div>
+            <div class="caption mb2">Signal quality — last 7 days</div>
+            <div class="row row-b fs13 mb1"><span class="mid">ECG</span><b class="greenc">96% good</b></div><div class="progress mb2"><i style="width:96%"></i></div>
+            <div class="row row-b fs13 mb1"><span class="mid">PPG / SpO₂</span><b class="greenc">92% good</b></div><div class="progress mb2"><i style="width:92%"></i></div>
+            <div class="row row-b fs13 mb1"><span class="mid">Skin contact</span><b>88% good</b></div><div class="progress"><i style="width:88%"></i></div>
+          </div>
+
+          <div class="card">
+            <div class="card-h"><span class="card-t">Firmware &amp; calibration</span><span class="chip neutral">v2.4.1</span></div>
+            <div class="lrow" style="padding:11px 0"><span class="lic" style="background:var(--teal-soft)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A6F72" stroke-width="2.2" stroke-linecap="round"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg></span><div class="grow"><b class="fs14">Firmware up to date</b><div class="fs12 muted">Installed 28 Sep · improves HRV accuracy at low perfusion</div></div></div>
+            <div class="lrow" style="padding:11px 0"><span class="lic" style="background:var(--violet-soft)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4F41B8" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></span><div class="grow"><b class="fs14">Calibrated against your baseline</b><div class="fs12 muted">Every ECG re-checks electrode contact before it is stored</div></div></div>
+            <div class="lrow" style="padding:11px 0"><span class="lic" style="background:var(--amber-soft)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94600B" stroke-width="2.2" stroke-linecap="round"><path d="M12 3 2.5 20h19L12 3z"/><path d="M12 9v5M12 17.2v.1"/></svg></span><div class="grow"><b class="fs14">1 measurement excluded this week</b><div class="fs12 muted">Signal quality too low to interpret — nothing was inferred</div></div></div>
+            <div class="row gap8 mt3">
+              <button class="btn sm ghost grow" onclick="CC.toast('Re-pairing started. Follow the prompts on the band.','ok')">Re-pair device</button>
+              <button class="btn sm ghost grow" onclick="CC.toast('Device diagnostics uploaded. No hardware faults found.','ok')">Run diagnostics</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── VIEW · OFFLINE ───────── -->
+    <div class="view" data-view="offline">
+      <div class="page-h">
+        <div><h1>Good morning, Aarav</h1><div class="sub">You're offline — no internet connection, working locally.</div></div>
+        <div class="row gap8">
+          <span class="chip attention"><span class="dot"></span> Offline</span>
+          <button class="btn" onclick="CC.toggleOnline()">Retry connection</button>
+        </div>
+      </div>
+
+      <div class="grid" style="grid-template-columns:1fr 1.4fr">
+        <div class="card pad-lg center" style="background:linear-gradient(160deg,var(--surface),var(--surface-2))">
+          <div class="state-ring" style="margin:6px auto 12px">
+            <svg viewBox="0 0 210 210">
+              <circle cx="105" cy="105" r="88" fill="none" stroke="var(--tint)" stroke-width="14"/>
+              <circle cx="105" cy="105" r="88" fill="none" stroke="var(--muted)" stroke-width="14" stroke-linecap="round" stroke-dasharray="553" stroke-dashoffset="233"/>
+            </svg>
+            <div class="in"><b style="font-size:38px">82</b><span>last known state</span></div>
+          </div>
+          <span class="chip neutral">Stale — values from your last successful sync</span>
+          <div class="hr-scan"></div>
+          <div class="kv"><span class="mid">Wearable disconnected</span><b>8 min ago</b></div>
+          <div class="kv"><span class="mid">Waiting to sync</span><b>12 measurements</b></div>
+          <div class="kv"><span class="mid">Insights</span><b class="amberc">paused until reconnected</b></div>
+        </div>
+
+        <div class="col gap16">
+          <div class="card">
+            <div class="caption mb2">What still works offline</div>
+            <ul class="bullets">
+              <li><span class="tick"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B7A50" stroke-width="3.4" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span><span><b>Your wearable keeps recording locally.</b> Nothing is lost while you're disconnected.</span></li>
+              <li><span class="tick"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B7A50" stroke-width="3.4" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span><span><b>Trends, ECG history and your lipid profile stay readable.</b></span></li>
+              <li><span class="tick"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B7A50" stroke-width="3.4" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span><span><b>Emergency information stays available</b> — your care preferences and contact are cached.</span></li>
+              <li><span class="tick" style="background:var(--amber-soft)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94600B" stroke-width="3.4" stroke-linecap="round"><path d="M12 8v5M12 16v.1"/></svg></span><span><b>New insights are paused.</b> They resume once the connection returns.</span></li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="caption mb2">Queued while offline</div>
+            <div class="lrow" style="padding:11px 0"><span class="lic" style="background:var(--amber-soft)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94600B" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg></span><div class="grow"><b class="fs14">12 measurements</b><div class="fs12 muted">ECG, HR, HRV, SpO₂ — will upload in order</div></div></div>
+            <div class="lrow" style="padding:11px 0"><span class="lic" style="background:var(--violet-soft)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4F41B8" stroke-width="2.2" stroke-linecap="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12Z"/></svg></span><div class="grow"><b class="fs14">1 draft message to Dr Raghavan</b><div class="fs12 muted">Sends when you're back online</div></div></div>
+            <div class="lrow" style="padding:11px 0"><span class="lic" style="background:var(--teal-soft)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A6F72" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span><div class="grow"><b class="fs14">1 symptom entry saved locally</b><div class="fs12 muted">Light-headedness · 09:12</div></div></div>
+            <div class="row gap8 mt3">
+              <button class="btn grow" onclick="CC.toggleOnline()">Retry connection</button>
+              <button class="btn ghost grow" onclick="CC.toast('Emergency information is cached on the device and readable without a connection.','ok')">Show cached emergency info</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

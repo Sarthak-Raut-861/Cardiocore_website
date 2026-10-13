@@ -1,0 +1,140 @@
+=== PAGE 1 ===
+CARDIOCORE DESIGN SYSTEM Tokens COLOR bg/base surface elevated border teal/brand cyan/data green/ok violet/twin amber/attn red/urgent text/hi text/muted TYPOGRAPHY — SORA / MANROPE Display  30 Sora  700 Title  22 Sora  700 Body  16  regular Manrope  500 Caption  13 Manrope  600 RADIUS 10  ·  16  ·  20  ·  28 SPACING 4  ·  8  ·  12  ·  16  ·  24 STATUS TOKENS Stable Attention Urgent Twin 
+
+=== PAGE 2 ===
+
+
+=== PAGE 3 ===
+9:41 CardioCore Know  Your  Normal Personalized  cardiovascular  monitoring. Monitoring  support  —  not  a  diagnostic  device 
+
+=== PAGE 4 ===
+9:41 CardioCore Your  Personal Cardiovascular Companion CardioCore  learns  what  normal  looks  like  for  you, then  tells  you  —  calmly  —  when  something meaningfully  changes. Continuous  monitoring ECG,  HR,  HRV,  SpO₂  and  temperature Personal  baseline Compared  against  your  own  normal Digital  Twin A  personalized  model  of  your  patterns Doctor  connectivity Share  data  and  book  appointments CardioCore  supports  clinical  care.  It  does  not  diagnose conditions  or  replace  a  healthcare  professional. Get  Started I  already  have  an  account 
+
+=== PAGE 5 ===
+9:41 Step  1  of  8 Skip How  CardioCore  works Seven  signals,  one  personal  model. 1 Wearable  senses ECG  ·  HR  ·  HRV  ·  SpO₂  ·  temp  ·  motion 2 App  receives  over  BLE Streamed  live,  stored  securely 3 Digital  Twin  learns  you Your  baseline,  not  a  population  average 4 Insights  &  doctor  care Explainable  changes,  clinical  follow-up Your  data  stays  yours.  Nothing  is  shared  with  a provider  without  your  explicit  consent. Back Continue 
+
+=== PAGE 6 ===
+9:41 Skip Personal  information Used  to  contextualise  your  measurements.  Step  2  of  8. FULL NAME Aarav  Menon DATE OF BIRTH 14  Mar  1982 AGE 44 SEX AT BIRTH — USED FOR CLINICAL REFERENCE RANGES Male Female Other HEIGHT 176  cm WEIGHT 78  kg CALCULATED BMI 25.2 Slightly  high Continue 
+
+=== PAGE 7 ===
+9:41 Skip Medical  history Step  3  of  8.  Select  conditions  you  have  already  been diagnosed  with. Only  add  conditions  previously  diagnosed  by  a healthcare  professional.  CardioCore  does  not diagnose. Hypertension 2019 Coronary  artery  disease Arrhythmia Heart  failure Previous  heart  attack Type  2  diabetes 2021 Other  condition Continue 
+
+=== PAGE 8 ===
+9:41 Skip Lipid  profile Step  4  of  8.  Enter  your  most  recent  laboratory  report. LAB  DATA  —  entered  manually,  not  measured  by your  wearable. TOTAL CHOLESTEROL 192  mg/dL Desirable <  200 LDL CHOLESTEROL 112  mg/dL Above  target <  100 HDL CHOLESTEROL 46  mg/dL Adequate >  40 TRIGLYCERIDES 168  mg/dL Borderline <  150 VLDL (OPTIONAL) 34  mg/dL Reference 2–30 REPORT DATE 24  Sep  2026  ·  Apollo  Diagnostics Save  &  Continue 
+
+=== PAGE 9 ===
+9:41 Skip Medications Step  5  of  8.  Helps  us  interpret  your  heart-rate  patterns correctly. Ramipril 5  mg  ·  once  daily  ·  morning ACE  inhibitor  ·  since  2019 Atorvastatin 20  mg  ·  once  daily  ·  night Statin  ·  since  2022 Metformin 500  mg  ·  twice  daily Biguanide  ·  since  2021 Add  medication Some  medications  change  resting  heart  rate  and HRV.  CardioCore  accounts  for  this  when  building your  baseline. Continue 
+
+=== PAGE 10 ===
+9:41 Skip Family  history Step  6  of  8.  Cardiovascular  events  in  close  relatives  add context  to  your  risk  picture. Father Recorded Coronary  artery  disease  ·  diagnosed  at  58 Hypertension High  LDL Mother No  events No  cardiovascular  events  recorded Type  2  diabetes Sibling Not  added Tap  to  add  conditions  for  a  brother  or  sister +  Add  relative Family  history  is  used  as  contextual  information only.  It  is  never  treated  as  a  diagnosis  for  you. I  don't  know  my  family  history Continue 
+
+=== PAGE 11 ===
+
+
+=== PAGE 12 ===
+
+
+=== PAGE 13 ===
+
+
+=== PAGE 14 ===
+
+
+=== PAGE 15 ===
+9:41 Live  ECG Good  signal  quality Lead  I  ·  250  Hz 25  mm/s  ·  10  mm/mV LIVE HEART RATE 76 BPM  ·  regular RECORDING 00:18 of  00:30 Record  ECG  —  30  sec Stop PREVIOUS RECORDINGS 25  Sep  ·  07:12 72  BPM  ·  good  quality  ·  30  s 23  Sep  ·  22:40 69  BPM  ·  fair  quality  ·  30  s ECG  strips  are  not  automatically  interpreted  as  a  diagnosis.  Share with  your  clinician  for  review. 
+
+=== PAGE 16 ===
+
+
+=== PAGE 17 ===
+9:41 Trends Live Trends ECG Activity 24H 7D 30D 3M 1Y RESTING HEART RATE 68  BPM Avg  69  ·  baseline  70  ·  steady Stable Mon   Tue   Wed   Thu   Fri   Sat   Sun HRV 48  ms 7%  below  your  personal  average Attention Mon   Tue   Wed   Thu   Fri   Sat   Sun SpO₂ AVG 98% No  change TEMP AVG 36.6°C +0.1  vs  base ECG  events  this  week 3  recordings  ·  none  flagged  for  review Home Health Twin Appts Profile 
+
+=== PAGE 18 ===
+
+
+=== PAGE 19 ===
+
+
+=== PAGE 20 ===
+
+
+=== PAGE 21 ===
+
+
+=== PAGE 22 ===
+9:41 Cardiovascular  profile Lipid  profile Medical  history Risk  context LAB  DATA  —  updated  manually.  Distinct  from continuous  wearable  measurements. TOTAL CHOLESTEROL 192  mg/dL Desirable ↓  6  vs  last LDL 112  mg/dL Above  target ↑  4  vs  last HDL 46  mg/dL Adequate no  change TRIGLYCERIDES 168  mg/dL Borderline ↑  12  vs  last Last  updated:  24  Sep  2026 History  → Add  new  lab  result Reference  ranges  are  general  guidance.  Your  clinician  sets  the targets  that  apply  to  you. Home Health Twin Appts Profile 
+
+=== PAGE 23 ===
+9:41 LDL  cholesterol LAB RESULT Above  target 112 mg/dL Last  updated:  24  Sep  2026  ·  Apollo  Diagnostics REFERENCE RANGE <100  optimal 100–159 160+  high TREND — LAST 4 RESULTS target  100 Mar  25 Sep  25 Mar  26 Sep  26 CONTEXT LDL  has  stayed  above  your  clinician's  target  across  four reports.  This  is  lab  information,  not  a  wearable measurement,  and  any  change  to  treatment  is  a  clinical decision. Add  new  lab  result View  full  lipid  history 
+
+=== PAGE 24 ===
+9:41 Lipid  history All LDL HDL Trigs LDL & HDL OVER TIME Mar  25 Sep  25 Mar  26 Sep  26 LDL HDL ALL RESULTS All  values  are  laboratory  results  you  entered.  Units: mg/dL. Export  history  as  PDF 
+
+=== PAGE 25 ===
+9:41 Medical  history Edit Only  add  conditions  diagnosed  by  a  healthcare professional. PREVIOUSLY DIAGNOSED CONDITIONS Hypertension 2019 Type  2  diabetes 2021 Coronary  artery  disease Arrhythmia  ·  Heart  failure  ·  Previous  MI FAMILY HISTORY Father  —  CAD  at  58 Mother  —  no  cardiovascular  events CURRENT MEDICATIONS 3  active  medications Ramipril  ·  Atorvastatin  ·  Metformin PREVIOUS RELEVANT EVENTS Stress  test  —  Jan  2024 Reported  normal  by  cardiology 
+
+=== PAGE 26 ===
+9:41 Medications ACTIVE 3 TODAY TAKEN 2  /  4 NEXT DOSE 21:00 CURRENT MEDICATIONS Ramipril  5  mg Taken Once  daily  ·  morning  ·  with  food ACE  inhibitor  ·  prescribed  2019 Atorvastatin  20  mg 21:00 Once  daily  ·  night Statin  ·  prescribed  2022 Metformin  500  mg Taken Twice  daily  ·  morning  and  evening Biguanide  ·  prescribed  2021 Add  medication Dose  reminders Never  change  or  stop  a  prescribed  medication  based on  app  data.  Discuss  any  change  with  your  clinician. 
+
+=== PAGE 27 ===
+
+
+=== PAGE 28 ===
+
+
+=== PAGE 29 ===
+9:41 Alert  centre Mark  read Daily Weekly Alerts ALERT  LEVELS 1  ·  Informational 2  ·  Attention 3  ·  Urgent LEVEL  3  ·  URGENT 11:24 Urgent  pattern  detected An  urgent  cardiovascular  pattern  has  been  detected. Clinical  evaluation  may  be  required. LEVEL  2  ·  ATTENTION Today Resting  HR  above  usual  range Your  resting  heart  rate  has  stayed  above  your  usual range  for  two  days. LEVEL  1  ·  INFORMATIONAL Yest. Back  within  baseline Your  cardiovascular  state  returned  to  baseline  after yesterday's  activity. DEVICE 2  d  ago Signal  quality  too  low A  measurement  was  excluded  because  signal  quality was  insufficient  to  interpret. Alerts  combine  several  signals,  persistence  and  signal  quality before  they  are  raised. 
+
+=== PAGE 30 ===
+9:41 Appointments UPCOMING CARDIOLOGY  REVIEW Dr  Neha  Raghavan Meridian  Heart  Institute Tue  29  Sep  ·  10:30 Confirmed Details BOOK AN APPOINTMENT In-person Clinic  visit Video Remote  consult Search  doctor,  specialty  or  hospital Cardiology Nearby This  week PREVIOUS APPOINTMENTS Dr  Neha  Raghavan 12  Jun  2026  ·  in-person  ·  completed Dr  Samuel  Okafor 04  Feb  2026  ·  video  ·  completed Lipid  panel  —  Apollo 24  Sep  2026  ·  lab  visit Home Health Twin Appts Profile 
+
+=== PAGE 31 ===
+9:41 Cardiologists Filters Cardiology  ·  within  10  km Clear This  week In-person Video <  5  km 6  DOCTORS  AVAILABLE NR Dr  Neha  Raghavan Interventional  cardiology  ·  14  yrs Meridian  Heart  Institute  ·  3.2  km Tue  10:30 In-person Book SO Dr  Samuel  Okafor Electrophysiology  ·  11  yrs Northbridge  Clinic  ·  video  only Today  16:00 Video Book AK Dr  Amara  Khan Preventive  cardiology  ·  9  yrs City  Care  Hospital  ·  5.8  km Fri  09:15 Both Book LM Dr  Luca  Moretti General  cardiology  ·  17  yrs Riverside  Medical  ·  8.4  km Next:  6  Oct In-person Book 
+
+=== PAGE 32 ===
+
+
+=== PAGE 33 ===
+9:41 Appointment  confirmed A  confirmation  has  been  sent  to  your  email. BOOKING REF CC-48120 DOCTOR Dr  Neha  Raghavan HOSPITAL Meridian  Heart  Inst. DATE & TIME Tue  29  Sep  ·  10:30 TYPE In-person Your  baseline  summary  and  recent  ECG  recordings will  be  shared  with  this  provider  per  your  consent settings. Add  to  calendar Get  directions View  details 
+
+=== PAGE 34 ===
+
+
+=== PAGE 35 ===
+9:41 LEVEL  3  ·  URGENT Urgent  pattern  detected Your  wearable  detected  a  significant  change  from  your normal  cardiovascular  pattern. CONTRIBUTING MEASUREMENTS HEART  RATE 138 at  rest  ·  base  72 HRV 19 ms  ·  base  52 SpO₂ 94% base  98% HOW THIS WAS ASSESSED Signal  quality  verified  as  good Persisted  for  9  minutes  at  rest Motion  and  activity  ruled  out  as  cause This  is  not  a  diagnosis.  Clinical  evaluation  may  be  required. Get  urgent  medical  review Call  emergency  services I'm  okay  —  dismiss 
+
+=== PAGE 36 ===
+9:41 URGENT  WORKFLOW  IN  PROGRESS Arranging  urgent  review Following  your  emergency-care  preferences. Abnormal  pattern  detected 11:24  ·  resting  state Signal  quality  validated Good  across  ECG  and  PPG Multi-signal  cross-check HR,  HRV,  SpO₂,  motion,  persistence Booking  earliest  urgent  slot Meridian  Heart  Institute  ·  contacting… Notify  your  care  contact Dr  Raghavan  ·  pending AUTHORISATION Automatic  urgent  booking  is  ON  and  a  provider integration  exists  for  Meridian  Heart  Institute.  Without both,  CardioCore  would  only  suggest  booking. Call  emergency  services Cancel  automatic  booking 
+
+=== PAGE 37 ===
+
+
+=== PAGE 38 ===
+9:41 Emergency  care  preferences . CONTACTS Emergency  contact Priya  Menon  ·  +91  98•••  ••210 Preferred  hospital Meridian  Heart  Institute Preferred  doctor Dr  Neha  Raghavan AUTOMATION & CONSENT Automatic  urgent  booking Book  the  earliest  urgent  slot  when  validated criteria  are  met. Share  health  data  in  emergency Share  baseline,  recent  trends  and  ECG  strips with  the  provider. Notify  emergency  contact Send  an  SMS  with  location  when  an  urgent  alert is  raised. ALERT DELIVERY Push SMS Email Automatic  booking  only  runs  when  you  have  enabled it  AND  a  provider  integration  exists.  CardioCore  never contacts  emergency  services  on  your  behalf  without your  explicit  action. 
+
+=== PAGE 39 ===
+9:41 Notifications All Health Insights Appts Device TODAY EMERGENCY 11:24 Significant  change  detected Urgent  review  workflow  started INSIGHTS 08:02 HRV  below  your  usual  range Tap  to  see  what  changed HEALTH 07:41 Your  ECG  recording  is  ready 30  s  strip  ·  good  quality EARLIER APPOINTMENTS Yest. Appointment  tomorrow,  10:30 Dr  Neha  Raghavan  ·  Meridian DEVICE 2  d Wearable  battery  low 15%  remaining  ·  charge  soon HEALTH 3  d Back  within  your  baseline Measurements  returned  to  normal Notification  settings 
+
+=== PAGE 40 ===
+
+
+=== PAGE 41 ===
+9:41 Good  morning Aarav You're  offline No  internet  connection  ·  working  locally 82 LAST  KNOWN CARDIOVASCULAR  STATE STALE Values  shown  are  from  your last  successful  sync. Wearable  disconnected 8  min  ago 12  measurements  waiting  to  sync Insights  paused  until  reconnected WHAT STILL WORKS OFFLINE Your  wearable  keeps  recording  locally.  Trends,  ECG history  and  your  lipid  profile  remain  readable;  new insights  resume  after  sync. Retry  connection Home Health Twin Appts Profile 
+
+=== PAGE 42 ===
+
+
+=== PAGE 43 ===
+9:41 AM Aarav  Menon 44  y  ·  176  cm  ·  78  kg  ·  BMI  25.2 HEALTH RECORD Personal  information Medical  history Lipid  profile 24  Sep Medications 3  active CARE & DEVICE Connected  wearable 78% Emergency  settings ON Appointments 1  upcoming PRIVACY & ACCOUNT Privacy  &  security Log  out Home Health Twin Appts Profile 
+
+=== PAGE 44 ===
+
+
+=== PAGE 45 ===
+
+
+=== PAGE 46 ===
+
+
+=== PAGE 47 ===
+UX STATES — PART 2 Alert  ·  Urgent  ·  Success LEVEL 2 — ATTENTION ATTENTION Resting  HR  above  usual  range Consider  medical  review  if  it  persists. LEVEL 3 — URGENT URGENT Significant  abnormal  pattern An  urgent  cardiovascular  pattern  has  been detected.  Clinical  evaluation  may  be  required. SUCCESS SUCCESS Recording  saved  &  shared Sent  to  Dr  Raghavan  just  now. DEVICE DISCONNECTED — INLINE Wearable  disconnected Last  synced  8  minutes  ago Reconnect BOTTOM SHEET — CONFIRM Share  data  with  Dr  Raghavan? Baseline,  7-day  trends  and  3  ECG  strips. Cancel Share 

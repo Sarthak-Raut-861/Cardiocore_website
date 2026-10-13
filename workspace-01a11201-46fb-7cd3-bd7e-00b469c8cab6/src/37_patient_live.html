@@ -1,0 +1,175 @@
+<!-- ───────── VIEW · LIVE MONITOR ───────── -->
+    <div class="view" data-view="live">
+      <div class="page-h">
+        <div>
+          <h1>Live monitor</h1>
+          <div class="sub">A device bench for this prototype: drive the sensors through a scenario and watch the Twin react in real time.</div>
+        </div>
+        <div class="row gap8">
+          <span class="chip neutral" id="simClock">00:00 elapsed</span>
+          <label class="check" style="white-space:nowrap"><input type="checkbox" id="simApply"> Drive the app</label>
+        </div>
+      </div>
+
+      <div class="grid" style="grid-template-columns:1.55fr 1fr">
+        <div class="col gap16">
+          <div class="card">
+            <div class="card-h">
+              <div>
+                <div class="caption">Scenario</div>
+                <div class="row gap8 wrapf mt1" id="simScenarios">
+                  <button class="tab on" data-scn="rest">Resting</button>
+                  <button class="tab" data-scn="walk">Walking</button>
+                  <button class="tab" data-scn="sleep">Asleep</button>
+                  <button class="tab" data-scn="stress">Psychological stress</button>
+                  <button class="tab" data-scn="arrhythmia">Arrhythmia episode</button>
+                  <button class="tab" data-scn="recovery">Recovery</button>
+                </div>
+              </div>
+              <button class="btn sm ghost" onclick="CC.simReset()">Reset</button>
+            </div>
+            <p class="fs14 mid" id="simNote">Reading, still. Signal quality good across ECG and PPG.</p>
+          </div>
+
+          <div class="grid g2" style="gap:14px">
+            <div class="card scan">
+              <div class="k caption" style="display:flex;justify-content:space-between">
+                <span>Heart rate</span><span class="dot-live"></span>
+              </div>
+              <div class="metric-value" style="font-size:36px"><span id="simHR">72</span><span class="metric-unit">bpm</span></div>
+              <div class="fs12 muted">personal baseline <b>69</b> · <span id="simHRDev">+3 bpm</span></div>
+              <canvas id="simHRc" width="300" height="52" style="width:100%;height:52px;margin-top:8px"></canvas>
+            </div>
+            <div class="card">
+              <div class="k caption">HRV</div>
+              <div class="metric-value violetc" style="font-size:36px"><span id="simHRV">52</span><span class="metric-unit">ms</span></div>
+              <div class="fs12 muted">baseline <b>52 ms</b> · <span id="simHRVDev">within range</span></div>
+              <canvas id="simHRVc" width="300" height="52" style="width:100%;height:52px;margin-top:8px"></canvas>
+            </div>
+            <div class="card">
+              <div class="k caption">SpO₂</div>
+              <div class="metric-value" style="font-size:36px"><span id="simSpO2">98</span><span class="metric-unit">%</span></div>
+              <div class="fs12 muted">overnight floor <b>96%</b> · <span id="simSpO2Dev">no desaturation</span></div>
+              <canvas id="simSpO2c" width="300" height="52" style="width:100%;height:52px;margin-top:8px"></canvas>
+            </div>
+            <div class="card">
+              <div class="k caption">Skin temperature</div>
+              <div class="metric-value" style="font-size:36px"><span id="simTemp">36.6</span><span class="metric-unit">°C</span></div>
+              <div class="fs12 muted">baseline <b>36.6 °C</b> · <span id="simTempDev">stable</span></div>
+              <canvas id="simTempc" width="300" height="52" style="width:100%;height:52px;margin-top:8px"></canvas>
+            </div>
+          </div>
+
+          <div class="card scan">
+            <div class="card-h">
+              <div class="caption">Live ECG · Lead I · 250 Hz</div>
+              <div class="row gap8">
+                <span class="chip stable" id="simQuality"><span class="dot"></span> quality 0.94</span>
+                <span class="chip neutral" id="simPosture">Seated</span>
+              </div>
+            </div>
+            <canvas class="ecg-strip" width="900" height="150" data-ecg="live" id="simEcg" style="height:150px"></canvas>
+            <div class="row row-b mt2">
+              <span class="small">Motion <b id="simMotionTxt">very low</b> · this bench drives the same canvas the ECG lab uses.</span>
+              <button class="btn sm ghost" data-pview="ecg">Open ECG lab</button>
+            </div>
+          </div>
+
+          <div class="card" id="simUrgentCard" style="display:none;border-left:4px solid var(--red)">
+            <div class="row row-b wrapf gap12">
+              <div>
+                <span class="tag urgent">Level 3 criteria met</span>
+                <h3 class="h4" style="margin-top:2px">Two of four urgent criteria are satisfied</h3>
+                <p class="fs14 mid mt1">Heart rate ≥ 30% above baseline at rest, HRV ≥ 25% below baseline, sustained beyond the persistence window, with motion ruled out.</p>
+              </div>
+              <div class="col gap8">
+                <button class="btn danger" onclick="CC.urgentModal()">Raise the urgent alert</button>
+                <button class="btn ghost sm" onclick="CC.toast('Scenario held. In a live build the alert would escalate after 8 minutes of persistence.','warn')">Hold and keep observing</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col gap16">
+          <div class="card">
+            <div class="card-h"><span class="card-t">What the Twin is doing</span><span class="chip twin"><span class="dot"></span> evaluating</span></div>
+            <div class="simlog" id="simLog"></div>
+          </div>
+          <div class="card">
+            <div class="caption mb2">Decision gates</div>
+            <div class="lrow" style="padding:10px 0"><div class="grow"><b class="fs14">Signal quality</b><div class="fs12 muted">ECG + PPG cross-check</div></div><span class="chip stable" id="gateQuality"><span class="dot"></span> pass</span></div>
+            <div class="lrow" style="padding:10px 0"><div class="grow"><b class="fs14">Motion ruled out</b><div class="fs12 muted">Posture and accelerometry</div></div><span class="chip stable" id="gateMotion"><span class="dot"></span> pass</span></div>
+            <div class="lrow" style="padding:10px 0"><div class="grow"><b class="fs14">Persistence</b><div class="fs12 muted">≥ 8 minutes at rest</div></div><span class="chip neutral" id="gatePersist">timing</span></div>
+            <div class="lrow" style="padding:10px 0"><div class="grow"><b class="fs14">Multi-signal agreement</b><div class="fs12 muted">HR, HRV, SpO₂, temp</div></div><span class="chip neutral" id="gateMulti">1 of 4</span></div>
+            <div class="info-note mt3">A single out-of-range reading never raises an alert. All four gates are evaluated on every assessment.</div>
+          </div>
+          <div class="card tint">
+            <div class="caption mb1">Why this exists</div>
+            <p class="fs14 mid">The bench proves the monitoring loop end to end: sensors → quality gating → personal baseline comparison → graded alert. Turn on <b>Drive the app</b> and the Home screen, Digital Twin index and ECG rate follow this simulation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── VIEW · DAY IN REVIEW ───────── -->
+    <div class="view" data-view="day">
+      <div class="page-h">
+        <div>
+          <h1>Day in review</h1>
+          <div class="sub">Twenty-four hours of your heart, annotated with what you did and what we told you.</div>
+        </div>
+        <div class="row gap8">
+          <button class="icon-btn" onclick="CC.dayShift(-1)" aria-label="Previous day">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0A2B2F" stroke-width="2.2" stroke-linecap="round"><path d="m14 6-6 6 6 6"/></svg></button>
+          <span class="chip neutral" id="dayLabel">Sat 4 Oct 2026</span>
+          <button class="icon-btn" onclick="CC.dayShift(1)" aria-label="Next day">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0A2B2F" stroke-width="2.2" stroke-linecap="round"><path d="m10 6 6 6-6 6"/></svg></button>
+          <button class="btn ghost" onclick="CC.printReport('day')">Export day report</button>
+        </div>
+      </div>
+
+      <div class="grid g4 mb3">
+        <div class="card"><div class="caption">Resting HR</div><div class="metric-value">68<span class="metric-unit">bpm</span></div><div class="small">compared with <b>69</b> baseline</div></div>
+        <div class="card"><div class="caption">Time in range</div><div class="metric-value greenc">96<span class="metric-unit">%</span></div><div class="small">of the day within ±4.5% of baseline</div></div>
+        <div class="card"><div class="caption">Peak HR</div><div class="metric-value">114<span class="metric-unit">bpm</span></div><div class="small">07:18 · during a walk</div></div>
+        <div class="card"><div class="caption">Excluded data</div><div class="metric-value amberc">6<span class="metric-unit">min</span></div><div class="small">quality too low to interpret</div></div>
+      </div>
+
+      <div class="card mb3">
+        <div class="card-h">
+          <span class="card-t">Heart rate across the day</span>
+          <div class="row gap12 wrapf">
+            <span class="chip twin" style="padding:2px 9px"><span class="dot"></span> sleep</span>
+            <span class="chip data" style="padding:2px 9px"><span class="dot"></span> activity</span>
+            <span class="chip stable" style="padding:2px 9px"><span class="dot"></span> ECG recorded</span>
+            <span class="chip attention" style="padding:2px 9px"><span class="dot"></span> insight raised</span>
+          </div>
+        </div>
+        <canvas class="svg-chart" width="1180" height="300" data-chart="day"></canvas>
+      </div>
+
+      <div class="grid" style="grid-template-columns:1.5fr 1fr">
+        <div class="card">
+          <div class="card-h"><span class="card-t">Timeline</span><span class="small">hover the chart for exact values</span></div>
+          <div id="dayEvents"></div>
+        </div>
+        <div class="col gap16">
+          <div class="card">
+            <div class="caption mb2">How to read this</div>
+            <ul class="bullets">
+              <li><span class="tick"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B7A50" stroke-width="3.4" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>A rise during activity is expected; the same rise at rest is not.</span></li>
+              <li><span class="tick"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B7A50" stroke-width="3.4" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>Grey bands mark minutes excluded for low signal quality.</span></li>
+              <li><span class="tick"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B7A50" stroke-width="3.4" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>Insight markers link to the reasoning that raised them.</span></li>
+            </ul>
+          </div>
+          <div class="card tint">
+            <div class="caption mb1">Sleep and activity</div>
+            <div class="kv"><span class="mid">Sleep</span><b>23:12 – 06:28 · 6 h 05 m</b></div>
+            <div class="kv"><span class="mid">Sleep HR range</span><b>51 – 58 bpm</b></div>
+            <div class="kv"><span class="mid">Steps</span><b>7 420</b></div>
+            <div class="kv"><span class="mid">Active minutes</span><b>38</b></div>
+            <div class="kv"><span class="mid">Posture hours</span><b>9 h 20 m seated</b></div>
+          </div>
+        </div>
+      </div>
+    </div>

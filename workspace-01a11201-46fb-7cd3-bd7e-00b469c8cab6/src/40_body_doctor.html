@@ -1,0 +1,636 @@
+<!-- ══════════════════════════════════════════════════════════
+     CLINICIAN APP
+     ══════════════════════════════════════════════════════════ -->
+<div id="app-doctor" class="screen hidden">
+<div class="app">
+
+  <aside class="side" id="sideDoctor">
+    <a class="brand" data-go="home">
+      <span class="brand-mark" style="background:linear-gradient(140deg,#0A6F72,#12A6CF)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round"><path d="M9 3v4a3 3 0 0 0 3 3 3 3 0 0 0 3-3V3"/><path d="M12 10v3a5 5 0 0 0 5 5h1"/><circle cx="19" cy="18" r="3"/></svg></span>
+      CardioCore <span class="chip data" style="margin-left:2px;font-size:10.5px;padding:3px 8px">Clinician</span>
+    </a>
+
+    <div class="side-sec">Care delivery</div>
+    <div class="nav-item on" data-dview="roster">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5h16M4 12h16M4 19h16"/></svg> Triage roster <span class="pill">1</span>
+    </div>
+    <div class="nav-item" data-dview="appts">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 11h18"/></svg> Appointments <span class="pill teal">6</span>
+    </div>
+    <div class="nav-item" data-dview="patients">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.4"/><path d="M3 20c0-3.6 2.7-5.5 6-5.5s6 1.9 6 5.5"/><path d="M17 8h4M19 6v4"/></svg> Patients <span class="chip neutral" style="margin-left:auto;font-size:10.5px;padding:2px 7px">128</span>
+    </div>
+    <div class="nav-item" data-dview="review">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12h4l2-5 3 10 3-8 2 3h6"/></svg> ECG review <span class="pill amber">3</span>
+    </div>
+    <div class="nav-item" data-dview="messages">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12Z"/></svg> Messages
+      <span class="navbadge hidden" id="msgBadgeDoc">0</span>
+    </div>
+
+    <div class="side-sec">Practice</div>
+    <div class="nav-item" data-dview="analytics">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19V6M10 19v-7M16 19v-4M22 19V9"/></svg> Analytics
+    </div>
+    <div class="nav-item" data-dview="schedule">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg> Availability
+    </div>
+    <div class="nav-item" data-dview="handover">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9 12h6M9 16h4"/></svg> Handover
+    </div>
+    <div class="nav-item" data-dview="dprofile">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg> Profile &amp; credentials
+    </div>
+
+    <div class="side-foot">
+      <div class="who" data-dview="dprofile">
+        <span class="avatar av-cyan" style="width:40px;height:40px;border-radius:13px;font-size:13px">NR</span>
+        <div class="grow" style="min-width:0">
+          <b class="fs14" style="display:block">Dr Neha Raghavan</b>
+          <span class="fs12 muted">MD, DM Cardiology</span>
+        </div>
+      </div>
+      <button class="nav-item w100 mt2" data-go="home" style="color:var(--muted)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12h13M13 6l6 6-6 6"/></svg> Sign out
+      </button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="icon-btn menu-btn" data-side="sideDoctor" aria-label="Menu">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0A2B2F" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="search">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6E9A9E" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input placeholder="Search patients, MRN, alert level…  ⌘K" aria-label="Search records" onclick="CC.palette()" readonly>
+      </div>
+      <div class="row gap8" style="margin-left:auto">
+        <span class="chip stable hide-sm"><span class="dot"></span> Sync live · 6 patients</span>
+        <button class="icon-btn" data-dview="review" title="Pending reviews">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A2B2F" stroke-width="2" stroke-linecap="round"><path d="M2 12h4l2-5 3 10 3-8 2 3h6"/></svg><span class="badge">3</span>
+        </button>
+        <button class="icon-btn" onclick="CC.palette()" title="Search (⌘K)" aria-label="Search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A2B2F" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        </button>
+        <div id="unitChips" class="hide-sm"></div>
+        <button class="icon-btn" onclick="CC.toggleTheme()" title="Light / dark" aria-label="Toggle colour theme">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A2B2F" stroke-width="2" stroke-linecap="round"><path d="M12 4V2M12 22v-2M4 12H2M22 12h-2M6 6 4.5 4.5M19.5 19.5 18 18M18 6l1.5-1.5M4.5 19.5 6 18"/><circle cx="12" cy="12" r="4"/></svg>
+        </button>
+        <button class="icon-btn" data-dview="messages" title="Messages">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A2B2F" stroke-width="2" stroke-linecap="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12Z"/></svg><span class="badge hidden" id="docTopBadge">0</span>
+        </button>
+        <span class="avatar av-cyan" style="width:40px;height:40px;border-radius:13px;font-size:13px" title="Dr Neha Raghavan">NR</span>
+      </div>
+    </div>
+
+    <!-- ───────── VIEW · ROSTER ───────── -->
+    <div class="view on" data-view="roster">
+      <div class="page-h">
+        <div><h1>Triage roster</h1><div class="sub">Saturday, 4 October · ranked by validated alert level, then persistence. Access is consent-scoped and fully logged.</div></div>
+        <div class="row gap8">
+          <button class="btn ghost" onclick="CC.toast('Roster exported as CSV (6 rows).','ok')">Export</button>
+          <button class="btn dark" onclick="CC.openPatient('aarav')" data-cohort="highrisk urgent">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M15 3h6v6M21 3l-9 9"/><path d="M10 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/></svg>
+            Open urgent case
+          </button>
+        </div>
+      </div>
+
+      <div class="grid g4 mb3">
+        <div class="card" style="border-left:4px solid var(--red)">
+          <div class="caption">Urgent · L3</div><div class="metric-value redc">1</div><div class="small">awaiting review · 11:24</div>
+        </div>
+        <div class="card" style="border-left:4px solid var(--amber)">
+          <div class="caption">Attention · L2</div><div class="metric-value amberc">2</div><div class="small">monitoring · no action yet</div>
+        </div>
+        <div class="card" style="border-left:4px solid var(--green)">
+          <div class="caption">Stable</div><div class="metric-value greenc">3</div><div class="small">routine review due</div>
+        </div>
+        <div class="card" style="border-left:4px solid var(--cyan)">
+          <div class="caption">Data coverage</div><div class="metric-value" style="color:var(--cyan)">94<span class="metric-unit">%</span></div><div class="small">valid signal hours, 7 days</div>
+        </div>
+      </div>
+
+      <div class="card mb3">
+        <div class="card-h">
+          <div>
+            <span class="card-t">Patient queue</span>
+            <div class="small mt1">Click any row for the full consented record, trends and ECG strips.</div>
+          </div>
+          <div class="tabs">
+            <button class="tab on">All</button><button class="tab">Urgent</button><button class="tab">Attention</button><button class="tab">Stable</button><button class="tab">New consents</button>
+          </div>
+        </div>
+        <div class="scroll-x">
+        <table class="tbl" style="min-width:900px">
+          <thead><tr><th>Patient</th><th>Level</th><th>Primary signal</th><th>Baseline delta</th><th>Persistence</th><th>Signal quality</th><th>Last sync</th><th></th></tr></thead>
+          <tbody>
+            <tr class="clickable" onclick="CC.openPatient('aarav')" data-cohort="highrisk urgent">
+              <td><div class="row gap12"><span class="avatar av-red" style="width:38px;height:38px;border-radius:12px;font-size:13px">AM</span><div><b>Aarav Menon</b><div class="fs12 muted">44 y · M · MRN 44821</div></div></div></td>
+              <td><span class="chip urgent"><span class="dot"></span> Urgent</span></td>
+              <td>HR 138 at rest</td>
+              <td class="redc b700">+92 bpm</td>
+              <td>9 min · at rest</td>
+              <td class="greenc b700">good · 0.94</td>
+              <td class="fs12 muted">2 min ago</td>
+              <td class="center"><button class="btn xs">Review</button></td>
+            </tr>
+            <tr class="clickable" onclick="CC.openPatient('rohit')" data-cohort="highrisk">
+              <td><div class="row gap12"><span class="avatar av-amber" style="width:38px;height:38px;border-radius:12px;font-size:13px">RS</span><div><b>Rohit Sharma</b><div class="fs12 muted">61 y · M · MRN 11204</div></div></div></td>
+              <td><span class="chip attention"><span class="dot"></span> Attention</span></td>
+              <td>Resting HR drift</td>
+              <td class="amberc b700">+7 bpm · 2 days</td>
+              <td>48 h · sustained</td>
+              <td class="greenc b700">good · 0.91</td>
+              <td class="fs12 muted">6 min ago</td>
+              <td class="center"><button class="btn xs ghost">Open</button></td>
+            </tr>
+            <tr class="clickable" onclick="CC.openPatient('meera')" data-cohort="highrisk">
+              <td><div class="row gap12"><span class="avatar av-teal" style="width:38px;height:38px;border-radius:12px;font-size:13px">MI</span><div><b>Meera Iyer</b><div class="fs12 muted">52 y · F · MRN 77310</div></div></div></td>
+              <td><span class="chip attention"><span class="dot"></span> Attention</span></td>
+              <td>HRV decline</td>
+              <td class="amberc b700">−8 ms · 5 days</td>
+              <td>5 days · gradual</td>
+              <td class="greenc b700">good · 0.89</td>
+              <td class="fs12 muted">14 min ago</td>
+              <td class="center"><button class="btn xs ghost">Open</button></td>
+            </tr>
+            <tr class="clickable" onclick="CC.openPatient('kabir')" data-cohort="stable">
+              <td><div class="row gap12"><span class="avatar av-green" style="width:38px;height:38px;border-radius:12px;font-size:13px">KS</span><div><b>Kabir Sethi</b><div class="fs12 muted">38 y · M · MRN 90114</div></div></div></td>
+              <td><span class="chip stable"><span class="dot"></span> Stable</span></td>
+              <td>All within baseline</td>
+              <td class="greenc b700">no change</td>
+              <td>—</td>
+              <td class="greenc b700">good · 0.96</td>
+              <td class="fs12 muted">1 min ago</td>
+              <td class="center"><button class="btn xs ghost">Open</button></td>
+            </tr>
+            <tr class="clickable" onclick="CC.openPatient('leela')" data-cohort="adherence lowadh baseline">
+              <td><div class="row gap12"><span class="avatar av-violet" style="width:38px;height:38px;border-radius:12px;font-size:13px">LN</span><div><b>Leela Nair</b><div class="fs12 muted">67 y · F · MRN 20338</div></div></div></td>
+              <td><span class="chip stable"><span class="dot"></span> Stable</span></td>
+              <td>Adherence 92%</td>
+              <td class="greenc b700">within range</td>
+              <td>—</td>
+              <td class="mid b700">fair · 0.78</td>
+              <td class="fs12 muted">22 min ago</td>
+              <td class="center"><button class="btn xs ghost">Open</button></td>
+            </tr>
+            <tr class="clickable" onclick="CC.openPatient('dev')" data-cohort="newconsent baseline">
+              <td><div class="row gap12"><span class="avatar av-cyan" style="width:38px;height:38px;border-radius:12px;font-size:13px">DP</span><div><b>Dev Patel</b><div class="fs12 muted">55 y · M · MRN 55021</div></div></div></td>
+              <td><span class="chip neutral">New consent</span></td>
+              <td>Baseline building</td>
+              <td class="mid b700">day 4 of 14</td>
+              <td>—</td>
+              <td class="greenc b700">good · 0.90</td>
+              <td class="fs12 muted">3 min ago</td>
+              <td class="center"><button class="btn xs ghost">Open</button></td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <div class="grid" style="grid-template-columns:1.5fr 1fr">
+        <div class="card">
+          <div class="card-h"><span class="card-t">Open urgent assessment — Aarav Menon</span>
+            <div class="row gap8"><span class="tag urgent">Level 3 · Urgent</span><span class="small">raised 28 Sep, 11:24</span></div>
+          </div>
+          <div class="grid g3 mb3" style="gap:12px">
+            <div class="card flat" style="background:var(--red-soft);padding:14px;border-color:#F7C9C6"><div class="caption">Heart rate</div><div class="metric-value redc" style="font-size:26px">138<span class="metric-unit">bpm</span></div><div class="fs12 muted">at rest · baseline 72</div></div>
+            <div class="card flat" style="background:var(--red-soft);padding:14px;border-color:#F7C9C6"><div class="caption">HRV</div><div class="metric-value redc" style="font-size:26px">19<span class="metric-unit">ms</span></div><div class="fs12 muted">baseline 52 ms</div></div>
+            <div class="card flat" style="background:var(--amber-soft);padding:14px;border-color:#F3DDB6"><div class="caption">SpO₂</div><div class="metric-value amberc" style="font-size:26px">94<span class="metric-unit">%</span></div><div class="fs12 muted">baseline 98%</div></div>
+          </div>
+          <canvas class="ecg-strip" width="820" height="150" data-ecg="review" style="height:150px;background:#FBFFFE;border-radius:14px;border:1px solid var(--border)"></canvas>
+          <div class="mlabel" style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px"><span>0 s</span><span>5 s</span><span>10 s</span><span>15 s</span><span>20 s</span><span>25 s</span><span>30 s</span></div>
+          <div class="hr-scan"></div>
+          <div class="caption mb2">How this was assessed</div>
+          <div class="grid g2" style="gap:10px">
+            <div class="chip stable" style="justify-content:flex-start;padding:10px 12px"><span class="dot"></span> Signal quality verified good across ECG and PPG</div>
+            <div class="chip stable" style="justify-content:flex-start;padding:10px 12px"><span class="dot"></span> Persisted 9 minutes at rest</div>
+            <div class="chip stable" style="justify-content:flex-start;padding:10px 12px"><span class="dot"></span> Motion and posture ruled out as cause</div>
+            <div class="chip stable" style="justify-content:flex-start;padding:10px 12px"><span class="dot"></span> Multi-signal cross-check: HR, HRV, SpO₂, temp</div>
+          </div>
+          <div class="row gap8 mt3">
+            <button class="btn" onclick="CC.toast('Interpretation saved to the record. Patient will be notified that a clinician reviewed the strip.','ok')">Save interpretation</button>
+            <button class="btn ghost" onclick="CC.toast('Follow-up request sent. Patient offered video slot today 16:00.','ok')">Request urgent follow-up</button>
+            <button class="btn ghost" onclick="CC.messageModal('aarav')">Message patient</button>
+            <button class="btn ghost" onclick="CC.toast('Strip downloaded with anonymised header for records.','ok')">Download strip</button>
+          </div>
+          <p class="small mt3">CardioCore surfaces patterns with validated quality gating. Interpretation, diagnosis and treatment remain clinical decisions — the system never labels a diagnosis.</p>
+        </div>
+
+        <div class="col gap16">
+          <div class="card">
+            <div class="card-h mb2"><span class="caption">Today's schedule</span><button class="btn xs ghost" data-dview="appts">All</button></div>
+            <div class="tl">
+              <div class="tl-i done"><h4>09:15 · Rohit Sharma</h4><p>In-person · resting HR drift follow-up</p></div>
+              <div class="tl-i now"><h4>10:30 · Aarav Menon</h4><p>In-person · urgent review · check-in</p></div>
+              <div class="tl-i wait"><h4>11:45 · Meera Iyer</h4><p>Video · HRV trend review</p></div>
+              <div class="tl-i wait"><h4>16:00 · Open urgent slot</h4><p>Reserved for validated L3 escalations</p></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h mb2"><span class="caption">Pending for you</span><span class="chip attention">3 items</span></div>
+            <div class="lrow" style="padding:11px 0"><span class="lic" style="background:var(--amber-soft)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94600B" stroke-width="2.4" stroke-linecap="round"><path d="M2 12h4l2-5 3 10 3-8 2 3h6"/></svg></span><div class="grow"><b class="fs14">3 ECG strips to interpret</b><div class="fs12 muted">Menon (2) · Iyer (1)</div></div><button class="btn xs ghost" data-dview="review">Open</button></div>
+            <div class="lrow" style="padding:11px 0"><span class="lic" style="background:var(--violet-soft)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4F41B8" stroke-width="2.4" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 11h18"/></svg></span><div class="grow"><b class="fs14">Consent expiring soon</b><div class="fs12 muted">Leela Nair · 6 days</div></div><button class="btn xs ghost" onclick="CC.toast('Consent renewal request sent to Leela Nair.','ok')">Renew</button></div>
+            <div class="lrow" style="padding:11px 0"><span class="lic" style="background:var(--teal-soft)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A6F72" stroke-width="2.4" stroke-linecap="round"><path d="M12 3v18M5 8l7-5 7 5"/></svg></span><div class="grow"><b class="fs14">New consent request</b><div class="fs12 muted">Dev Patel · baseline building</div></div><button class="btn xs ghost" onclick="CC.toast('Consent accepted. Dev Patel added to your roster.','ok')">Accept</button></div>
+          </div>
+          <div class="card tint">
+            <div class="caption mb1">Guardrails</div>
+            <p class="fs13 mid mb2">Automatic urgent booking runs only when the patient has enabled it <b>and</b> a provider integration exists at the preferred hospital. Otherwise the system suggests a booking.</p>
+            <p class="fs13 mid">Emergency services are never contacted on a patient's behalf without their explicit action.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── VIEW · APPOINTMENTS ───────── -->
+    <div class="view" data-view="appts">
+      <div class="page-h">
+        <div><h1>Appointments</h1><div class="sub">Data summaries arrive before the patient does. Video consults run in-browser.</div></div>
+        <div class="row gap8"><span class="chip neutral">Today · 6 slots</span><span class="chip stable"><span class="dot"></span> 2 confirmed</span></div>
+      </div>
+
+      <div class="grid g2 mb3">
+        <div class="card">
+          <div class="card-h"><span class="card-t">Today · Saturday 4 Oct</span><span class="small">all times IST</span></div>
+          <div class="scroll-x">
+          <table class="tbl" style="min-width:620px">
+            <thead><tr><th>Time</th><th>Patient</th><th>Type</th><th>Focus</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td class="b700">09:15</td><td>Rohit Sharma</td><td>In-person</td><td>HR drift follow-up</td><td><span class="chip stable" style="padding:2px 9px">checked in</span></td><td><button class="btn xs" onclick="CC.toast('Consult opened for Rohit Sharma with 7-day trend and 2 ECG strips pre-loaded.','ok')">Open</button></td></tr>
+              <tr><td class="b700">10:30</td><td>Aarav Menon</td><td>In-person</td><td class="redc b700">Urgent review</td><td><span class="chip urgent" style="padding:2px 9px">urgent</span></td><td><button class="btn xs" onclick="CC.openPatient('aarav')" data-cohort="highrisk urgent">Open</button></td></tr>
+              <tr><td class="b700">11:45</td><td>Meera Iyer</td><td>Video</td><td>HRV trend review</td><td><span class="chip stable" style="padding:2px 9px">confirmed</span></td><td><button class="btn xs ghost" onclick="CC.joinVideo()">Join</button></td></tr>
+              <tr><td class="b700">14:00</td><td>Kabir Sethi</td><td>In-person</td><td>Annual review</td><td><span class="chip attention" style="padding:2px 9px">unconfirmed</span></td><td><button class="btn xs ghost" onclick="CC.toast('Reminder sent to Kabir Sethi.','ok')">Nudge</button></td></tr>
+              <tr><td class="b700">15:15</td><td>Leela Nair</td><td>Video</td><td>Adherence support</td><td><span class="chip stable" style="padding:2px 9px">confirmed</span></td><td><button class="btn xs ghost" onclick="CC.joinVideo()">Join</button></td></tr>
+              <tr><td class="b700">16:00</td><td colspan="5" class="mid">Reserved — validated Level 3 escalations only</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+        <div class="col gap16">
+          <div class="card">
+            <div class="card-h mb2"><span class="caption">Booking requests</span><span class="chip data">3 new</span></div>
+            <div class="lrow"><span class="avatar av-teal" style="width:40px;height:40px;border-radius:13px;font-size:13px">DP</span><div class="grow"><b class="fs14">Dev Patel · video</b><div class="fs12 muted">Requests Tue or Thu afternoon · baseline day 4</div></div><div class="row gap8"><button class="btn xs" onclick="CC.toast('Appointment confirmed with Dev Patel for Tue 6 Oct, 14:30.','ok')">Accept</button><button class="btn xs ghost" onclick="CC.toast('Request declined with a suggested alternative slot.','warn')">Decline</button></div></div>
+            <div class="lrow"><span class="avatar av-violet" style="width:40px;height:40px;border-radius:13px;font-size:13px">LN</span><div class="grow"><b class="fs14">Leela Nair · reschedule</b><div class="fs12 muted">Move 15:15 → 18:00 today</div></div><div class="row gap8"><button class="btn xs" onclick="CC.toast('Rescheduled to 18:00 today.','ok')">Accept</button><button class="btn xs ghost">Decline</button></div></div>
+            <div class="lrow"><span class="avatar av-amber" style="width:40px;height:40px;border-radius:13px;font-size:13px">RS</span><div class="grow"><b class="fs14">Rohit Sharma · follow-up</b><div class="fs12 muted">Requests a 2-week follow-up</div></div><div class="row gap8"><button class="btn xs" onclick="CC.toast('Follow-up booked for 18 Oct, 10:00.','ok')">Accept</button><button class="btn xs ghost">Decline</button></div></div>
+          </div>
+          <div class="card">
+            <div class="caption mb2">Week load</div>
+            <canvas class="svg-chart" width="520" height="150" data-chart="weekLoad"></canvas>
+            <div class="row row-b fs13 mt2"><span class="mid">Total consults</span><b>26</b></div>
+            <div class="row row-b fs13 mt1"><span class="mid">Video share</span><b>38%</b></div>
+            <div class="row row-b fs13 mt1"><span class="mid">Urgent same-day</span><b class="redc">2</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><span class="card-t">Consult workspace — pre-arrival summary</span><span class="chip stable"><span class="dot"></span> Synced 2 min ago</span></div>
+        <div class="grid g4" style="gap:14px">
+          <div class="card flat" style="background:var(--surface-2);padding:14px"><div class="caption">Patient</div><b>Aarav Menon · 44 y</b><div class="fs12 muted">10:30 · room 4B</div></div>
+          <div class="card flat" style="background:var(--surface-2);padding:14px"><div class="caption">Baseline window</div><b>90 days · 1.42 M beats</b><div class="fs12 muted">Twin confidence 0.91</div></div>
+          <div class="card flat" style="background:var(--surface-2);padding:14px"><div class="caption">Open issues</div><b class="redc">1 urgent · 2 attention</b><div class="fs12 muted">3 ECG strips to interpret</div></div>
+          <div class="card flat" style="background:var(--surface-2);padding:14px"><div class="caption">Labs</div><b class="amberc">LDL 112 · above target</b><div class="fs12 muted">24 Sep · Apollo</div></div>
+        </div>
+        <div class="hr-scan"></div>
+        <div class="caption mb2">Shared items (consented)</div>
+        <div class="row gap8 wrapf mb3">
+          <span class="chip stable"><span class="dot"></span> Baseline summary</span>
+          <span class="chip stable"><span class="dot"></span> 7-day trends</span>
+          <span class="chip stable"><span class="dot"></span> 3 ECG strips</span>
+          <span class="chip stable"><span class="dot"></span> Medication adherence</span>
+          <span class="chip neutral">Lipid history</span>
+          <span class="chip neutral">Symptom log</span>
+        </div>
+        <div class="row gap8">
+          <button class="btn" onclick="CC.toast('Consult note editor opened. Note: interpretations are timestamped and visible to the patient.','ok')">Write consult note</button>
+          <button class="btn ghost" onclick="CC.messageModal('aarav')">Message patient</button>
+          <button class="btn ghost" onclick="CC.shareModal()">Adjust sharing</button>
+          <button class="btn ghost" onclick="CC.toast('Referral letter drafted with baseline summary attached.','ok')">Draft referral</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── VIEW · PATIENTS ───────── -->
+    <div class="view" data-view="patients">
+      <div class="page-h">
+        <div><h1>Patients</h1><div class="sub">128 consented patients · only records with an active consent are visible, and every open is logged.</div></div>
+        <div class="row gap8"><button class="btn ghost" onclick="CC.toast('Cohort filter builder opened.','ok')">Build cohort</button><button class="btn ghost" onclick="CC.toast('Patient list exported (128 rows, de-identified option available).','ok')">Export list</button></div>
+      </div>
+
+      <div class="grid g4 mb3">
+        <div class="card"><div class="caption">Active patients</div><div class="metric-value">128</div><div class="small">+9 this month</div></div>
+        <div class="card"><div class="caption">Twin coverage</div><div class="metric-value">112</div><div class="small">16 still building baseline</div></div>
+        <div class="card"><div class="caption">Mean adherence</div><div class="metric-value greenc">91%</div><div class="progress mt2"><i style="width:91%"></i></div></div>
+        <div class="card"><div class="caption">Consent renewals due</div><div class="metric-value amberc">7</div><div class="small">within 14 days</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-h">
+          <div class="tabs">
+            <button class="tab on" data-cohort="all">All patients</button>
+            <button class="tab" data-cohort="highrisk">High risk</button>
+            <button class="tab" data-cohort="newconsent">New consents</button>
+            <button class="tab" data-cohort="adherence">Adherence &lt; 80%</button>
+            <button class="tab" data-cohort="baseline">Baseline building</button>
+          </div>
+          <span class="chip neutral" id="cohortCount">6 patients</span>
+        </div>
+        <div class="scroll-x">
+        <table class="tbl" style="min-width:940px">
+          <thead><tr><th></th><th>Patient</th><th>Conditions</th><th>Adherence</th><th>Resting HR</th><th>HRV</th><th>LDL</th><th>Consent</th><th>Last review</th></tr></thead>
+          <tbody>
+            <tr class="clickable" onclick="CC.openPatient('aarav')" data-cohort="highrisk urgent"><td><span class="chip urgent" style="padding:2px 9px">L3</span></td><td><b>Aarav Menon</b><div class="fs12 muted">44 · M · 44821</div></td><td>Hypertension · T2DM</td><td>96%</td><td>68 bpm</td><td>48 ms</td><td class="amberc">112</td><td class="greenc">active</td><td>12 Jun 2026</td></tr>
+            <tr class="clickable" onclick="CC.openPatient('rohit')" data-cohort="highrisk"><td><span class="chip attention" style="padding:2px 9px">L2</span></td><td><b>Rohit Sharma</b><div class="fs12 muted">61 · M · 11204</div></td><td>CAD · Previous MI</td><td>84%</td><td class="amberc">74 bpm</td><td>31 ms</td><td class="amberc">128</td><td class="greenc">active</td><td>09:15 today</td></tr>
+            <tr class="clickable" onclick="CC.openPatient('meera')" data-cohort="highrisk"><td><span class="chip attention" style="padding:2px 9px">L2</span></td><td><b>Meera Iyer</b><div class="fs12 muted">52 · F · 77310</div></td><td>Arrhythmia</td><td>93%</td><td>72 bpm</td><td class="amberc">38 ms</td><td>104</td><td class="greenc">active</td><td>18 Jul 2026</td></tr>
+            <tr class="clickable" onclick="CC.openPatient('leela')" data-cohort="adherence lowadh baseline"><td><span class="chip stable" style="padding:2px 9px">L1</span></td><td><b>Leela Nair</b><div class="fs12 muted">67 · F · 20338</div></td><td>Heart failure</td><td class="amberc">79%</td><td>76 bpm</td><td>42 ms</td><td>96</td><td class="amberc">6 days left</td><td>02 Aug 2026</td></tr>
+            <tr class="clickable" onclick="CC.openPatient('kabir')" data-cohort="stable"><td><span class="chip stable" style="padding:2px 9px">L1</span></td><td><b>Kabir Sethi</b><div class="fs12 muted">38 · M · 90114</div></td><td>None recorded</td><td>98%</td><td>61 bpm</td><td>58 ms</td><td>88</td><td class="greenc">active</td><td>15 Mar 2026</td></tr>
+            <tr class="clickable" onclick="CC.openPatient('dev')" data-cohort="newconsent baseline"><td><span class="chip neutral" style="padding:2px 9px">—</span></td><td><b>Dev Patel</b><div class="fs12 muted">55 · M · 55021</div></td><td>Hypertension</td><td>—</td><td>building</td><td>building</td><td>142</td><td class="greenc">active</td><td>new</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── VIEW · ECG REVIEW ───────── -->
+    <div class="view" data-view="review">
+      <div class="page-h">
+        <div><h1>ECG review</h1><div class="sub">Validated strips with quality scores. Annotate, tag an impression, and return to the patient.</div></div>
+        <div class="row gap8"><span class="chip attention">3 pending</span><span class="chip neutral">Median triage 42 s</span></div>
+      </div>
+
+      <div class="grid" style="grid-template-columns:1fr 1.7fr">
+        <div class="card">
+          <div class="card-h mb2"><span class="caption">Pending queue</span><span class="small">oldest first</span></div>
+          <div class="lrow" style="background:var(--red-soft);border-radius:12px;padding:12px">
+            <span class="avatar av-red" style="width:38px;height:38px;border-radius:12px;font-size:12px">AM</span>
+            <div class="grow"><b class="fs14">Aarav Menon</b><div class="fs12 muted">28 Sep · 138 bpm · urgent L3</div></div>
+            <span class="chip urgent" style="padding:2px 9px">L3</span>
+          </div>
+          <div class="lrow"><span class="avatar av-amber" style="width:38px;height:38px;border-radius:12px;font-size:12px">RS</span><div class="grow"><b class="fs14">Rohit Sharma</b><div class="fs12 muted">27 Sep · 74 bpm · attention L2</div></div><span class="chip attention" style="padding:2px 9px">L2</span></div>
+          <div class="lrow"><span class="avatar av-teal" style="width:38px;height:38px;border-radius:12px;font-size:12px">MI</span><div class="grow"><b class="fs14">Meera Iyer</b><div class="fs12 muted">26 Sep · 72 bpm · attention L2</div></div><span class="chip attention" style="padding:2px 9px">L2</span></div>
+          <div class="hr-scan"></div>
+          <div class="caption mb2">Recently interpreted</div>
+          <div class="lrow"><span class="avatar av-green" style="width:38px;height:38px;border-radius:12px;font-size:12px">KS</span><div class="grow"><b class="fs14">Kabir Sethi</b><div class="fs12 muted">interpreted by you · 2 d ago</div></div><span class="chip stable" style="padding:2px 9px">done</span></div>
+          <div class="lrow"><span class="avatar av-violet" style="width:38px;height:38px;border-radius:12px;font-size:12px">LN</span><div class="grow"><b class="fs14">Leela Nair</b><div class="fs12 muted">interpreted by Dr Okafor · 5 d ago</div></div><span class="chip stable" style="padding:2px 9px">done</span></div>
+        </div>
+
+        <div class="col gap16">
+          <div class="card pad-lg">
+            <div class="row row-b mb3 wrapf gap12">
+              <div class="row gap12">
+                <span class="avatar av-red" style="width:46px;height:46px;border-radius:14px;font-size:15px">AM</span>
+                <div><h3 class="h4">Aarav Menon · 44 y</h3><div class="fs13 mid">Strip 28 Sep 2026, 11:24 · 30 s · Lead I · 250 Hz · 25 mm/s</div></div>
+              </div>
+              <div class="row gap8"><span class="chip urgent">Level 3 · urgent</span><span class="chip stable">quality 0.94</span></div>
+            </div>
+            <canvas class="ecg-strip" width="940" height="210" data-ecg="doc" style="height:210px;background:linear-gradient(180deg,#FBFFFE,#F4FCFB);border-radius:14px;border:1px solid var(--border)"></canvas>
+            <div class="row row-b mt2 fs12 muted"><span>0 s</span><span>5 s</span><span>10 s</span><span>15 s</span><span>20 s</span><span>25 s</span><span>30 s</span></div>
+            <div class="row gap16 mt3 wrapf">
+              <div class="card flat" style="background:var(--surface-2);padding:14px;flex:1"><div class="caption">Measured rate</div><div class="metric-value redc" style="font-size:26px">138<span class="metric-unit">bpm</span></div></div>
+              <div class="card flat" style="background:var(--surface-2);padding:14px;flex:1"><div class="caption">RR variability</div><div class="metric-value" style="font-size:26px">high<span class="metric-unit"> index</span></div></div>
+              <div class="card flat" style="background:var(--surface-2);padding:14px;flex:1"><div class="caption">Ectopics</div><div class="metric-value" style="font-size:26px">4<span class="metric-unit"> detected</span></div></div>
+              <div class="card flat" style="background:var(--surface-2);padding:14px;flex:1"><div class="caption">Artifact</div><div class="metric-value" style="font-size:26px">minimal</div></div>
+            </div>
+            <div class="row gap8 mt3 wrapf">
+              <button class="btn sm ghost" onclick="CC.toast('Caliper tool active — click two points on the strip to measure an interval.','ok')">Calipers</button>
+              <button class="btn sm ghost" onclick="CC.toast('Rhythm annotation layer added.','ok')">Annotate</button>
+              <button class="btn sm ghost" onclick="CC.toast('Strip compared against the 90-day baseline; 3 similar events found, none flagged.','ok')">Compare to baseline</button>
+              <button class="btn sm ghost" onclick="CC.toast('Second opinion request sent to Dr Samuel Okafor (electrophysiology).','ok')">Second opinion</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-h"><span class="card-t">Interpretation</span><span class="small">timestamped and visible to the patient</span></div>
+            <div class="field"><label>Impression</label>
+              <select class="input"><option>No acute abnormality identified</option><option>Sinus tachycardia — clinical correlation required</option><option>Irregular rhythm — recommend ambulatory monitoring</option><option>Artifact-limited — repeat recording advised</option><option>Refer to electrophysiology</option></select>
+            </div>
+            <div class="field"><label>Note to patient</label>
+              <textarea class="input" rows="3" style="resize:vertical">The elevated rate recorded on 28 September was sustained at rest with reduced HRV. This is not a diagnosis. Please continue the current medication unchanged and attend the review on 6 October.</textarea>
+            </div>
+            <div class="row gap8">
+              <button class="btn" onclick="CC.toast('Interpretation saved and shared with the patient. Audit entry created.','ok')">Save &amp; return to patient</button>
+              <button class="btn ghost" onclick="CC.messageModal('aarav')">Message instead</button>
+            </div>
+            <div class="warn-note mt3">Your interpretation is stored with your registration number, timestamp and the exact strip version reviewed. The patient sees the note in plain language, not the internal tags.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── VIEW · MESSAGES ───────── -->
+    <div class="view" data-view="messages">
+      <div class="page-h">
+        <div><h1>Messages</h1><div class="sub">Secure, in-record messaging. Clinical advice is not given for emergencies — patients are routed to local services.</div></div>
+        <span class="chip attention"><span class="dot"></span> <span id="docUnreadTxt">0 unread</span></span>
+      </div>
+      <div class="msgwrap">
+        <div class="card msgs list">
+          <div class="caption mb2">Inbox</div>
+          <div id="msgThreads" class="threadcol"></div>
+          <div class="info-note mt3">Messages are part of the health record and visible to the patient.</div>
+        </div>
+        <div class="card msgs" id="docMsgs"></div>
+      </div>
+    </div>
+
+    <!-- ───────── VIEW · ANALYTICS ───────── -->
+    <div class="view" data-view="analytics">
+      <div class="page-h">
+        <div><h1>Analytics</h1><div class="sub">Cohort-level view. Aggregated and de-identified — no patient identifiers leave the record.</div></div>
+        <div class="tabs"><button class="tab">7D</button><button class="tab on">30D</button><button class="tab">90D</button><button class="tab">1Y</button></div>
+      </div>
+
+      <div class="grid g4 mb3">
+        <div class="card"><div class="caption">Alerts raised</div><div class="metric-value">46</div><div class="small"><b class="greenc">−18%</b> vs previous 30 d</div></div>
+        <div class="card"><div class="caption">Urgent (L3)</div><div class="metric-value redc">3</div><div class="small">all reviewed &lt; 60 min</div></div>
+        <div class="card"><div class="caption">False-positive review</div><div class="metric-value greenc">4.2<span class="metric-unit">%</span></div><div class="small">quality-gated before raising</div></div>
+        <div class="card"><div class="caption">Mean adherence</div><div class="metric-value">91<span class="metric-unit">%</span></div><div class="progress mt2"><i style="width:91%"></i></div></div>
+      </div>
+
+      <div class="grid g2 mb3">
+        <div class="card">
+          <div class="card-h"><span class="card-t">Alerts by level — 30 days</span><span class="chip neutral">weekly bins</span></div>
+          <canvas class="svg-chart" width="620" height="210" data-chart="alertMix"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-h"><span class="card-t">Signal quality vs alert load</span><span class="chip stable"><span class="dot"></span> inverse correlation holds</span></div>
+          <canvas class="svg-chart" width="620" height="210" data-chart="qualityVsLoad"></canvas>
+          <p class="small mt2">Weeks with lower average signal quality produce fewer alerts — the system excludes uninterpretable data rather than guessing.</p>
+        </div>
+      </div>
+
+      <div class="grid g3">
+        <div class="card">
+          <div class="caption mb2">Consults</div>
+          <div class="kv"><span class="mid">Completed</span><b>26</b></div>
+          <div class="kv"><span class="mid">Video share</span><b>38%</b></div>
+          <div class="kv"><span class="mid">No-show rate</span><b class="greenc">2.1%</b></div>
+          <div class="kv"><span class="mid">Median triage time</span><b>42 s</b></div>
+        </div>
+        <div class="card">
+          <div class="caption mb2">Outcomes tracked</div>
+          <div class="kv"><span class="mid">Resting HR normalised</span><b class="greenc">7 patients</b></div>
+          <div class="kv"><span class="mid">HRV recovered</span><b class="greenc">5 patients</b></div>
+          <div class="kv"><span class="mid">Medication adjusted</span><b>4 patients</b></div>
+          <div class="kv"><span class="mid">Escalated to admission</span><b class="redc">1 patient</b></div>
+        </div>
+        <div class="card">
+          <div class="caption mb2">Data governance</div>
+          <div class="kv"><span class="mid">Record accesses logged</span><b>1 284</b></div>
+          <div class="kv"><span class="mid">Consent withdrawals</span><b>2</b></div>
+          <div class="kv"><span class="mid">Export requests</span><b>6</b></div>
+          <div class="kv"><span class="mid">Breaches</span><b class="greenc">none</b></div>
+          <button class="btn sm ghost w100 mt2" onclick="CC.toast('Access audit for the last 30 days exported.','ok')">Export access audit</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── VIEW · SCHEDULE ───────── -->
+    <div class="view" data-view="schedule">
+      <div class="page-h">
+        <div><h1>Availability</h1><div class="sub">What patients can book. Urgent slots are ring-fenced for validated Level 3 escalations.</div></div>
+        <button class="btn" onclick="CC.toast('Availability published. Patients can now book these slots.','ok')">Publish changes</button>
+      </div>
+
+      <div class="grid" style="grid-template-columns:1.4fr 1fr">
+        <div class="card">
+          <div class="card-h"><span class="card-t">Weekly template</span><span class="small">times in IST · drag in production</span></div>
+          <div class="scroll-x">
+          <table class="tbl" style="min-width:640px">
+            <thead><tr><th>Day</th><th>Morning</th><th>Afternoon</th><th>Urgent reserve</th><th>Mode</th></tr></thead>
+            <tbody>
+              <tr><td class="b700">Mon</td><td>09:00 – 12:30</td><td>14:00 – 17:00</td><td class="mid">—</td><td>In-person</td></tr>
+              <tr><td class="b700">Tue</td><td>09:00 – 12:30</td><td>14:00 – 17:00</td><td>16:00 – 17:00</td><td>Both</td></tr>
+              <tr><td class="b700">Wed</td><td>10:00 – 13:00</td><td class="mid">—</td><td>16:00 – 17:00</td><td>Video</td></tr>
+              <tr><td class="b700">Thu</td><td>09:00 – 12:30</td><td>14:00 – 18:00</td><td>16:00 – 17:00</td><td>In-person</td></tr>
+              <tr><td class="b700">Fri</td><td>09:00 – 12:00</td><td>14:00 – 16:00</td><td class="mid">—</td><td>Both</td></tr>
+              <tr><td class="b700">Sat</td><td>09:00 – 12:00</td><td class="mid">—</td><td>16:00 – 17:00</td><td>In-person</td></tr>
+              <tr><td class="b700">Sun</td><td colspan="3" class="mid">Not available · urgent escalation handled by on-call rota</td><td>—</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="hr-scan"></div>
+          <div class="caption mb2">Booking rules</div>
+          <div class="lrow" style="padding:11px 0"><div class="grow"><b class="fs14">Accept automatic urgent bookings</b><div class="fs12 muted">Requires patient opt-in and an existing provider integration</div></div><input type="checkbox" checked style="accent-color:var(--teal);width:20px;height:20px"></div>
+          <div class="lrow" style="padding:11px 0"><div class="grow"><b class="fs14">Allow video for follow-ups</b><div class="fs12 muted">New patients default to in-person</div></div><input type="checkbox" checked style="accent-color:var(--teal);width:20px;height:20px"></div>
+          <div class="lrow" style="padding:11px 0"><div class="grow"><b class="fs14">Auto-attach pre-arrival summary</b><div class="fs12 muted">Baseline, trends and ECG strips per consent</div></div><input type="checkbox" checked style="accent-color:var(--teal);width:20px;height:20px"></div>
+        </div>
+        <div class="col gap16">
+          <div class="card">
+            <div class="caption mb2">Capacity this month</div>
+            <div class="row row-b fs13 mb1"><span class="mid">Booked</span><b>26 of 34</b></div><div class="progress mb3"><i style="width:76%"></i></div>
+            <div class="row row-b fs13 mb1"><span class="mid">Urgent reserve used</span><b class="amberc">2 of 5</b></div><div class="progress mb3"><i style="width:40%;background:linear-gradient(90deg,var(--amber),#EFA94A)"></i></div>
+            <div class="row row-b fs13 mb1"><span class="mid">Avg wait, routine</span><b>4 days</b></div>
+            <div class="row row-b fs13 mt1"><span class="mid">Avg wait, urgent</span><b class="greenc">42 min</b></div>
+          </div>
+          <div class="card">
+            <div class="caption mb2">Delegation</div>
+            <p class="fs14 mid mb2">Forward validated strips to a colleague or your electrophysiology team when a second opinion is warranted.</p>
+            <div class="row gap8 wrapf mb2"><span class="chip neutral">Dr Samuel Okafor · EP</span><span class="chip neutral">Dr Amara Khan · preventive</span><span class="chip neutral">Dr Luca Moretti · general</span></div>
+            <button class="btn sm ghost w100" onclick="CC.toast('Roster preferences saved.','ok')">Manage delegation</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── VIEW · PROFILE ───────── -->
+    <div class="view" data-view="dprofile">
+      <div class="page-h">
+        <div><h1>Profile &amp; credentials</h1><div class="sub">Your registration, institution and data-handling obligations.</div></div>
+        <button class="btn ghost" data-go="home">Sign out</button>
+      </div>
+
+      <div class="card mb3">
+        <div class="row gap16 wrapf">
+          <span class="avatar av-cyan" style="width:74px;height:74px;font-size:22px;border-radius:22px">NR</span>
+          <div class="grow">
+            <h2 class="h3">Dr Neha Raghavan</h2>
+            <div class="mid fs14">MD, DM Cardiology · Interventional cardiology · 14 years</div>
+            <div class="row gap8 mt2 wrapf">
+              <span class="chip stable"><span class="dot"></span> Registration verified</span>
+              <span class="chip neutral">MMC-2010-44821</span>
+              <span class="chip neutral">Meridian Heart Institute</span>
+              <span class="chip data">128 consented patients</span>
+            </div>
+          </div>
+          <button class="btn ghost" onclick="CC.toast('Credential update requires re-verification by the medical council.','warn')">Update credentials</button>
+        </div>
+      </div>
+
+      <div class="grid g3">
+        <div class="card">
+          <div class="caption mb2">Access &amp; audit</div>
+          <div class="kv"><span class="mid">Records accessible</span><b>128 (consent-scoped)</b></div>
+          <div class="kv"><span class="mid">Opens logged this month</span><b>1 284</b></div>
+          <div class="kv"><span class="mid">Two-factor</span><b class="greenc">authenticator app</b></div>
+          <div class="kv"><span class="mid">Session timeout</span><b>15 minutes idle</b></div>
+          <div class="kv"><span class="mid">Data residency</span><b>India (Mumbai)</b></div>
+          <div class="row gap8 mt2">
+            <button class="btn sm ghost grow" onclick="CC.toast('Your personal access log for the last 90 days has been downloaded.','ok')">Download my access log</button>
+            <button class="btn sm ghost grow" onclick="CC.runChecks()">System checks</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="caption mb2">Notification rules</div>
+          <p class="fs13 mid mb2">Choose what interrupts you. Everything else collects in the roster.</p>
+          <div class="lrow" style="padding:11px 0"><div class="grow"><b class="fs14">Level 3 urgent — push + SMS</b><div class="fs12 muted">Immediate, day or night</div></div><input type="checkbox" checked style="accent-color:var(--teal);width:20px;height:20px"></div>
+          <div class="lrow" style="padding:11px 0"><div class="grow"><b class="fs14">Level 2 attention — digest</b><div class="fs12 muted">Once daily at 08:00</div></div><input type="checkbox" checked style="accent-color:var(--teal);width:20px;height:20px"></div>
+          <div class="lrow" style="padding:11px 0"><div class="grow"><b class="fs14">Level 1 informational — in app</b><div class="fs12 muted">No notification</div></div><input type="checkbox" style="accent-color:var(--teal);width:20px;height:20px"></div>
+          <div class="lrow" style="padding:11px 0"><div class="grow"><b class="fs14">Consent expiry reminders</b><div class="fs12 muted">14 days ahead</div></div><input type="checkbox" checked style="accent-color:var(--teal);width:20px;height:20px"></div>
+        </div>
+        <div class="card">
+          <div class="caption mb2">Clinical guardrails</div>
+          <div class="info-note mb2">CardioCore is monitoring support. It does not produce diagnoses, and nothing in this portal should be presented to a patient as one.</div>
+          <div class="warn-note mb2">Never advise a patient to change or stop a prescribed medication based on app data alone. Dose decisions follow your clinical assessment.</div>
+          <p class="fs13 mid">Emergency guidance must always route the patient to local emergency services. Automatic urgent booking is a convenience, not a substitute for emergency care.</p>
+          <div class="hr-scan"></div>
+          <div class="row gap8"><span class="chip neutral">Policy v3.1</span><span class="chip neutral">Reviewed 12 Aug 2026</span></div>
+        </div>
+      </div>
+    </div>
+
+<!-- ───────── VIEW · HANDOVER ───────── -->
+    <div class="view" data-view="handover">
+      <div class="page-h">
+        <div><h1>Handover &amp; referral</h1><div class="sub">Generate a printable summary for a colleague, the on-call team or the patient's next appointment.</div></div>
+        <div class="row gap8">
+          <select class="input" id="handoverPatient" style="min-width:230px" onchange="CC.handover()">
+            <option value="aarav">Aarav Menon · 44 · urgent</option>
+            <option value="rohit">Rohit Sharma · 61 · attention</option>
+            <option value="meera">Meera Iyer · 52 · attention</option>
+            <option value="leela">Leela Nair · 67 · stable</option>
+            <option value="kabir">Kabir Sethi · 38 · stable</option>
+          </select>
+          <button class="btn ghost" onclick="CC.printReport('handover')">Export / print</button>
+        </div>
+      </div>
+
+      <div class="grid" style="grid-template-columns:1.7fr 1fr">
+        <div class="card pad-lg" id="handoverSheet"></div>
+        <div class="col gap16">
+          <div class="card">
+            <div class="caption mb2">Route this handover</div>
+            <div class="lrow" style="padding:11px 0"><span class="lic" style="background:var(--violet-soft)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4F41B8" stroke-width="2.2" stroke-linecap="round"><path d="M4 4h16v12H7l-3 3z"/></svg></span><div class="grow"><b class="fs14">Electrophysiology team</b><div class="fs12 muted">Dr Samuel Okafor · 11 yrs EP</div></div><button class="btn xs" onclick="CC.toast('Handover sent to Dr Samuel Okafor with the attached strip.','ok')">Send</button></div>
+            <div class="lrow" style="padding:11px 0"><span class="lic" style="background:var(--teal-soft)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A6F72" stroke-width="2.2" stroke-linecap="round"><path d="M4 20V8l8-5 8 5v12z"/></svg></span><div class="grow"><b class="fs14">On-call cardiology</b><div class="fs12 muted">Meridian Heart Institute · 24 h</div></div><button class="btn xs" onclick="CC.toast('Handover placed in the on-call queue.','ok')">Send</button></div>
+            <div class="lrow" style="padding:11px 0"><span class="lic" style="background:var(--cyan-soft)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A6C8B" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span><div class="grow"><b class="fs14">Patient copy (plain language)</b><div class="fs12 muted">Appears in the patient's record on consent</div></div><button class="btn xs ghost" onclick="CC.toast('Patient copy drafted. It will be shared when you publish it.','ok')">Draft</button></div>
+          </div>
+          <div class="card">
+            <div class="caption mb2">What a handover contains</div>
+            <ul class="bullets">
+              <li><span class="tick"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B7A50" stroke-width="3.4" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>Current state, alert level and what triggered it</span></li>
+              <li><span class="tick"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B7A50" stroke-width="3.4" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>Contributing measurements with baseline deltas</span></li>
+              <li><span class="tick"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B7A50" stroke-width="3.4" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>Medications, adherence and lab context</span></li>
+              <li><span class="tick"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B7A50" stroke-width="3.4" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>Consent scope — what the recipient may see</span></li>
+            </ul>
+            <div class="info-note mt3">Handovers are logged like any other record access, and the patient can see that one was created.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.main -->
+</div><!-- /.app -->
+</div><!-- /#app-doctor -->

@@ -1,0 +1,28 @@
+<!-- ══════════════════════════════════════════════════════════
+     MODAL + TOAST HOSTS
+     ══════════════════════════════════════════════════════════ -->
+<div class="scrim" id="scrim"><div class="modal" id="modal"></div></div>
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+<!-- offline banner -->
+<div class="netbanner hidden" id="netBanner">
+  <span class="dot-live" style="background:var(--amber)"></span>
+  <b>You're offline.</b> Working locally — measurements are buffered and will sync automatically.
+  <button class="btn xs ghost" style="margin-left:auto" onclick="CC.toggleOnline()">Retry</button>
+</div>
+
+<!-- command palette -->
+<div class="palette-scrim hidden" id="paletteScrim">
+  <div class="palette" role="dialog" aria-modal="true" aria-label="Search and commands">
+    <div class="palette-in">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6E9A9E" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="paletteInput" placeholder="Search patients, views, doctors, actions…" autocomplete="off" aria-label="Search">
+      <span class="kbd">esc</span>
+    </div>
+    <div class="palette-list" id="paletteList"></div>
+    <div class="palette-foot"><span><span class="kbd">↑</span><span class="kbd">↓</span> navigate</span><span><span class="kbd">↵</span> open</span><span class="kbd">esc</span> close</div>
+  </div>
+</div>
+
+<!-- print report (screen-hidden) -->
+<section id="printReport" class="print-only"></section>

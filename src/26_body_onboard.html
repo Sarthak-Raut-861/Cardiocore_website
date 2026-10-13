@@ -1,0 +1,187 @@
+<!-- ══════════════════════════════════════════════════════════
+     ONBOARDING  ·  8 steps  (patient first run)
+     ══════════════════════════════════════════════════════════ -->
+<div id="onboard" class="screen hidden">
+  <div class="onb">
+    <header class="onb-head">
+      <a class="brand" data-go="home">
+        <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round"><path d="M12 20.5S3.8 15 3.8 9.2A4.4 4.4 0 0 1 12 6.6a4.4 4.4 0 0 1 8.2 2.6c0 5.8-8.2 11.3-8.2 11.3Z"/><path d="M4.6 11.6h3.2l1.3-2.4 1.9 4.6 1.6-3.2 1 1h5.8" stroke="#C9FBEF"/></svg></span>
+        CardioCore
+      </a>
+      <div class="row gap12" style="margin-left:auto">
+        <span class="fs13 muted" id="onbCount">Step 1 of 8</span>
+        <button class="btn-ghostlink fs13" onclick="CC.skipOnboarding()">Skip for now</button>
+      </div>
+    </header>
+
+    <div class="onb-bar"><i id="onbProgress" style="width:12.5%"></i></div>
+
+    <main class="onb-body">
+      <!-- 1 ─────────────── -->
+      <section class="onb-step" data-step="1">
+        <span class="eyebrow">How CardioCore works</span>
+        <h1 class="h1 mb2">Seven signals, one personal model.</h1>
+        <p class="lead mb4">Two minutes now means the system compares you against <b>your</b> normal — not against everyone else.</p>
+        <div class="grid g2" style="gap:14px">
+          <div class="card flat" style="background:var(--surface-2)">
+            <div class="row gap12"><span class="onb-num">1</span><div><b>Wearable senses</b><p class="fs14 mid">ECG · HR · HRV · SpO₂ · temp · motion · posture</p></div></div>
+          </div>
+          <div class="card flat" style="background:var(--surface-2)">
+            <div class="row gap12"><span class="onb-num">2</span><div><b>App receives over BLE</b><p class="fs14 mid">Streamed live, encrypted, buffered when offline</p></div></div>
+          </div>
+          <div class="card flat" style="background:var(--surface-2)">
+            <div class="row gap12"><span class="onb-num">3</span><div><b>Digital Twin learns you</b><p class="fs14 mid">Your baseline, medication-aware from day one</p></div></div>
+          </div>
+          <div class="card flat" style="background:var(--surface-2)">
+            <div class="row gap12"><span class="onb-num">4</span><div><b>Insights &amp; doctor care</b><p class="fs14 mid">Explainable changes, clinical follow-up on consent</p></div></div>
+          </div>
+        </div>
+        <div class="info-note mt4"><b>Your data stays yours.</b> Nothing is shared with a provider without your explicit consent, and you can revoke any share at any time.</div>
+      </section>
+
+      <!-- 2 ─────────────── -->
+      <section class="onb-step hidden" data-step="2">
+        <span class="eyebrow">Personal information</span>
+        <h1 class="h1 mb2">Who is this baseline for?</h1>
+        <p class="lead mb4">Used to contextualise your measurements against clinical reference ranges.</p>
+        <div class="grid g2" style="gap:16px">
+          <div class="field"><label>Full name</label><input class="input" id="obName" value="Aarav Menon"></div>
+          <div class="field"><label>Date of birth</label><input class="input" id="obDob" type="date" value="1982-03-14"></div>
+          <div class="field"><label>Sex at birth — used for clinical reference ranges</label>
+            <select class="input" id="obSex"><option>Male</option><option>Female</option><option>Other</option></select></div>
+          <div class="field"><label>Blood group</label>
+            <select class="input" id="obBlood"><option>B+</option><option>A+</option><option>O+</option><option>AB+</option><option>B−</option><option>A−</option><option>O−</option><option>AB−</option><option>Unknown</option></select></div>
+          <div class="field"><label>Height (cm)</label><input class="input" id="obHeight" type="number" value="176" oninput="CC.calcBmi()"></div>
+          <div class="field"><label>Weight (kg)</label><input class="input" id="obWeight" type="number" value="78" oninput="CC.calcBmi()"></div>
+        </div>
+        <div class="card flat mt2" style="background:var(--surface-2)">
+          <div class="row row-b wrapf gap12">
+            <div><div class="caption">Calculated BMI</div><b class="metric-value" style="font-size:28px" id="obBmi">25.2</b></div>
+            <span class="chip attention" id="obBmiTag"><span class="dot"></span> Slightly high</span>
+            <span class="small" style="max-width:44ch">BMI is context only. It is never used on its own to interpret a heart signal.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3 ─────────────── -->
+      <section class="onb-step hidden" data-step="3">
+        <span class="eyebrow">Medical history</span>
+        <h1 class="h1 mb2">Any conditions already diagnosed?</h1>
+        <p class="lead mb2">Select conditions you have <b>already been diagnosed with</b> by a healthcare professional.</p>
+        <div class="warn-note mb4">Only add conditions previously diagnosed by a clinician. CardioCore does not diagnose.</div>
+        <div class="chips-grid" id="obConditions">
+          <button class="pick" data-c="Hypertension" data-y="2019">Hypertension <span>2019</span></button>
+          <button class="pick" data-c="Coronary artery disease">Coronary artery disease</button>
+          <button class="pick" data-c="Arrhythmia">Arrhythmia</button>
+          <button class="pick" data-c="Heart failure">Heart failure</button>
+          <button class="pick" data-c="Previous heart attack">Previous heart attack</button>
+          <button class="pick" data-c="Type 2 diabetes" data-y="2021">Type 2 diabetes <span>2021</span></button>
+          <button class="pick" data-c="Chronic kidney disease">Chronic kidney disease</button>
+          <button class="pick" data-c="Obstructive sleep apnoea">Obstructive sleep apnoea</button>
+        </div>
+        <div class="field mt3" style="max-width:520px"><label>Other condition (optional)</label><input class="input" id="obOther" placeholder="e.g. hypothyroidism"></div>
+      </section>
+
+      <!-- 4 ─────────────── -->
+      <section class="onb-step hidden" data-step="4">
+        <span class="eyebrow">Lipid profile</span>
+        <h1 class="h1 mb2">Your most recent lab report</h1>
+        <p class="lead mb2">Entered manually — these are laboratory results, not wearable measurements.</p>
+        <div class="info-note mb4">You can skip this and add results later. Reference ranges are general guidance; your clinician sets the targets that apply to you.</div>
+        <div class="grid g2" style="gap:16px">
+          <div class="field"><label>Total cholesterol (mg/dL) · desirable &lt; 200</label><input class="input" id="obChol" type="number" value="192"></div>
+          <div class="field"><label>LDL cholesterol (mg/dL) · target &lt; 100</label><input class="input" id="obLdl" type="number" value="112"></div>
+          <div class="field"><label>HDL cholesterol (mg/dL) · adequate &gt; 40</label><input class="input" id="obHdl" type="number" value="46"></div>
+          <div class="field"><label>Triglycerides (mg/dL) · borderline &lt; 150</label><input class="input" id="obTrigs" type="number" value="168"></div>
+          <div class="field"><label>VLDL (mg/dL, optional) · reference 2–30</label><input class="input" id="obVldl" type="number" value="34"></div>
+          <div class="field"><label>Report date</label><input class="input" id="obLabDate" type="date" value="2026-09-24"></div>
+          <div class="field"><label>Laboratory</label><input class="input" id="obLabName" value="Apollo Diagnostics"></div>
+        </div>
+      </section>
+
+      <!-- 5 ─────────────── -->
+      <section class="onb-step hidden" data-step="5">
+        <span class="eyebrow">Medications</span>
+        <h1 class="h1 mb2">What are you taking?</h1>
+        <p class="lead mb2">Helps us interpret your heart-rate patterns correctly.</p>
+        <div class="info-note mb2">Some medications change resting heart rate and HRV. CardioCore accounts for this when building your baseline.</div>
+        <div class="grid g2" style="gap:14px;align-items:end">
+          <div class="field" style="margin:0"><label>Medication</label><input class="input" id="obMedName" placeholder="e.g. Ramipril"></div>
+          <div class="field" style="margin:0"><label>Dose</label><input class="input" id="obMedDose" placeholder="e.g. 5 mg"></div>
+          <div class="field" style="margin:0"><label>Frequency</label>
+            <select class="input" id="obMedFreq"><option>Once daily · morning</option><option>Once daily · night</option><option>Twice daily</option><option>Three times daily</option><option>As needed</option></select></div>
+          <button class="btn ghost" style="justify-self:start" onclick="CC.addOnbMed()">Add medication</button>
+        </div>
+        <div class="card flat mt3" style="background:var(--surface-2);padding:8px 18px"><div id="obMedList"></div></div>
+      </section>
+
+      <!-- 6 ─────────────── -->
+      <section class="onb-step hidden" data-step="6">
+        <span class="eyebrow">Family history</span>
+        <h1 class="h1 mb2">Cardiovascular events in close relatives</h1>
+        <p class="lead mb4">Adds context to your risk picture — never treated as a diagnosis for you.</p>
+        <div class="grid g2" style="gap:16px">
+          <div class="field"><label>Father</label>
+            <select class="input" id="obFather"><option>No cardiovascular events</option><option>Coronary artery disease</option><option>Hypertension</option><option>Heart attack / MI</option><option>Heart failure</option><option>Sudden cardiac death</option></select></div>
+          <div class="field"><label>Age at diagnosis (if any)</label><input class="input" id="obFatherAge" type="number" value="58"></div>
+          <div class="field"><label>Mother</label>
+            <select class="input" id="obMother"><option>No cardiovascular events</option><option>Coronary artery disease</option><option>Hypertension</option><option>Heart attack / MI</option><option>Heart failure</option></select></div>
+          <div class="field"><label>Sibling</label>
+            <select class="input" id="obSibling"><option>Not added</option><option>Coronary artery disease</option><option>Hypertension</option><option>Arrhythmia</option></select></div>
+        </div>
+        <button class="btn ghost" onclick="CC.toast('Family history is contextual information only. It is never treated as a diagnosis for you.','warn')">I don't know my family history</button>
+      </section>
+
+      <!-- 7 ─────────────── -->
+      <section class="onb-step hidden" data-step="7">
+        <span class="eyebrow">Emergency care preferences</span>
+        <h1 class="h1 mb2">Who should be reached, and where should you go?</h1>
+        <p class="lead mb4">Used only when a validated urgent pattern is detected.</p>
+        <div class="grid g2" style="gap:16px">
+          <div class="field"><label>Emergency contact name</label><input class="input" id="obContactName" value="Priya Menon"></div>
+          <div class="field"><label>Emergency contact number</label><input class="input" id="obContactNo" value="+91 98200 00210"></div>
+          <div class="field"><label>Preferred hospital</label>
+            <select class="input" id="obHospital"><option>Meridian Heart Institute</option><option>City Care Hospital</option><option>Northbridge Clinic</option><option>Riverside Medical</option></select></div>
+          <div class="field"><label>Preferred doctor</label>
+            <select class="input" id="obDoctor"><option>Dr Neha Raghavan</option><option>Dr Samuel Okafor</option><option>Dr Amara Khan</option><option>Dr Luca Moretti</option></select></div>
+        </div>
+        <div class="card flat" style="background:var(--surface-2)">
+          <label class="check mb2"><input type="checkbox" checked id="obAutoBook"> Automatic urgent booking — book the earliest urgent slot when validated criteria are met</label>
+          <label class="check mb2"><input type="checkbox" checked id="obShareEmg"> Share health data in emergency — baseline, recent trends and ECG strips with the provider</label>
+          <label class="check mb2"><input type="checkbox" checked id="obNotifyContact"> Notify emergency contact — SMS with location when an urgent alert is raised</label>
+          <div class="caption mt3 mb1">Alert delivery</div>
+          <div class="row gap16 wrapf">
+            <label class="check"><input type="checkbox" checked> Push</label>
+            <label class="check"><input type="checkbox" checked> SMS</label>
+            <label class="check"><input type="checkbox"> Email</label>
+          </div>
+        </div>
+        <div class="warn-note mt3">Automatic booking only runs when you have enabled it <b>and</b> a provider integration exists. CardioCore never contacts emergency services on your behalf without your explicit action.</div>
+      </section>
+
+      <!-- 8 ─────────────── -->
+      <section class="onb-step hidden" data-step="8">
+        <span class="eyebrow">Consent &amp; privacy</span>
+        <h1 class="h1 mb2">Decide what is shared, before anything is.</h1>
+        <p class="lead mb4">Every toggle here is changeable later, and every change is timestamped in your consent ledger.</p>
+        <div class="card flat" style="background:var(--surface-2)">
+          <label class="check mb2"><input type="checkbox" checked id="obShareBaseline"> Share baseline summary with my care team</label>
+          <label class="check mb2"><input type="checkbox" checked id="obShareEcg"> Share ECG strips when I book an appointment</label>
+          <label class="check mb2"><input type="checkbox" id="obResearch"> Include de-identified data in the anonymous research pool</label>
+          <label class="check mb2"><input type="checkbox" id="obFamily"> Allow a family member a read-only view (you can invite them later)</label>
+          <label class="check"><input type="checkbox" checked id="ob2fa"> Require two-factor authentication for sharing changes</label>
+        </div>
+        <div class="hr-scan"></div>
+        <label class="check"><input type="checkbox" checked id="obTerms"> I understand CardioCore provides monitoring support, does not diagnose conditions, and does not replace a healthcare professional.</label>
+      </section>
+    </main>
+
+    <footer class="onb-foot">
+      <button class="btn ghost" id="onbBack" onclick="CC.onbStep(-1)" disabled>Back</button>
+      <div class="row gap8">
+        <span class="fs13 muted hidden" id="onbHint">You can change any of this in your profile.</span>
+        <button class="btn" id="onbNext" onclick="CC.onbStep(1)">Continue</button>
+      </div>
+    </footer>
+  </div>
+</div>
