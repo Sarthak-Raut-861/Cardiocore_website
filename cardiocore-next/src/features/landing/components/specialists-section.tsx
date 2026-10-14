@@ -7,9 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { DOCTORS, Doctor } from "../data/doctors-data";
+import { useCardioCoreSync } from "@/lib/sync/cardiocore-sync";
 
 export const SpecialistsSection: React.FC = () => {
   const [filter, setFilter] = useState<"all" | "video" | "inperson">("all");
+  const { addAppointment } = useCardioCoreSync();
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [slotInput, setSlotInput] = useState<string>("");
   const [modeInput, setModeInput] = useState<string>("Video");
@@ -199,6 +201,17 @@ export const SpecialistsSection: React.FC = () => {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
+                  addAppointment({
+                    doctorName: selectedDoctor.name,
+                    doctorInitials: selectedDoctor.initials,
+                    specialty: selectedDoctor.specialty.split("·")[0].trim(),
+                    institution: selectedDoctor.hospital.split("·")[0].trim(),
+                    datetime: slotInput,
+                    type: modeInput === "Video" ? "Video Consult" : "In-person",
+                    room: modeInput === "Video" ? "Encrypted WebRTC Room" : "Clinic Room 2B",
+                    patientName: "Aarav Menon",
+                    reason: "72-Factor Digital Twin & 250 Hz ECG review",
+                  });
                   setBookedMsg(
                     `Confirmed ${modeInput} appointment with ${selectedDoctor.name} for ${slotInput}. Your 72-Factor Digital Twin baseline and recent 250 Hz ECG strips have been attached.`
                   );
