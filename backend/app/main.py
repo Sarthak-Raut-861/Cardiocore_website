@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routers import auth, patients, doctors, telemetry
+from app.routers import auth, patients, doctors, telemetry, twin
 from app.db.seed import init_tables, seed_synthetic_fixtures
 from app.db.session import async_session_factory
 
@@ -43,6 +43,7 @@ app.include_router(auth.router, prefix=settings.API_V1_STR)
 app.include_router(patients.router, prefix=settings.API_V1_STR)
 app.include_router(doctors.router, prefix=settings.API_V1_STR)
 app.include_router(telemetry.router, prefix=settings.API_V1_STR)
+app.include_router(twin.router, prefix=settings.API_V1_STR)
 
 
 @app.get(f"{settings.API_V1_STR}/health", status_code=status.HTTP_200_OK, tags=["Health"])

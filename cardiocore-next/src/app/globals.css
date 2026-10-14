@@ -337,12 +337,9 @@ h1, h2, h3, h4, h5 {
   --teal-700: #065E60;
   --green: #0A7B50;
 }
-
-section[id],
-div[id] {
+section[id], div[id] {
   scroll-margin-top: 6.5rem;
 }
-
 header {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
