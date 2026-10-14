@@ -1,6 +1,12 @@
 @import "tailwindcss";
 
+/* ============================================================
+   CARDIOCORE DESIGN SYSTEM — Tailwind CSS v4 Theme Integration
+   Tokens derived exactly from CardioCore Mobile UI/UX System
+   ============================================================ */
+
 :root {
+  /* Surfaces */
   --bg: #F2FAF9;
   --surface: #FFFFFF;
   --surface-2: #F6FCFB;
@@ -10,120 +16,334 @@
   --border: #D5EAE8;
   --border-2: #BCE0DD;
 
-  --teal: #0B8788;
-  --teal-600: #097374;
-  --teal-700: #065E60;
-  --teal-ink: #053B3C;
+  /* Brand & Data */
+  --teal: #0E9E9E;
+  --teal-600: #0B8788;
+  --teal-700: #0A6F72;
+  --teal-ink: #073C40;
   --teal-soft: #DFF5F4;
-  --cyan: #0E94B8;
+  --cyan: #12A6CF;
   --cyan-soft: #E1F4FB;
-  --green: #0D8A5A;
-  --green-soft: #DCF5EB;
-  --violet: #6355D8;
+  --green: #12A06A;
+  --green-soft: #E2F7EE;
+  --violet: #7A6BF0;
   --violet-soft: #EEECFE;
-  --amber: #B45309;
-  --amber-soft: #FEF3C7;
-  --red: #C81E1E;
-  --red-soft: #FEE2E2;
+  --amber: #D98314;
+  --amber-soft: #FDF1DF;
+  --red: #E0453F;
+  --red-soft: #FDE8E7;
 
-  --hi: #0D2B2A;
-  --mid: #335856;
-  --muted: #5C807D;
-  --faint: #94B2AF;
+  /* Text */
+  --hi: #0A2B2F;
+  --mid: #37646A;
+  --muted: #6E9A9E;
 
-  --ring: rgba(11, 135, 136, 0.4);
-  --shadow-sm: 0 1px 3px rgba(13, 43, 42, 0.05);
-  --shadow-md: 0 4px 14px rgba(13, 43, 42, 0.07);
-  --shadow-lg: 0 10px 28px rgba(13, 43, 42, 0.10);
+  /* Radii & Spacing */
+  --r-10: 10px;
+  --r-16: 16px;
+  --r-20: 20px;
+  --r-28: 28px;
+  --r-pill: 999px;
 
-  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
-  --font-display: var(--font-plus-jakarta), system-ui, -apple-system, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), monospace;
+  /* Elevation */
+  --sh-1: 0 1px 2px rgba(9,60,64,.05), 0 1px 3px rgba(9,60,64,.04);
+  --sh-2: 0 4px 14px rgba(9,60,64,.07), 0 1px 3px rgba(9,60,64,.05);
+  --sh-3: 0 18px 44px rgba(9,60,64,.11), 0 2px 8px rgba(9,60,64,.05);
+  --sh-4: 0 34px 80px rgba(7,60,64,.16);
+  --ring: 0 0 0 4px rgba(14,158,158,.14);
+
+  color-scheme: light;
 }
 
-[data-theme="dark"],
-.dark {
-  --bg: #071718;
-  --surface: #0C2123;
-  --surface-2: #102B2D;
-  --elevated: #153538;
-  --tint: #123336;
-  --tint-2: #184145;
-  --border: #1B484C;
-  --border-2: #245D62;
+[data-theme="dark"], .dark {
+  /* Surfaces */
+  --bg: #071C21;
+  --surface: #0C272D;
+  --surface-2: #0F2E35;
+  --elevated: #123138;
+  --tint: #12343A;
+  --tint-2: #1A454C;
+  --border: #1D454D;
+  --border-2: #2C6069;
 
-  --teal: #12B5B5;
-  --teal-600: #10A1A1;
-  --teal-700: #88EFEF;
-  --teal-ink: #E0F7F6;
-  --teal-soft: #0E3537;
-  --cyan: #22B8E2;
-  --cyan-soft: #0F3745;
-  --green: #22C58B;
-  --green-soft: #0F382A;
-  --violet: #8F82F8;
-  --violet-soft: #232048;
-  --amber: #F59E0B;
-  --amber-soft: #422D0B;
-  --red: #EF4444;
-  --red-soft: #451A1A;
+  /* Brand & Data */
+  --teal: #2FD3C0;
+  --teal-600: #28C0AF;
+  --teal-700: #7FE6D8;
+  --teal-ink: #EAF7F6;
+  --teal-soft: #0F3739;
+  --cyan: #4FC7E8;
+  --cyan-soft: #0D2F38;
+  --green: #3ED69A;
+  --green-soft: #0D3227;
+  --violet: #A79BFB;
+  --violet-soft: #1B1A3B;
+  --amber: #F0B25C;
+  --amber-soft: #33260F;
+  --red: #FF7A72;
+  --red-soft: #3A1A19;
 
-  --hi: #EEF8F7;
-  --mid: #A3C7C4;
-  --muted: #729B98;
-  --faint: #436663;
+  /* Text */
+  --hi: #EAF7F6;
+  --mid: #A7CDD1;
+  --muted: #7CA6AB;
 
-  --ring: rgba(18, 181, 181, 0.4);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.5);
+  /* Elevation */
+  --sh-1: 0 1px 2px rgba(0,0,0,.45), 0 1px 3px rgba(0,0,0,.35);
+  --sh-2: 0 4px 14px rgba(0,0,0,.5), 0 1px 3px rgba(0,0,0,.35);
+  --sh-3: 0 18px 44px rgba(0,0,0,.55), 0 2px 8px rgba(0,0,0,.35);
+  --sh-4: 0 34px 80px rgba(0,0,0,.65);
+  --ring: 0 0 0 4px rgba(47,211,192,.22);
+
+  color-scheme: dark;
+}
+
+@theme {
+  --font-display: var(--font-sora), system-ui, -apple-system, sans-serif;
+  --font-body: var(--font-manrope), system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-elevated: var(--elevated);
+  --color-tint: var(--tint);
+  --color-tint-2: var(--tint-2);
+  --color-border: var(--border);
+  --color-border-2: var(--border-2);
+
+  --color-teal: var(--teal);
+  --color-teal-600: var(--teal-600);
+  --color-teal-700: var(--teal-700);
+  --color-teal-ink: var(--teal-ink);
+  --color-teal-soft: var(--teal-soft);
+
+  --color-cyan: var(--cyan);
+  --color-cyan-soft: var(--cyan-soft);
+  --color-green: var(--green);
+  --color-green-soft: var(--green-soft);
+  --color-violet: var(--violet);
+  --color-violet-soft: var(--violet-soft);
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
+  --color-red: var(--red);
+  --color-red-soft: var(--red-soft);
+
+  --color-hi: var(--hi);
+  --color-mid: var(--mid);
+  --color-muted: var(--muted);
+
+  --radius-10: 10px;
+  --radius-16: 16px;
+  --radius-20: 20px;
+  --radius-28: 28px;
+  --radius-pill: 999px;
+}
+
+/* Base resets & typography */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 html {
   scroll-behavior: smooth;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
 }
 
 body {
+  margin: 0;
   background-color: var(--bg);
   color: var(--hi);
-  font-family: var(--font-sans);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  font-family: var(--font-manrope), system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-section[id] {
-  scroll-margin-top: 6rem;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--hi);
-}
-
-h1, .h1 {
-  font-size: clamp(2.15rem, 3.6vw + 0.8rem, 3.25rem);
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-sora), system-ui, -apple-system, sans-serif;
+  margin: 0;
   line-height: 1.14;
+  letter-spacing: -0.02em;
+  font-weight: 700;
 }
 
-h2, .h2 {
-  font-size: clamp(1.65rem, 2.2vw + 0.8rem, 2.35rem);
-  line-height: 1.2;
+::selection {
+  background-color: var(--teal-soft);
+  color: var(--teal-700);
 }
 
-p.lead {
-  font-size: clamp(1.02rem, 0.4vw + 0.92rem, 1.18rem);
-  line-height: 1.65;
+/* Custom scrollbars */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--border-2);
+  border-radius: 99px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--teal-700);
+}
+
+/* Typography scale utilities matching CardioCore conventions */
+.display {
+  font-family: var(--font-sora), system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  font-size: clamp(34px, 5.2vw, 62px);
+  line-height: 1.03;
+  letter-spacing: -0.035em;
+}
+
+.h1 {
+  font-family: var(--font-sora), system-ui, -apple-system, sans-serif;
+  font-size: clamp(28px, 3.4vw, 42px);
+  letter-spacing: -0.025em;
+}
+
+.h2 {
+  font-family: var(--font-sora), system-ui, -apple-system, sans-serif;
+  font-size: clamp(24px, 2.6vw, 34px);
+  letter-spacing: -0.02em;
+}
+
+.h3 {
+  font-family: var(--font-sora), system-ui, -apple-system, sans-serif;
+  font-size: 22px;
+  letter-spacing: -0.015em;
+}
+
+.lead {
+  font-size: clamp(16px, 1.4vw, 19px);
   color: var(--mid);
+  line-height: 1.65;
 }
 
+.caption {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.small {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.mono {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Layout utilities */
+.wrap {
+  width: min(1240px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+.wrap-sm {
+  width: min(920px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+/* Hero & Animation Keyframes */
+@keyframes beatring {
+  0% { transform: scale(0.72); opacity: 0.85; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-11px); }
+}
+
+@keyframes bloombeat {
+  0%, 100% { transform: scale(0.97); }
+  18% { transform: scale(1.05); }
+  40% { transform: scale(1); }
+}
+
+.animate-beatring {
+  animation: beatring 1.8s cubic-bezier(0.2, 0.7, 0.3, 1) infinite;
+  will-change: transform, opacity;
+}
+
+.animate-beatring-delayed {
+  animation: beatring 1.8s cubic-bezier(0.2, 0.7, 0.3, 1) 0.6s infinite;
+  will-change: transform, opacity;
+}
+
+.animate-orbit {
+  animation: spin 44s linear infinite;
+  will-change: transform;
+}
+
+.animate-float-1 {
+  animation: float 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-float-2 {
+  animation: float 6s ease-in-out 1.5s infinite;
+  will-change: transform;
+}
+
+.animate-bloombeat {
+  animation: bloombeat 1.8s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* Gradient text utility */
 .grad {
   background: linear-gradient(135deg, var(--teal) 0%, var(--cyan) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+[data-theme="dark"] .grad, .dark .grad {
+  background: linear-gradient(135deg, #2FD3C0 0%, #4FC7E8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Accessibility: respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-beatring,
+  .animate-beatring-delayed,
+  .animate-orbit,
+  .animate-float-1,
+  .animate-float-2,
+  .animate-bloombeat {
+    animation: none !important;
+  }
+}
+
+
+
+/* === CardioCore UI Polish, Alignment & Contrast Fixes === */
+:root {
+  --teal-ink: #053B3C;
+  --teal-700: #065E60;
+  --green: #0A7B50;
+}
+
+section[id],
+div[id] {
+  scroll-margin-top: 6.5rem;
+}
+
+header {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
