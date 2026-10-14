@@ -25,8 +25,10 @@ export function PatientShell() {
     toastMessage,
     toastType,
     showToast,
-    patient,
-  } = usePatientDashboard();
+    patient, engineMode, setEngineMode, twinState, runTwinSimulation, labModalOpen, setLabModalOpen, addLabResult } = usePatientDashboard();
+  const [labName, setLabName] = useState('NT-proBNP');
+  const [labConv, setLabConv] = useState('95 pg/mL');
+  const [labSi, setLabSi] = useState('11.2 pmol/L');
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -36,7 +38,7 @@ export function PatientShell() {
     { id: "ecg", label: "ECG lab", icon: "⚡" },
     { id: "live", label: "Live monitor", icon: "🎯" },
     { id: "day", label: "Day in review", icon: "📅" },
-    { id: "twin", label: "Digital Twin", icon: "🧬", badge: "82", badgeColor: "bg-[var(--teal-soft)] text-[var(--teal-700)]" },
+    { id: "twin", label: "Digital Twin", icon: "🧬", badge: engineMode === "live" ? String(twinState.score) : "82", badgeColor: "bg-[var(--teal-soft)] text-[var(--teal-700)]" },
     { id: "messages", label: "Messages", icon: "💬" },
     { id: "alerts", label: "Alerts", icon: "🔔", badge: "3", badgeColor: "bg-[var(--amber-soft)] text-[var(--amber)]" },
   ];
@@ -81,15 +83,159 @@ export function PatientShell() {
 
   return (
     <div className="min-h-screen bg-[var(--bg)] text-[var(--hi)] flex flex-col antialiased">
-      {/* 1. Permanent Demonstration Banner */}
-      <div className="bg-[var(--tint)] border-b border-[var(--border)] px-4 py-2 text-xs text-center text-[var(--mid)] font-medium flex items-center justify-center gap-2">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--amber-soft)] px-2 py-0.5 text-[11px] font-bold text-[var(--amber)]">
-          ⚠️ DEMONSTRATION MODE
-        </span>
-        <span>
-          Displaying simulated telemetry for <strong>{patient.name}</strong> (ID: {patient.id}). No live bio-sensor or medical backend is connected.
-        </span>
+            {/* 1. Interactive Engine Mode Switcher Bar (Live 72-Factor Twin vs Demo Mode) */}
+      <div className="bg-[var(--surface-2)] border-b border-[var(--border)] px-4 py-2 text-xs text-[var(--mid)] font-medium flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          {engineMode === "live" ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--green-soft)] px-2.5 py-0.5 text-[11px] font-bold text-[var(--green)]">
+              <span className="h-2 w-2 rounded-full bg-[var(--green)] animate-pulse" />
+              LIVE 72-FACTOR TWIN ENGINE
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--amber-soft)] px-2.5 py-0.5 text-[11px] font-bold text-[var(--amber)]">
+              DEMO MODE (SYNTHETIC)
+            </span>
+          )}
+          <span>
+            {engineMode === "live" ? (
+              <>
+                Connected to <strong>{twinState.source}</strong> for <strong>{patient.name}</strong> · 10-Yr CVD Risk:{" "}
+                <strong className="text-[var(--teal-700)]">{twinState.cvdRiskPct}</strong> ({twinState.clusterLabel})
+              </>
+            ) : (
+              <>
+                Displaying static demo fixture for <strong>{patient.name}</strong> (ID: {patient.id}).
+              </>
+            )}
+          </span>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          {engineMode === "live" && (
+            <div className="inline-flex items-center gap-1 rounded-lg border border-[var(--border)] bg-[var(--surface)] p-0.5">
+              {(["stable", "improving", "declining"] as const).map((sc) => (
+                <button
+                  key={sc}
+                  type="button"
+                  onClick={() => {
+                    runTwinSimulation(sc);
+                    showToast(`Simulated 60-day ${sc} trajectory across 72 factors.`, "ok");
+                  }}
+                  className={`rounded-md px-2 py-0.5 text-[11px] font-semibold capitalize transition-all ${
+                    twinState.scenario === sc
+                      ? "bg-[var(--teal)] text-white"
+                      : "text-[var(--mid)] hover:text-[var(--hi)]"
+                  }`}
+                >
+                  {sc}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div className="inline-flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] p-0.5">
+            <button
+              type="button"
+              onClick={() => {
+                setEngineMode("live");
+                runTwinSimulation(twinState.scenario);
+                showToast("Switched to Live 72-Factor Twin Engine.", "ok");
+              }}
+              className={`rounded-md px-2.5 py-0.5 text-[11px] font-bold transition-all ${
+                engineMode === "live" ? "bg-[var(--teal)] text-white" : "text-[var(--mid)] hover:text-[var(--hi)]"
+              }`}
+            >
+              Live 72-Factor Engine
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setEngineMode("demo");
+                showToast("Switched to static Demo Mode.", "info");
+              }}
+              className={`rounded-md px-2.5 py-0.5 text-[11px] font-bold transition-all ${
+                engineMode === "demo" ? "bg-[var(--amber)] text-white" : "text-[var(--mid)] hover:text-[var(--hi)]"
+              }`}
+            >
+              Demo Mode
+            </button>
+          </div>
+        </div>
       </div>
+
+      {/* Global Add Lab Result Modal */}
+      {labModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
+              <div>
+                <h3 className="font-heading text-base font-bold text-[var(--hi)]">Add Lab Biomarker Result</h3>
+                <p className="text-xs text-[var(--muted)]">Feeds directly into your 72-Factor BiomarkerTwin</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setLabModalOpen(false)}
+                className="rounded-lg p-1.5 text-[var(--muted)] hover:bg-[var(--tint)] hover:text-[var(--hi)]"
+              >
+                ✕
+              </button>
+            </div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                addLabResult({ name: labName, valueConv: labConv, valueSi: labSi, status: "Logged" });
+                setLabModalOpen(false);
+              }}
+              className="space-y-3 text-xs"
+            >
+              <div>
+                <label className="block font-semibold text-[var(--mid)] mb-1">Biomarker Name</label>
+                <input
+                  value={labName}
+                  onChange={(e) => setLabName(e.target.value)}
+                  className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--hi)]"
+                  required
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-[var(--mid)] mb-1">Conventional Value</label>
+                  <input
+                    value={labConv}
+                    onChange={(e) => setLabConv(e.target.value)}
+                    className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--hi)]"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold text-[var(--mid)] mb-1">SI Value</label>
+                  <input
+                    value={labSi}
+                    onChange={(e) => setLabSi(e.target.value)}
+                    className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--hi)]"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setLabModalOpen(false)}
+                  className="rounded-xl border border-[var(--border)] px-4 py-2 font-semibold text-[var(--mid)]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="rounded-xl bg-[var(--teal)] px-4 py-2 font-semibold text-white"
+                >
+                  Save &amp; Assimilate
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Main Layout Container */}
       <div className="flex flex-1 overflow-hidden">

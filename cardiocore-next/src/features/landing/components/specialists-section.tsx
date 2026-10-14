@@ -10,6 +10,10 @@ import { DOCTORS, Doctor } from "../data/doctors-data";
 
 export const SpecialistsSection: React.FC = () => {
   const [filter, setFilter] = useState<"all" | "video" | "inperson">("all");
+  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+  const [slotInput, setSlotInput] = useState<string>("");
+  const [modeInput, setModeInput] = useState<string>("Video");
+  const [bookedMsg, setBookedMsg] = useState<string | null>(null);
 
   const filteredDoctors = DOCTORS.filter((doc) => {
     if (filter === "video") return doc.mode === "Video" || doc.mode === "Both";
@@ -17,13 +21,20 @@ export const SpecialistsSection: React.FC = () => {
     return true;
   });
 
+  const openBooking = (doc: Doctor) => {
+    setSelectedDoctor(doc);
+    setSlotInput(doc.when);
+    setModeInput(doc.mode === "In-person" ? "In-person" : "Video");
+    setBookedMsg(null);
+  };
+
   return (
     <section
       id="doctors"
-      className="py-20 scroll-mt-16 bg-gradient-to-b from-[var(--bg)] via-[var(--surface-2)]/40 to-[var(--bg)]"
+      className="py-20 scroll-mt-24 bg-gradient-to-b from-[var(--bg)] via-[var(--surface-2)]/40 to-[var(--bg)]"
     >
+      <div id="specialists" className="scroll-mt-24" />
       <Container>
-        {/* Section Heading */}
         <div className="max-w-3xl mb-12">
           <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[var(--teal)] mb-3">
             Care Network
@@ -32,12 +43,11 @@ export const SpecialistsSection: React.FC = () => {
             Cardiologists on the same record.
           </h2>
           <p className="lead text-[var(--mid)]">
-            Book in-person or video consultations. Your baseline summary, vitals, and
+            Book in-person or video consultations. Your 72-factor baseline summary, vitals, and
             ECG strips travel ahead with your consent.
           </p>
         </div>
 
-        {/* Filter Controls & Doctor Count */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-2">
             <button
@@ -78,7 +88,6 @@ export const SpecialistsSection: React.FC = () => {
           </span>
         </div>
 
-        {/* Specialists Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-12">
           {filteredDoctors.map((doc: Doctor) => (
             <Card
@@ -87,14 +96,12 @@ export const SpecialistsSection: React.FC = () => {
               className="p-5 flex items-center justify-between gap-4"
             >
               <div className="flex items-center gap-4 min-w-0">
-                {/* Doctor Initials Avatar */}
                 <div
                   className={`w-12 h-12 rounded-full border flex items-center justify-center font-bold text-sm shrink-0 ${doc.avatarClass}`}
                 >
                   {doc.initials}
                 </div>
 
-                {/* Details */}
                 <div className="min-w-0 flex flex-col">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-bold text-sm text-[var(--hi)] truncate">
@@ -113,7 +120,6 @@ export const SpecialistsSection: React.FC = () => {
                 </div>
               </div>
 
-              {/* Slot & Action */}
               <div className="flex flex-col items-end shrink-0 pl-2">
                 <Badge variant="neutral" size="sm" className="mb-1.5">
                   {doc.when}
@@ -121,13 +127,19 @@ export const SpecialistsSection: React.FC = () => {
                 <span className="text-[10px] text-[var(--muted)] font-mono mb-2">
                   {doc.mode}
                 </span>
-                <Button variant="outline" size="sm" className="text-xs py-1 px-3" onClick={() => window.location.assign("/patient")}>Book</Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-xs py-1 px-3"
+                  onClick={() => openBooking(doc)}
+                >
+                  Book
+                </Button>
               </div>
             </Card>
           ))}
         </div>
 
-        {/* Bottom CTA */}
         <div className="text-center pt-4">
           <Link href="/login?role=patient">
             <Button variant="primary" size="lg" className="mb-3">
@@ -145,6 +157,87 @@ export const SpecialistsSection: React.FC = () => {
           </p>
         </div>
       </Container>
+
+      {selectedDoctor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
+              <div>
+                <h3 className="font-heading text-base font-bold text-[var(--hi)]">
+                  Book Consultation · {selectedDoctor.name}
+                </h3>
+                <p className="text-xs text-[var(--muted)]">
+                  {selectedDoctor.specialty} · {selectedDoctor.hospital}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedDoctor(null)}
+                className="rounded-lg p-1.5 text-[var(--muted)] hover:bg-[var(--tint)] hover:text-[var(--hi)]"
+              >
+                ✕
+              </button>
+            </div>
+
+            {bookedMsg ? (
+              <div className="space-y-4">
+                <div className="rounded-xl bg-[var(--green-soft)] p-4 text-xs font-semibold text-[var(--green)]">
+                  ✓ {bookedMsg}
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" size="sm" onClick={() => setSelectedDoctor(null)}>
+                    Close
+                  </Button>
+                  <Link href="/patient">
+                    <Button variant="primary" size="sm">
+                      Open Patient Portal &rarr;
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setBookedMsg(
+                    `Confirmed ${modeInput} appointment with ${selectedDoctor.name} for ${slotInput}. Your 72-Factor Digital Twin baseline and recent 250 Hz ECG strips have been attached.`
+                  );
+                }}
+                className="space-y-3 text-xs"
+              >
+                <div>
+                  <label className="block font-semibold text-[var(--mid)] mb-1">Consultation Mode</label>
+                  <select
+                    value={modeInput}
+                    onChange={(e) => setModeInput(e.target.value)}
+                    className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--hi)]"
+                  >
+                    <option value="Video">Video Consult (Encrypted WebRTC + Live ECG Share)</option>
+                    <option value="In-person">In-Person Visit ({selectedDoctor.hospital})</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-semibold text-[var(--mid)] mb-1">Preferred Slot</label>
+                  <input
+                    value={slotInput}
+                    onChange={(e) => setSlotInput(e.target.value)}
+                    className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--hi)]"
+                    required
+                  />
+                </div>
+                <div className="flex justify-end gap-2 pt-2">
+                  <Button type="button" variant="outline" size="sm" onClick={() => setSelectedDoctor(null)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" variant="primary" size="sm">
+                    Confirm Booking
+                  </Button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </section>
   );
 };

@@ -8,8 +8,7 @@ import { EcgStripCanvas } from "./ecg-strip-canvas";
 import { SPARKLINE_DATA } from "../data/sample-charts";
 
 export function PatientHomeView() {
-  const { setActiveView, formatUnit, showToast, medications, toggleMedication, vitals } =
-    usePatientDashboard();
+  const { setActiveView, formatUnit, showToast, medications, toggleMedication, vitals, engineMode, twinState, runTwinSimulation, setLabModalOpen, customLabs, units } = usePatientDashboard();
 
   const hrFmt = formatUnit("hr", vitals.restingHr);
   const hrvFmt = formatUnit("hrv", vitals.hrv);
@@ -34,7 +33,7 @@ export function PatientHomeView() {
         </div>
         <div className="flex flex-wrap items-center gap-2.5">
           <button
-            onClick={() => setActiveView("records")}
+            onClick={() => setLabModalOpen(true)}
             className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--hi)] shadow-[var(--sh-1)] hover:bg-[var(--tint)] transition-all"
           >
             Add lab result
@@ -55,51 +54,108 @@ export function PatientHomeView() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         {/* Left Column (8 cols on lg) */}
         <div className="space-y-6 lg:col-span-7 xl:col-span-8">
-          {/* Cardiovascular State Card */}
-          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--sh-1)]">
-            <div className="mb-4">
-              <span className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
-                Cardiovascular state
-              </span>
-              <div className="mt-1 flex flex-wrap items-center gap-3">
-                <h2 className="font-heading text-xl font-bold text-[var(--hi)]">
-                  Stable, within your normal
-                </h2>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--green-soft)] px-2.5 py-0.5 text-xs font-semibold text-[var(--green)]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--green)]" />
-                  Stable
+                    {/* Cardiovascular State Card (Connected to Live 72-Factor Twin Engine + Demo Mode) */}
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--sh-1)] space-y-4">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <span className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+                  {engineMode === "live" ? "CardioCoreEdge-EDI1 · 72-Factor Digital Twin" : "Cardiovascular state (Demo)"}
                 </span>
+                <div className="mt-1 flex flex-wrap items-center gap-3">
+                  <h2 className="font-heading text-xl font-bold text-[var(--hi)]">
+                    {engineMode === "live" ? twinState.headline : "Stable, within your normal"}
+                  </h2>
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                      engineMode === "live" && twinState.scenario === "declining"
+                        ? "bg-[var(--amber-soft)] text-[var(--amber)]"
+                        : "bg-[var(--green-soft)] text-[var(--green)]"
+                    }`}
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                    {engineMode === "live" ? twinState.statusText : "Stable"}
+                  </span>
+                </div>
+                <p className="mt-1.5 text-sm text-[var(--mid)] max-w-xl">
+                  {engineMode === "live"
+                    ? twinState.summary
+                    : "Your Baseline Model compared the last 24 hours against your 90-day baseline. Two signals moved slightly and both are explained by yesterday's evening walk."}
+                </p>
               </div>
-              <p className="mt-1.5 text-sm text-[var(--mid)] max-w-xl">
-                Your Baseline Model compared the last 24 hours against your 90-day baseline. Two signals moved slightly and both are explained by yesterday&apos;s evening walk.
-              </p>
+
+              {engineMode === "live" && (
+                <div className="inline-flex items-center gap-1 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-1">
+                  {(["stable", "improving", "declining"] as const).map((sc) => (
+                    <button
+                      key={sc}
+                      type="button"
+                      onClick={() => runTwinSimulation(sc)}
+                      className={`rounded-lg px-2.5 py-1 text-xs font-semibold capitalize transition-all ${
+                        twinState.scenario === sc
+                          ? "bg-[var(--teal)] text-white"
+                          : "text-[var(--mid)] hover:text-[var(--hi)]"
+                      }`}
+                    >
+                      {sc}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
-            <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between pt-2 border-t border-[var(--border)]">
-              <TwinRing score={82} size={150} statusText="Model active" />
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between pt-3 border-t border-[var(--border)]">
+              <TwinRing
+                score={engineMode === "live" ? twinState.score : 82}
+                size={150}
+                statusText={engineMode === "live" ? twinState.statusText : "Model active"}
+              />
               <div className="flex-1 space-y-2 text-sm">
                 <div className="flex justify-between border-b border-[var(--border)]/50 pb-1.5">
-                  <span className="text-[var(--mid)]">Compared against</span>
-                  <span className="font-semibold text-[var(--hi)]">your 90-day baseline</span>
+                  <span className="text-[var(--mid)]">
+                    {engineMode === "live" ? "10-Yr CVD Risk & Cohort Cluster" : "Compared against"}
+                  </span>
+                  <span className="font-semibold text-[var(--hi)]">
+                    {engineMode === "live"
+                      ? `${twinState.cvdRiskPct} (${twinState.clusterLabel})`
+                      : "your 90-day baseline"}
+                  </span>
                 </div>
                 <div className="flex justify-between border-b border-[var(--border)]/50 pb-1.5">
-                  <span className="text-[var(--mid)]">Signals fused</span>
-                  <span className="font-semibold text-[var(--hi)]">7 · all good quality</span>
+                  <span className="text-[var(--mid)]">
+                    {engineMode === "live" ? "Calculated LDL-C & hs-CRP" : "Signals fused"}
+                  </span>
+                  <span className="font-semibold text-[var(--hi)]">
+                    {engineMode === "live"
+                      ? `${twinState.ldl} mg/dL · hs-CRP ${twinState.crp} mg/L`
+                      : "7 · all good quality"}
+                  </span>
                 </div>
                 <div className="flex justify-between border-b border-[var(--border)]/50 pb-1.5">
                   <span className="text-[var(--mid)]">Confidence</span>
-                  <span className="font-semibold text-[var(--green)]">High (0.91)</span>
+                  <span className="font-semibold text-[var(--green)]">
+                    {engineMode === "live" ? `High (${twinState.clusterConfidence}%) · 72 Factors` : "High (0.91)"}
+                  </span>
                 </div>
                 <div className="flex justify-between pb-1.5">
-                  <span className="text-[var(--mid)]">Next routine review</span>
-                  <span className="font-semibold text-[var(--hi)]">Tue 6 Oct · 09:00</span>
+                  <span className="text-[var(--mid)]">Latest Logged Biomarker</span>
+                  <span className="font-semibold text-[var(--teal-700)]">
+                    {customLabs[0]?.name}: {units === "si" ? customLabs[0]?.valueSi : customLabs[0]?.valueConv}
+                  </span>
                 </div>
-                <button
-                  onClick={() => setActiveView("twin")}
-                  className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] py-2 text-xs font-semibold text-[var(--teal-700)] hover:bg-[var(--tint)] transition-colors"
-                >
-                  Open the Baseline Model →
-                </button>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  <button
+                    onClick={() => setActiveView("twin")}
+                    className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] py-2 text-xs font-semibold text-[var(--teal-700)] hover:bg-[var(--tint)] transition-colors"
+                  >
+                    Open Full 72-Factor Twin Controls →
+                  </button>
+                  <button
+                    onClick={() => setLabModalOpen(true)}
+                    className="w-full rounded-xl border border-[var(--border)] bg-[var(--tint)] py-2 text-xs font-semibold text-[var(--hi)] hover:opacity-90 transition-opacity"
+                  >
+                    + Log New Lab Biomarker
+                  </button>
+                </div>
               </div>
             </div>
           </div>
