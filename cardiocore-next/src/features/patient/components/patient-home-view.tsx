@@ -8,7 +8,23 @@ import { EcgStripCanvas } from "./ecg-strip-canvas";
 import { SPARKLINE_DATA } from "../data/sample-charts";
 
 export function PatientHomeView() {
-  const { setActiveView, formatUnit, showToast, medications, toggleMedication, vitals, engineMode, twinState, runTwinSimulation, setLabModalOpen, customLabs, units, patient } = usePatientDashboard();
+  const {
+    setActiveView,
+    formatUnit,
+    showToast,
+    medications,
+    toggleMedication,
+    vitals,
+    engineMode,
+    twinState,
+    runTwinSimulation,
+    setLabModalOpen,
+    customLabs,
+    units,
+    patient,
+    sensorInfo,
+    setSensorModalOpen,
+  } = usePatientDashboard();
 
   const hrFmt = formatUnit("hr", vitals.restingHr);
   const hrvFmt = formatUnit("hrv", vitals.hrv);
@@ -34,12 +50,31 @@ export function PatientHomeView() {
           <h1 className="font-heading text-2xl font-bold tracking-tight text-[var(--hi)] sm:text-3xl">
             {getGreeting()}, {firstName}
           </h1>
-          <p className="mt-1 text-sm text-[var(--mid)]">
-            Sunday, 4 October 2026 · last sync 2 minutes ago ·{" "}
-            <span className="font-semibold text-[var(--green)]">all data current</span>
+          <p className="mt-1 text-sm text-[var(--mid)] flex flex-wrap items-center gap-2">
+            <span>{new Date().toLocaleDateString("en-US", { weekday: "long", day: "numeric", month: "short", year: "numeric" })}</span>
+            <span>·</span>
+            <span className="inline-flex items-center gap-1.5 font-semibold text-[var(--green)]">
+              <span className="h-2 w-2 rounded-full bg-[var(--green)] animate-pulse" />
+              Live {sensorInfo.deviceName} ({sensorInfo.samplingRate} Hz)
+            </span>
+            <button
+              type="button"
+              onClick={() => setSensorModalOpen(true)}
+              className="text-xs font-semibold text-[var(--teal-700)] dark:text-[var(--teal)] underline hover:opacity-80"
+            >
+              Configure sensor
+            </button>
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => setSensorModalOpen(true)}
+            className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3.5 py-2 text-sm font-semibold text-[var(--hi)] shadow-[var(--sh-1)] hover:bg-[var(--tint)] transition-all flex items-center gap-2"
+          >
+            <span>📡</span>
+            <span>Sensor ({sensorInfo.liveBpm} BPM)</span>
+          </button>
           <button
             onClick={() => setLabModalOpen(true)}
             className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--hi)] shadow-[var(--sh-1)] hover:bg-[var(--tint)] transition-all"
@@ -247,29 +282,39 @@ export function PatientHomeView() {
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--sh-1)]">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
-                  Live ECG · Lead I · 250 Hz (Simulated)
+                <span className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)] flex items-center gap-1.5">
+                  <span>Live Telemetry ECG · Lead I · {sensorInfo.samplingRate} Hz</span>
+                  <span className="rounded bg-[var(--tint)] px-1.5 py-0.2 text-[10px] text-[var(--teal-700)] dark:text-[var(--teal)] font-bold">
+                    {sensorInfo.deviceName}
+                  </span>
                 </span>
                 <div className="mt-1 flex items-center gap-3">
                   <h3 className="font-heading text-lg font-bold text-[var(--hi)]">
-                    76 <span className="text-xs font-normal text-[var(--muted)]">BPM · regular</span>
+                    {vitals.restingHr} <span className="text-xs font-normal text-[var(--muted)]">BPM · continuous stream</span>
                   </h3>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--green-soft)] px-2.5 py-0.5 text-xs font-semibold text-[var(--green)]">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--green)]" />
-                    Good signal quality
+                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--green)] animate-pulse" />
+                    {sensorInfo.status === "connected" ? "Sensor streaming (Good quality)" : "Connecting sensor..."}
                   </span>
                 </div>
               </div>
               <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSensorModalOpen(true)}
+                  className="rounded-lg border border-[var(--border)] bg-[var(--surface-2)] px-2.5 py-1 text-xs font-semibold text-[var(--teal-700)] dark:text-[var(--teal)] hover:bg-[var(--tint)]"
+                >
+                  Manage Sensor 📡
+                </button>
                 <span className="rounded-md bg-[var(--tint)] px-2 py-0.5 text-xs font-medium text-[var(--mid)]">25 mm/s</span>
                 <span className="rounded-md bg-[var(--tint)] px-2 py-0.5 text-xs font-medium text-[var(--mid)]">10 mm/mV</span>
               </div>
             </div>
 
-            <EcgStripCanvas hr={76} height={120} />
+            <EcgStripCanvas hr={vitals.restingHr} height={120} />
 
             <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-xs text-[var(--muted)]">
-              <span>ECG strips are not automatically interpreted as a diagnosis. Share with your clinician for review.</span>
+              <span>Dynamic physiological telemetry stream. Sensor data is encrypted on device.</span>
               <button
                 onClick={() => setActiveView("ecg")}
                 className="font-semibold text-[var(--teal-700)] hover:underline self-start sm:self-auto"

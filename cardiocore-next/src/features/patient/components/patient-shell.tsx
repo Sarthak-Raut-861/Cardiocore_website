@@ -15,6 +15,8 @@ import { PatientProfileView } from "./patient-profile-view";
 import { PatientMedsView } from "./patient-meds-view";
 import { PatientApptsView } from "./patient-appts-view";
 import { PatientMessagesView } from "./patient-messages-view";
+import { PatientOnboardingModal } from "./patient-onboarding-modal";
+import { SensorConnectionModal } from "./sensor-connection-modal";
 
 export function PatientShell() {
   const {
@@ -25,7 +27,22 @@ export function PatientShell() {
     toastMessage,
     toastType,
     showToast,
-    patient, engineMode, setEngineMode, twinState, runTwinSimulation, labModalOpen, setLabModalOpen, addLabResult } = usePatientDashboard();
+    patient,
+    engineMode,
+    setEngineMode,
+    twinState,
+    runTwinSimulation,
+    labModalOpen,
+    setLabModalOpen,
+    addLabResult,
+    userBaseline,
+    onboardingModalOpen,
+    setOnboardingOpen,
+    saveUserBaseline,
+    sensorInfo,
+    sensorModalOpen,
+    setSensorModalOpen,
+  } = usePatientDashboard();
   const [labName, setLabName] = useState('NT-proBNP');
   const [labConv, setLabConv] = useState('95 pg/mL');
   const [labSi, setLabSi] = useState('11.2 pmol/L');
@@ -385,11 +402,42 @@ export function PatientShell() {
 
             {/* Topbar Actions */}
             <div className="flex items-center gap-2.5">
-              {/* Device Status */}
-              <span className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-[var(--green-soft)] px-3 py-1 text-xs font-semibold text-[var(--green)]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[var(--green)]" />
-                Band connected {patient.wearableBattery}%
-              </span>
+              {/* Interactive Telemetry Sensor Status Pill */}
+              <button
+                type="button"
+                onClick={() => setSensorModalOpen(true)}
+                className="hidden sm:inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1 text-xs font-semibold hover:border-[var(--teal)] transition-all shadow-sm"
+                title="Click to manage or pair sensor telemetry"
+              >
+                <span className="flex h-2 w-2 relative">
+                  <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${
+                    sensorInfo.status === "connected" ? "bg-[var(--green)]" : "bg-[var(--amber)]"
+                  } opacity-75`} />
+                  <span className={`relative inline-flex rounded-full h-2 w-2 ${
+                    sensorInfo.status === "connected" ? "bg-[var(--green)]" : "bg-[var(--amber)]"
+                  }`} />
+                </span>
+                <span className="text-[var(--hi)] truncate max-w-[140px]">
+                  {sensorInfo.deviceName}
+                </span>
+                <span className="rounded bg-[var(--tint)] px-1.5 py-0.2 text-[10px] text-[var(--teal-700)] dark:text-[var(--teal)]">
+                  {sensorInfo.liveBpm} BPM
+                </span>
+                <span className="text-[10px] text-[var(--muted)]">
+                  {sensorInfo.battery}%
+                </span>
+              </button>
+
+              {/* Baseline Profile Quick Setup Trigger */}
+              <button
+                type="button"
+                onClick={() => setOnboardingOpen(true)}
+                className="hidden md:inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-2.5 py-1 text-xs font-semibold text-[var(--mid)] hover:text-[var(--hi)] hover:bg-[var(--tint)] transition-colors"
+                title="Review or edit your clinical baseline biometrics"
+              >
+                <span>⚙️</span>
+                <span>Baseline Intake</span>
+              </button>
 
               {/* Unit Toggle */}
               <div className="inline-flex rounded-xl bg-[var(--surface-2)] p-1 border border-[var(--border)] text-xs font-semibold">
@@ -454,6 +502,22 @@ export function PatientShell() {
           </footer>
         </div>
       </div>
+
+      {/* 1st-Time Login Baseline Intake Modal */}
+      <PatientOnboardingModal
+        isOpen={onboardingModalOpen}
+        onClose={() => setOnboardingOpen(false)}
+        onSave={saveUserBaseline}
+        initialData={userBaseline || undefined}
+        userName={patient.name}
+        userEmail={patient.email}
+      />
+
+      {/* Sensor Connection & Telemetry Modal */}
+      <SensorConnectionModal
+        isOpen={sensorModalOpen}
+        onClose={() => setSensorModalOpen(false)}
+      />
 
       {/* Interactive Toast Banner */}
       {toastMessage && (

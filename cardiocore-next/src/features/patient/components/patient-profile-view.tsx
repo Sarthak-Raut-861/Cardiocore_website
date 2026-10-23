@@ -5,7 +5,7 @@ import { usePatientDashboard } from "../context/patient-dashboard-context";
 import { SAMPLE_PATIENT } from "../data/sample-patient";
 
 export function PatientProfileView() {
-  const { showToast, patient } = usePatientDashboard();
+  const { showToast, patient, userBaseline, setOnboardingOpen, setSensorModalOpen } = usePatientDashboard();
   const [consentBaseline, setConsentBaseline] = useState(true);
   const [consentEcg, setConsentEcg] = useState(true);
   const [consentResearch, setConsentResearch] = useState(false);
@@ -21,6 +21,24 @@ export function PatientProfileView() {
           <p className="mt-1 text-sm text-[var(--mid)]">
             Consent permissions, emergency preferences, wearable device sync, and account governance.
           </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setOnboardingOpen(true)}
+            className="rounded-xl bg-[var(--teal)] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-[var(--teal-600)] transition-all flex items-center gap-1.5"
+          >
+            <span>⚙️</span>
+            <span>Edit Clinical Baseline</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setSensorModalOpen(true)}
+            className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-xs font-semibold text-[var(--hi)] hover:bg-[var(--tint)] transition-all flex items-center gap-1.5"
+          >
+            <span>📡</span>
+            <span>Configure Sensors</span>
+          </button>
         </div>
       </div>
 
@@ -40,12 +58,12 @@ export function PatientProfileView() {
               )}
             </div>
             <p className="text-xs text-[var(--mid)] mt-0.5">
-              {patient.age} y · {patient.heightCm} cm · {patient.weightKg} kg · BMI {patient.bmi} · {patient.bloodGroup}
+              {patient.age} y · {patient.heightCm} cm · {patient.weightKg} kg · BMI {patient.bmi} · {patient.bloodGroup} · {userBaseline?.primaryCondition || "Preventive Monitoring"}
             </p>
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--green-soft)] px-2.5 py-0.5 text-xs font-semibold text-[var(--green)]">
                 <span className="h-1.5 w-1.5 rounded-full bg-[var(--green)]" />
-                Baseline active (90d)
+                Baseline active ({patient.monitoredDays}d)
               </span>
               <span className="rounded-full bg-[var(--tint)] px-2.5 py-0.5 text-xs font-medium text-[var(--mid)]">
                 Wearable battery {patient.wearableBattery}%
@@ -53,9 +71,13 @@ export function PatientProfileView() {
               <span className="rounded-full bg-[var(--tint)] px-2.5 py-0.5 text-xs font-medium text-[var(--mid)]">
                 Member since {patient.memberSince}
               </span>
-              <span className="rounded-full bg-[var(--tint)] px-2.5 py-0.5 text-xs font-medium text-[var(--mid)]">
-                {patient.monitoredDays} days monitored
-              </span>
+              <button
+                type="button"
+                onClick={() => setOnboardingOpen(true)}
+                className="rounded-full bg-[var(--surface-2)] border border-[var(--border)] px-2.5 py-0.5 text-xs font-semibold text-[var(--teal-700)] dark:text-[var(--teal)] hover:bg-[var(--tint)] transition-colors"
+              >
+                ✏️ Re-calibrate Baseline
+              </button>
             </div>
           </div>
         </div>
@@ -71,15 +93,21 @@ export function PatientProfileView() {
           <div className="space-y-2.5 text-xs">
             <div className="border-b border-[var(--border)]/50 pb-2">
               <span className="text-[var(--mid)] block text-[11px]">Emergency contact</span>
-              <strong className="text-[var(--hi)]">Priya Menon · +91 98••• ••210</strong>
+              <strong className="text-[var(--hi)]">
+                {userBaseline?.emergencyContact || "Family Contact"} · {userBaseline?.emergencyPhone || "+91 98000 00000"}
+              </strong>
             </div>
             <div className="border-b border-[var(--border)]/50 pb-2">
               <span className="text-[var(--mid)] block text-[11px]">Preferred hospital</span>
-              <strong className="text-[var(--hi)]">Meridian Heart Institute</strong>
+              <strong className="text-[var(--hi)]">
+                {userBaseline?.hospital || "Meridian Heart Institute"}
+              </strong>
             </div>
             <div className="border-b border-[var(--border)]/50 pb-2">
               <span className="text-[var(--mid)] block text-[11px]">Attending cardiologist</span>
-              <strong className="text-[var(--hi)]">Dr Neha Raghavan</strong>
+              <strong className="text-[var(--hi)]">
+                {userBaseline?.cardiologist || "Assigned Clinical Team"}
+              </strong>
             </div>
             <div className="flex justify-between items-center py-1">
               <span className="text-[var(--mid)]">Automatic urgent escalation</span>
@@ -172,12 +200,21 @@ export function PatientProfileView() {
             Device &amp; account
           </span>
           <div className="space-y-2 text-xs">
-            <div className="flex items-center gap-2.5 p-2 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] mb-2">
-              <span className="text-lg">⌚</span>
-              <div>
-                <strong className="block text-[var(--hi)]">{patient.wearableModel}</strong>
-                <span className="text-[11px] text-[var(--green)]">Connected · {patient.wearableBattery}% battery · {patient.firmwareVersion}</span>
+            <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] mb-2">
+              <div className="flex items-center gap-2.5">
+                <span className="text-lg">⌚</span>
+                <div>
+                  <strong className="block text-[var(--hi)]">{patient.wearableModel}</strong>
+                  <span className="text-[11px] text-[var(--green)]">Connected · {patient.wearableBattery}% battery · {patient.firmwareVersion}</span>
+                </div>
               </div>
+              <button
+                type="button"
+                onClick={() => setSensorModalOpen(true)}
+                className="rounded-lg bg-[var(--tint)] px-2.5 py-1 text-xs font-semibold text-[var(--teal-700)] dark:text-[var(--teal)] hover:opacity-80"
+              >
+                Change
+              </button>
             </div>
 
             {patient.email && (

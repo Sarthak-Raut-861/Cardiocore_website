@@ -5,7 +5,7 @@ import { usePatientDashboard } from "../context/patient-dashboard-context";
 import { SAMPLE_PATIENT, SAMPLE_LIPIDS, SAMPLE_MEDICAL_CONDITIONS, SAMPLE_FAMILY_HISTORY } from "../data/sample-patient";
 
 export function PatientRecordsView() {
-  const { setActiveView, showToast, patient } = usePatientDashboard();
+  const { setActiveView, showToast, patient, userBaseline, setOnboardingOpen } = usePatientDashboard();
 
   return (
     <div className="space-y-6">
@@ -19,7 +19,15 @@ export function PatientRecordsView() {
             Everything CardioCore knows about you — patient-governed, exportable, and consent-gated.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setOnboardingOpen(true)}
+            className="rounded-xl bg-[var(--teal)] px-3.5 py-2 text-xs font-bold text-white shadow-sm hover:bg-[var(--teal-600)] transition-all flex items-center gap-1.5"
+          >
+            <span>⚙️</span>
+            <span>Update Baseline</span>
+          </button>
           <button
             onClick={() => showToast("Exporting clinical health summary (PDF / FHIR bundle)...", "ok")}
             className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2 text-xs font-semibold text-[var(--hi)] hover:bg-[var(--tint)] transition-colors"
@@ -146,6 +154,17 @@ export function PatientRecordsView() {
             Diagnosed medical conditions
           </h3>
           <div className="space-y-2.5">
+            {userBaseline?.primaryCondition && (
+              <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--teal-soft)] border border-[var(--teal)]/30">
+                <div>
+                  <strong className="block text-xs text-[var(--hi)]">{userBaseline.primaryCondition}</strong>
+                  <span className="text-[11px] text-[var(--teal-700)] dark:text-[var(--teal)] font-medium">Active User Intake Baseline · Primary Corridor Monitoring</span>
+                </div>
+                <span className="rounded bg-[var(--teal)] px-2 py-0.5 text-[11px] font-bold text-white">
+                  Intake Profile
+                </span>
+              </div>
+            )}
             {SAMPLE_MEDICAL_CONDITIONS.map((cond, idx) => (
               <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-[var(--surface-2)] border border-[var(--border)]">
                 <div>
