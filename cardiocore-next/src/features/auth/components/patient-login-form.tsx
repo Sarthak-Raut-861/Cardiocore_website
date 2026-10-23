@@ -10,6 +10,9 @@ import { authApi } from "@/lib/api/auth";
 import { useAuth } from "../context/auth-context";
 import { isFirebaseConfigured, signInWithFirebaseGoogle } from "@/lib/firebase/config";
 
+const DEFAULT_GOOGLE_CLIENT_ID =
+  "57075478730-q2nh08hrg5pnldj2h2m83tn4hfvt5hra.apps.googleusercontent.com";
+
 export const PatientLoginForm: React.FC<{
   onAuthError: (msg: string) => void;
 }> = ({ onAuthError }) => {
@@ -23,46 +26,22 @@ export const PatientLoginForm: React.FC<{
   const [googleLoading, setGoogleLoading] = useState(false);
   const [fieldError, setFieldError] = useState<{ identifier?: string; password?: string }>({});
 
-  // Optional Google Identity Services integration if configured
+  const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || DEFAULT_GOOGLE_CLIENT_ID;
+
+  // Ensure Google Identity Services script is preloaded
   useEffect(() => {
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-    if (!clientId || typeof window === "undefined") return;
+    if (typeof window === "undefined") return;
+
+    const existingScript = document.getElementById("google-gsi-client");
+    if (existingScript) return;
 
     const script = document.createElement("script");
+    script.id = "google-gsi-client";
     script.src = "https://accounts.google.com/gsi/client";
     script.async = true;
     script.defer = true;
-    script.onload = () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const google = (window as unknown as { google?: any })?.google;
-      if (google?.accounts?.id) {
-        google.accounts.id.initialize({
-          client_id: clientId,
-          callback: async (response: { credential?: string }) => {
-            setGoogleLoading(true);
-            onAuthError("");
-            try {
-              await authApi.signInWithGoogle({ credential: response.credential, rememberMe });
-              await refreshSession();
-              router.push("/patient");
-            } catch (err: unknown) {
-              const msg = err instanceof Error ? err.message : "Google authentication failed";
-              onAuthError(msg);
-            } finally {
-              setGoogleLoading(false);
-            }
-          },
-        });
-      }
-    };
     document.body.appendChild(script);
-
-    return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-    };
-  }, [rememberMe, refreshSession, router, onAuthError]);
+  }, []);
 
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,7 +77,9 @@ export const PatientLoginForm: React.FC<{
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     onAuthError("");
+
     try {
+      // 1. If Firebase is configured with apiKey & projectId, use Firebase Auth popup
       if (isFirebaseConfigured()) {
         const fbResult = await signInWithFirebaseGoogle();
         await authApi.signInWithGoogle({
@@ -107,65 +88,67 @@ export const PatientLoginForm: React.FC<{
           name: fbResult.displayName,
           rememberMe,
         });
-      } else {
-        const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const google = typeof window !== "undefined" ? (window as unknown as { google?: any })?.google : null;
-
-        if (clientId && google?.accounts?.oauth2) {
-          const tokenClient = google.accounts.oauth2.initTokenClient({
-            client_id: clientId,
-            scope: "email profile openid",
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            callback: async (tokenRes: any) => {
-              if (tokenRes.error) {
-                setGoogleLoading(false);
-                onAuthError(tokenRes.error_description || "Google sign-in cancelled or failed.");
-                return;
-              }
-              try {
-                const profileRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-                  headers: { Authorization: `Bearer ${tokenRes.access_token}` },
-                });
-                const profile = await profileRes.json();
-                await authApi.signInWithGoogle({
-                  email: profile.email,
-                  name: profile.name,
-                  credential: tokenRes.access_token,
-                  rememberMe,
-                });
-                await refreshSession();
-                router.push("/patient");
-              } catch (err: unknown) {
-                onAuthError(err instanceof Error ? err.message : "Failed to load Google profile.");
-              } finally {
-                setGoogleLoading(false);
-              }
-            },
-          });
-          tokenClient.requestAccessToken({ prompt: "select_account" });
-          return;
-        }
-
-        if (clientId && google?.accounts?.id) {
-          google.accounts.id.prompt();
-          return;
-        }
-
-        await authApi.signInWithGoogle({
-          email: identifier.includes("@") ? identifier.trim() : "aarav.menon@example.com",
-          name: "Aarav Menon",
-          rememberMe,
-        });
+        await refreshSession();
+        router.push("/patient");
+        return;
       }
 
-      await refreshSession();
-      router.push("/patient");
+      // 2. Otherwise trigger Google OAuth 2.0 Account Picker Popup via Google Identity Services
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const google = typeof window !== "undefined" ? (window as unknown as { google?: any })?.google : null;
+
+      if (!google || !google.accounts || !google.accounts.oauth2) {
+        throw new Error(
+          "Google Sign-In is initializing. Please wait a second and click again."
+        );
+      }
+
+      const tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: clientId,
+        scope: "email profile openid",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        callback: async (tokenRes: any) => {
+          if (tokenRes.error) {
+            setGoogleLoading(false);
+            if (tokenRes.error === "popup_closed_by_user") {
+              onAuthError("Google sign-in popup was closed.");
+              return;
+            }
+            onAuthError(tokenRes.error_description || `Google sign-in error: ${tokenRes.error}`);
+            return;
+          }
+
+          try {
+            const profileRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+              headers: { Authorization: `Bearer ${tokenRes.access_token}` },
+            });
+            const profile = await profileRes.json();
+
+            await authApi.signInWithGoogle({
+              email: profile.email,
+              name: profile.name,
+              credential: tokenRes.access_token,
+              rememberMe,
+            });
+            await refreshSession();
+            router.push("/patient");
+          } catch (err: unknown) {
+            onAuthError(err instanceof Error ? err.message : "Failed to load Google profile.");
+          } finally {
+            setGoogleLoading(false);
+          }
+        },
+        error_callback: (err: { type: string; message?: string }) => {
+          setGoogleLoading(false);
+          onAuthError(err.message || `Google sign-in failed (${err.type}).`);
+        },
+      });
+
+      tokenClient.requestAccessToken({ prompt: "select_account" });
     } catch (err: unknown) {
+      setGoogleLoading(false);
       const msg = err instanceof Error ? err.message : "Google authentication failed";
       onAuthError(msg);
-    } finally {
-      setGoogleLoading(false);
     }
   };
 
