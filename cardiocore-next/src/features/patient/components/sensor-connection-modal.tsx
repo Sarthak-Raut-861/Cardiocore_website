@@ -11,6 +11,9 @@ interface SensorConnectionModalProps {
 export function SensorConnectionModal({ isOpen, onClose }: SensorConnectionModalProps) {
   const {
     sensorInfo,
+    isCalibrating,
+    calibrationProgress,
+    calibrateEsp32,
     connectBluetoothSensor,
     connectPatchSensor,
     connectSimulatedSensor,
@@ -18,7 +21,7 @@ export function SensorConnectionModal({ isOpen, onClose }: SensorConnectionModal
     showToast,
   } = usePatientDashboard();
 
-  const [patchSerial, setPatchSerial] = useState("CC-PATCH-9820-A");
+  const [patchSerial, setPatchSerial] = useState("ESP32-ECG-B4:E6:2D");
   const [isScanningBle, setIsScanningBle] = useState(false);
 
   if (!isOpen) return null;
@@ -44,10 +47,10 @@ export function SensorConnectionModal({ isOpen, onClose }: SensorConnectionModal
             </div>
             <div>
               <h3 className="font-heading text-lg font-bold text-[var(--hi)]">
-                Telemetry Sensor Manager
+                ESP32 &amp; Telemetry Manager
               </h3>
               <p className="text-xs text-[var(--mid)]">
-                Stream real-time vitals from medical hardware, Bluetooth LE, or edge telemetry
+                Stream real-time vitals from ESP32 microcontroller, Bluetooth LE, or edge telemetry
               </p>
             </div>
           </div>
@@ -117,10 +120,64 @@ export function SensorConnectionModal({ isOpen, onClose }: SensorConnectionModal
         {/* Sensor Connection Options */}
         <div className="space-y-3">
           <span className="text-xs font-bold uppercase tracking-wider text-[var(--mid)]">
-            Connect New Telemetry Source
+            Telemetry Hardware Sources
           </span>
 
-          {/* Option 1: Web Bluetooth API */}
+          {/* Option 1: ESP32-ECG Telemetry Module */}
+          <div className="rounded-2xl border border-[var(--teal)]/40 bg-[var(--surface-2)] p-4 space-y-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">⚡</span>
+                  <strong className="text-sm text-[var(--hi)]">ESP32-ECG Telemetry Module</strong>
+                  <span className="rounded bg-[var(--green-soft)] px-2 py-0.5 text-[10px] font-bold text-[var(--green)]">
+                    PRIMARY HARDWARE
+                  </span>
+                </div>
+                <p className="text-xs text-[var(--muted)] max-w-sm">
+                  Continuous 250 Hz single-lead stream from ESP32 microcontroller with hardware ADC baseline calibration.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+                <button
+                  type="button"
+                  disabled={isCalibrating}
+                  onClick={calibrateEsp32}
+                  className="flex-1 sm:flex-none rounded-xl bg-[var(--teal)] px-3.5 py-2 text-xs font-bold text-white shadow-sm hover:bg-[var(--teal-600)] transition-all disabled:opacity-50"
+                >
+                  {isCalibrating ? `Calibrating ${calibrationProgress}%...` : "Calibrate ESP32 ⚡"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    connectPatchSensor(patchSerial);
+                    showToast("Connected to ESP32 module (250 Hz stream synchronized).", "ok");
+                    onClose();
+                  }}
+                  className="flex-1 sm:flex-none rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2 text-xs font-bold text-[var(--hi)] hover:bg-[var(--tint)] transition-all"
+                >
+                  Connect ESP32
+                </button>
+              </div>
+            </div>
+
+            {isCalibrating && (
+              <div className="rounded-xl bg-[var(--bg)] p-3 border border-[var(--border)] space-y-2 text-xs font-mono">
+                <div className="flex justify-between text-[11px] text-[var(--muted)]">
+                  <span>Hardware zero-offset &amp; FIR filter calibration</span>
+                  <span>{calibrationProgress}%</span>
+                </div>
+                <div className="h-2 w-full rounded-full bg-[var(--surface-2)] overflow-hidden">
+                  <div
+                    className="h-full bg-[var(--teal)] transition-all duration-300"
+                    style={{ width: `${calibrationProgress}%` }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Option 2: Web Bluetooth API */}
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-[var(--teal)] transition-all">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
@@ -141,33 +198,6 @@ export function SensorConnectionModal({ isOpen, onClose }: SensorConnectionModal
               className="w-full sm:w-auto rounded-xl bg-[var(--teal)] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-[var(--teal-600)] transition-all disabled:opacity-50 shrink-0"
             >
               {isScanningBle ? "Searching..." : "Pair BLE Device"}
-            </button>
-          </div>
-
-          {/* Option 2: CardioCore IoT Patch 2 */}
-          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-[var(--teal)] transition-all">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="text-lg">⚡</span>
-                <strong className="text-sm text-[var(--hi)]">CardioCore Patch 2 (250 Hz IoT)</strong>
-                <span className="rounded bg-[var(--green-soft)] px-1.5 py-0.2 text-[10px] font-bold text-[var(--green)]">
-                  HIGH RESOLUTION
-                </span>
-              </div>
-              <p className="text-xs text-[var(--muted)] max-w-sm">
-                Direct WebSocket stream from CardioCore chest patch with 16-bit ADC single-lead ECG.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                connectPatchSensor(patchSerial);
-                showToast("Connected to CardioCore Patch 2 (250 Hz stream active).", "ok");
-                onClose();
-              }}
-              className="w-full sm:w-auto rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-2 text-xs font-bold text-[var(--hi)] hover:bg-[var(--tint)] transition-all shrink-0"
-            >
-              Connect Patch
             </button>
           </div>
 

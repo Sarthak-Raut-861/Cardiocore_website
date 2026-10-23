@@ -62,83 +62,26 @@ export interface CardioCoreSharedState {
   twin: SyncedTwinSnapshot;
 }
 
-const STORAGE_KEY = "cardiocore_shared_state_v1";
+const STORAGE_KEY = "cardiocore_shared_state_v2";
 const CHANNEL_NAME = "cardiocore_sync_channel";
 
+// Clean user state: No dummy appointments, no dummy messages, no dummy strips for real users
 export const DEFAULT_SHARED_STATE: CardioCoreSharedState = {
   units: "si",
-  appointments: [
-    {
-      id: "apt-1",
-      doctorName: "Dr Neha Raghavan",
-      doctorInitials: "NR",
-      specialty: "Interventional cardiology",
-      institution: "Meridian Heart Institute",
-      datetime: "Tue 6 Oct · 10:30",
-      type: "In-person",
-      room: "Room 4B",
-      bookingRef: "CC-48120",
-      status: "Confirmed",
-      patientName: "Aarav Menon",
-      reason: "90-day baseline & HRV excursion review",
-    },
-    {
-      id: "apt-2",
-      doctorName: "Dr Samuel Okafor",
-      doctorInitials: "SO",
-      specialty: "Electrophysiology",
-      institution: "Northbridge Clinic",
-      datetime: "Today · 16:00",
-      type: "Video Consult",
-      room: "Encrypted WebRTC Room",
-      bookingRef: "CC-48195",
-      status: "Confirmed",
-      patientName: "Aarav Menon",
-      reason: "Single-lead 250 Hz strip telemetry check",
-    },
-  ],
-  messages: [
-    {
-      id: "msg-1",
-      sender: "Dr Neha Raghavan",
-      role: "Cardiologist",
-      time: "Fri 2 Oct · 16:40",
-      text: "Hello Aarav, I reviewed your 90-day baseline summary and recent 30-second Lead-I strips. Your rhythm remains regular; let us discuss the recent HRV excursion during our Tuesday clinic appointment.",
-    },
-    {
-      id: "msg-2",
-      sender: "Aarav Menon",
-      role: "Patient",
-      time: "Fri 2 Oct · 17:15",
-      text: "Thank you Dr Raghavan. I have noted down my sleep duration as well — looking forward to our review on Tuesday.",
-    },
-  ],
-  ecgStrips: [
-    {
-      id: "strip-101",
-      patientName: "Aarav Menon",
-      patientMrn: "CC-DEMO-9821",
-      recordedAt: "Today · 09:14",
-      durationSec: 30,
-      hrBpm: 72,
-      rhythmLabel: "Sinus Rhythm · Normal PR/QTc",
-      sqiPct: 98,
-      symptomNote: "Morning resting baseline check",
-      recipientDoctor: "Dr Neha Raghavan",
-      reviewStatus: "Reviewed & Signed",
-    },
-  ],
+  appointments: [],
+  messages: [],
+  ecgStrips: [],
   twin: {
     score: 88,
-    statusText: "72-Factor Active",
+    statusText: "ESP32 Calibrated",
     cvdRiskPct: "6.8%",
     cvdCategory: "Low Risk",
     ldl: 94,
     crp: 1.1,
     clusterLabel: "Cluster A · Resilient Autonomic",
     scenario: "stable",
-    restingHr: 68,
-    hrv: 48,
+    restingHr: 72,
+    hrv: 52,
     spo2: 98,
     updatedAt: "Just now",
   },

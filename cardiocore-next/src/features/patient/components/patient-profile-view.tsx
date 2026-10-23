@@ -94,19 +94,19 @@ export function PatientProfileView() {
             <div className="border-b border-[var(--border)]/50 pb-2">
               <span className="text-[var(--mid)] block text-[11px]">Emergency contact</span>
               <strong className="text-[var(--hi)]">
-                {userBaseline?.emergencyContact || "Family Contact"} · {userBaseline?.emergencyPhone || "+91 98000 00000"}
+                {userBaseline?.emergencyContact ? `${userBaseline.emergencyContact} · ${userBaseline.emergencyPhone}` : "Not configured during intake"}
               </strong>
             </div>
             <div className="border-b border-[var(--border)]/50 pb-2">
               <span className="text-[var(--mid)] block text-[11px]">Preferred hospital</span>
               <strong className="text-[var(--hi)]">
-                {userBaseline?.hospital || "Meridian Heart Institute"}
+                {userBaseline?.hospital || "Not assigned · Local Emergency Services"}
               </strong>
             </div>
             <div className="border-b border-[var(--border)]/50 pb-2">
               <span className="text-[var(--mid)] block text-[11px]">Attending cardiologist</span>
               <strong className="text-[var(--hi)]">
-                {userBaseline?.cardiologist || "Assigned Clinical Team"}
+                {userBaseline?.cardiologist || "Direct Patient Monitoring (Self-directed)"}
               </strong>
             </div>
             <div className="flex justify-between items-center py-1">

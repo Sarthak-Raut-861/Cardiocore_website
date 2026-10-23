@@ -13,7 +13,7 @@ export function PatientApptsView() {
   const [selectedDocId, setSelectedDocId] = useState(DOCTORS[0].id);
   const [slotInput, setSlotInput] = useState("Tomorrow · 11:00");
   const [modeInput, setModeInput] = useState("Video Consult");
-  const [reasonInput, setReasonInput] = useState("72-Factor Digital Twin & 250 Hz ECG review");
+  const [reasonInput, setReasonInput] = useState("ESP32 250 Hz telemetry & Digital Twin review");
 
   const [activeVideoApt, setActiveVideoApt] = useState<SyncedAppointment | null>(null);
   const [manageApt, setManageApt] = useState<SyncedAppointment | null>(null);
@@ -60,96 +60,113 @@ export function PatientApptsView() {
         </button>
       </div>
 
-      <div className="space-y-4">
-        {shared.appointments.map((apt) => (
-          <div
-            key={apt.id}
-            className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--sh-1)] transition-all hover:border-[var(--teal)]/40"
+      {shared.appointments.length === 0 ? (
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-10 text-center space-y-3 shadow-[var(--sh-1)]">
+          <span className="text-4xl block">🩺</span>
+          <h3 className="font-heading text-lg font-bold text-[var(--hi)]">No Consultations Scheduled</h3>
+          <p className="text-xs text-[var(--mid)] max-w-md mx-auto">
+            You do not have any upcoming clinical consultations. Click &quot;+ Book new consultation&quot; above to schedule an encrypted video review with a cardiologist.
+          </p>
+          <button
+            type="button"
+            onClick={() => setBookModalOpen(true)}
+            className="rounded-xl bg-[var(--teal)] px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[var(--teal-600)] transition-all"
           >
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-              <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--teal-soft)] font-heading text-lg font-bold text-[var(--teal-700)] shrink-0">
-                  {apt.doctorInitials}
-                </div>
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-heading text-base font-bold text-[var(--hi)]">
-                      {apt.doctorName}
-                    </h3>
-                    <span
-                      className={`rounded px-2.5 py-0.5 text-xs font-semibold ${
-                        apt.status === "Confirmed"
-                          ? "bg-[var(--green-soft)] text-[var(--green)]"
-                          : apt.status === "Rescheduled"
-                          ? "bg-[var(--amber-soft)] text-[var(--amber)]"
-                          : "bg-[var(--tint)] text-[var(--mid)]"
-                      }`}
-                    >
-                      {apt.status}
-                    </span>
+            + Book New Consultation
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {shared.appointments.map((apt) => (
+            <div
+              key={apt.id}
+              className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--sh-1)] transition-all hover:border-[var(--teal)]/40"
+            >
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--teal-soft)] font-heading text-lg font-bold text-[var(--teal-700)] shrink-0">
+                    {apt.doctorInitials}
                   </div>
-                  <p className="text-xs text-[var(--mid)] mt-0.5">
-                    {apt.specialty} · {apt.institution}
-                  </p>
-                  {apt.reason && (
-                    <p className="text-xs text-[var(--teal-700)] font-medium mt-1">
-                      Reason: {apt.reason}
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="font-heading text-base font-bold text-[var(--hi)]">
+                        {apt.doctorName}
+                      </h3>
+                      <span
+                        className={`rounded px-2.5 py-0.5 text-xs font-semibold ${
+                          apt.status === "Confirmed"
+                            ? "bg-[var(--green-soft)] text-[var(--green)]"
+                            : apt.status === "Rescheduled"
+                            ? "bg-[var(--amber-soft)] text-[var(--amber)]"
+                            : "bg-[var(--tint)] text-[var(--mid)]"
+                        }`}
+                      >
+                        {apt.status}
+                      </span>
+                    </div>
+                    <p className="text-xs text-[var(--mid)] mt-0.5">
+                      {apt.specialty} · {apt.institution}
                     </p>
-                  )}
-                  <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-[var(--hi)] font-medium">
-                    <span className="flex items-center gap-1.5">
-                      📅 {apt.datetime}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      🏥 {apt.type} · {apt.room}
-                    </span>
-                    <span className="text-[var(--muted)] font-mono text-[11px]">
-                      Ref: {apt.bookingRef}
-                    </span>
+                    {apt.reason && (
+                      <p className="text-xs text-[var(--teal-700)] font-medium mt-1">
+                        Reason: {apt.reason}
+                      </p>
+                    )}
+                    <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-[var(--hi)] font-medium">
+                      <span className="flex items-center gap-1.5">
+                        📅 {apt.datetime}
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        🏥 {apt.type} · {apt.room}
+                      </span>
+                      <span className="text-[var(--muted)] font-mono text-[11px]">
+                        Ref: {apt.bookingRef}
+                      </span>
+                    </div>
                   </div>
+                </div>
+
+                <div className="flex items-center gap-2 self-end sm:self-start">
+                  {apt.status !== "Completed" ? (
+                    <>
+                      <button
+                        onClick={() => setActiveVideoApt(apt)}
+                        className="rounded-xl bg-[var(--teal)] px-3.5 py-2 text-xs font-semibold text-white hover:bg-[var(--teal-600)] transition-colors"
+                      >
+                        Join video
+                      </button>
+                      <button
+                        onClick={() => {
+                          setManageApt(apt);
+                          setRescheduleSlot(apt.datetime);
+                        }}
+                        className="rounded-xl border border-[var(--border)] px-3.5 py-2 text-xs font-semibold text-[var(--hi)] hover:bg-[var(--tint)] transition-colors"
+                      >
+                        Manage
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={() => showToast(`Clinical summary for ${apt.bookingRef} downloaded.`, "ok")}
+                      className="rounded-xl border border-[var(--border)] px-3.5 py-2 text-xs font-semibold text-[var(--mid)] hover:bg-[var(--tint)] transition-colors"
+                    >
+                      View clinical notes
+                    </button>
+                  )}
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 self-end sm:self-start">
-                {apt.status !== "Completed" ? (
-                  <>
-                    <button
-                      onClick={() => setActiveVideoApt(apt)}
-                      className="rounded-xl bg-[var(--teal)] px-3.5 py-2 text-xs font-semibold text-white hover:bg-[var(--teal-600)] transition-colors"
-                    >
-                      Join video
-                    </button>
-                    <button
-                      onClick={() => {
-                        setManageApt(apt);
-                        setRescheduleSlot(apt.datetime);
-                      }}
-                      className="rounded-xl border border-[var(--border)] px-3.5 py-2 text-xs font-semibold text-[var(--hi)] hover:bg-[var(--tint)] transition-colors"
-                    >
-                      Manage
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    onClick={() => showToast(`Clinical summary for ${apt.bookingRef} downloaded.`, "ok")}
-                    className="rounded-xl border border-[var(--border)] px-3.5 py-2 text-xs font-semibold text-[var(--mid)] hover:bg-[var(--tint)] transition-colors"
-                  >
-                    View clinical notes
-                  </button>
-                )}
+              <div className="mt-4 pt-3 border-t border-[var(--border)] text-xs text-[var(--muted)] flex flex-wrap items-center justify-between gap-2">
+                <span>
+                  Shared data scope: 72-Factor Twin Index (<strong>{twinState.score}</strong> · {twinState.cvdRiskPct} risk) and{" "}
+                  <strong>{shared.ecgStrips.length}</strong> recent 250 Hz ECG strip(s) attached.
+                </span>
+                <span className="font-mono text-[11px] text-[var(--teal-700)]">Synced with Clinician Roster</span>
               </div>
             </div>
-
-            <div className="mt-4 pt-3 border-t border-[var(--border)] text-xs text-[var(--muted)] flex flex-wrap items-center justify-between gap-2">
-              <span>
-                Shared data scope: 72-Factor Twin Index (<strong>{twinState.score}</strong> · {twinState.cvdRiskPct} risk) and{" "}
-                <strong>{shared.ecgStrips.length}</strong> recent 250 Hz ECG strip(s) attached.
-              </span>
-              <span className="font-mono text-[11px] text-[var(--teal-700)]">Synced with Clinician Roster</span>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {bookModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">

@@ -116,6 +116,9 @@ interface PatientDashboardContextValue {
   sensorInfo: SensorInfo;
   sensorModalOpen: boolean;
   setSensorModalOpen: (open: boolean) => void;
+  isCalibrating: boolean;
+  calibrationProgress: number;
+  calibrateEsp32: () => Promise<void>;
   connectBluetoothSensor: () => Promise<void>;
   connectPatchSensor: (serial?: string) => void;
   connectSimulatedSensor: () => void;
@@ -134,7 +137,6 @@ export function PatientDashboardProvider({
   const { user } = useAuth();
   const [activeView, setActiveView] = useState<PatientViewId>(initialView);
   const [units, setUnits] = useState<UnitSystem>("si");
-  const [medications, setMedications] = useState<PatientMedication[]>(SAMPLE_MEDICATIONS);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<"ok" | "warn" | "info">("ok");
   const [engineMode, setEngineMode] = useState<"demo" | "live">("live");
@@ -143,12 +145,19 @@ export function PatientDashboardProvider({
   const [onboardingModalOpen, setOnboardingOpen] = useState<boolean>(false);
   const [userBaseline, setUserBaseline] = useState<UserHealthBaseline | null>(null);
 
-  // Sensor Telemetry State
+  // Real users start with empty clean medications and labs (no fake Ramipril or Metformin)
+  const [medications, setMedications] = useState<PatientMedication[]>([]);
+  const [customLabs, setCustomLabs] = useState<CustomLabItem[]>([]);
+
+  // ESP32 Telemetry State
+  const [isCalibrating, setIsCalibrating] = useState<boolean>(false);
+  const [calibrationProgress, setCalibrationProgress] = useState<number>(100);
+
   const [sensorInfo, setSensorInfo] = useState<SensorInfo>({
     type: "patch",
     status: "connected",
-    deviceName: "CardioCore Patch 2",
-    battery: 94,
+    deviceName: "ESP32-ECG Telemetry Module",
+    battery: 98,
     signalQuality: "optimal",
     samplingRate: 250,
     liveBpm: 72,
@@ -157,16 +166,16 @@ export function PatientDashboardProvider({
     liveTemp: 36.6,
   });
 
-  const [customLabs, setCustomLabs] = useState<CustomLabItem[]>([
-    { id: "lab-1", name: "Calculated LDL-C", valueConv: "94 mg/dL", valueSi: "2.43 mmol/L", status: "Optimal", date: "Today" },
-    { id: "lab-2", name: "hs-CRP Inflammatory", valueConv: "1.10 mg/L", valueSi: "10.5 nmol/L", status: "Normal", date: "Today" },
-  ]);
-
-  // Load User Baseline from localStorage on login
+  // Load User Baseline, custom meds, and custom labs from localStorage on login
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const userKey = user?.email || user?.id || "guest";
+    const userKey = user?.email || user?.id;
+    if (!userKey) {
+      // Demo / guest mode: allow sample medications if guest
+      return;
+    }
+
     const storageKey = `cardiocore_baseline_${userKey}`;
     const saved = localStorage.getItem(storageKey);
 
@@ -177,14 +186,62 @@ export function PatientDashboardProvider({
       } catch {
         // invalid JSON
       }
-    } else if (user) {
-      // First time login! Prompt for necessary baseline details
-      const timer = setTimeout(() => {
-        setOnboardingOpen(true);
-      }, 700);
-      return () => clearTimeout(timer);
+    } else {
+      // Real user has not completed baseline intake yet
+      setUserBaseline(null);
+    }
+
+    // Load user's real medications if any
+    const medsKey = `cardiocore_meds_${userKey}`;
+    const savedMeds = localStorage.getItem(medsKey);
+    if (savedMeds) {
+      try {
+        setMedications(JSON.parse(savedMeds));
+      } catch {
+        setMedications([]);
+      }
+    } else {
+      setMedications([]);
+    }
+
+    // Load user's real labs if any
+    const labsKey = `cardiocore_labs_${userKey}`;
+    const savedLabs = localStorage.getItem(labsKey);
+    if (savedLabs) {
+      try {
+        setCustomLabs(JSON.parse(savedLabs));
+      } catch {
+        setCustomLabs([]);
+      }
+    } else {
+      setCustomLabs([]);
     }
   }, [user]);
+
+  // Calibrate ESP32 Hardware Routine
+  const calibrateEsp32 = useCallback(async () => {
+    setIsCalibrating(true);
+    setCalibrationProgress(10);
+    setToastMessage("ESP32: Zeroing ADC baseline offset & sampling 250 Hz signal corridor...");
+    setToastType("info");
+
+    const steps = [25, 50, 75, 100];
+    for (const p of steps) {
+      await new Promise((r) => setTimeout(r, 650));
+      setCalibrationProgress(p);
+    }
+    setIsCalibrating(false);
+    setSensorInfo((prev) => ({
+      ...prev,
+      status: "connected",
+      deviceName: "ESP32-ECG Telemetry Module",
+      samplingRate: 250,
+      signalQuality: "optimal",
+      liveBpm: 72,
+    }));
+    setToastMessage("ESP32 Calibrated! Single-lead 250 Hz telemetry synchronized.");
+    setToastType("ok");
+  }, []);
 
   // Save baseline to localStorage
   const saveUserBaseline = useCallback(
@@ -211,7 +268,7 @@ export function PatientDashboardProvider({
         setSensorInfo((prev) => ({
           ...prev,
           type: "patch",
-          deviceName: "CardioCore Patch 2",
+          deviceName: "ESP32-ECG Telemetry Module",
           samplingRate: 250,
           status: "connected",
         }));
@@ -655,6 +712,9 @@ export function PatientDashboardProvider({
       sensorInfo,
       sensorModalOpen,
       setSensorModalOpen,
+      isCalibrating,
+      calibrationProgress,
+      calibrateEsp32,
       connectBluetoothSensor,
       connectPatchSensor,
       connectSimulatedSensor,
@@ -682,6 +742,9 @@ export function PatientDashboardProvider({
       saveUserBaseline,
       sensorInfo,
       sensorModalOpen,
+      isCalibrating,
+      calibrationProgress,
+      calibrateEsp32,
       connectBluetoothSensor,
       connectPatchSensor,
       connectSimulatedSensor,

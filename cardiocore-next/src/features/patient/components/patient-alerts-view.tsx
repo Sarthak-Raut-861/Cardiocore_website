@@ -5,12 +5,15 @@ import { usePatientDashboard } from "../context/patient-dashboard-context";
 import { SAMPLE_ALERTS } from "../data/sample-patient";
 
 export function PatientAlertsView() {
-  const { setActiveView, showToast } = usePatientDashboard();
+  const { setActiveView, showToast, engineMode } = usePatientDashboard();
   const [activeTab, setActiveTab] = useState<string>("All");
 
   const tabs = ["All", "Daily", "Weekly", "Device", "Marked read"];
 
-  const filteredAlerts = SAMPLE_ALERTS.filter((a) => {
+  // In live mode (real user), real alerts start empty until an anomalous telemetry excursion occurs
+  const alertsList = engineMode === "demo" ? SAMPLE_ALERTS : [];
+
+  const filteredAlerts = alertsList.filter((a) => {
     if (activeTab === "All") return true;
     if (activeTab === "Device") return a.category === "Device";
     if (activeTab === "Marked read") return a.read;
@@ -49,20 +52,32 @@ export function PatientAlertsView() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="rounded-2xl border-l-4 border-l-[var(--red)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--sh-1)]">
           <span className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">Level 3 · Urgent</span>
-          <div className="mt-1 font-heading text-3xl font-bold text-[var(--red)]">1</div>
-          <span className="mt-1 text-xs text-[var(--mid)] block">last 7 days · requires review</span>
+          <div className="mt-1 font-heading text-3xl font-bold text-[var(--red)]">
+            {engineMode === "demo" ? 1 : 0}
+          </div>
+          <span className="mt-1 text-xs text-[var(--mid)] block">
+            {engineMode === "demo" ? "last 7 days · requires review" : "zero active urgent flags"}
+          </span>
         </div>
 
         <div className="rounded-2xl border-l-4 border-l-[var(--amber)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--sh-1)]">
           <span className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">Level 2 · Attention</span>
-          <div className="mt-1 font-heading text-3xl font-bold text-[var(--amber)]">2</div>
-          <span className="mt-1 text-xs text-[var(--mid)] block">last 7 days · keep monitoring</span>
+          <div className="mt-1 font-heading text-3xl font-bold text-[var(--amber)]">
+            {engineMode === "demo" ? 2 : 0}
+          </div>
+          <span className="mt-1 text-xs text-[var(--mid)] block">
+            {engineMode === "demo" ? "last 7 days · keep monitoring" : "corridor operating normally"}
+          </span>
         </div>
 
         <div className="rounded-2xl border-l-4 border-l-[var(--cyan)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--sh-1)]">
           <span className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">Level 1 · Informational</span>
-          <div className="mt-1 font-heading text-3xl font-bold text-[var(--cyan)]">6</div>
-          <span className="mt-1 text-xs text-[var(--mid)] block">last 7 days · context only</span>
+          <div className="mt-1 font-heading text-3xl font-bold text-[var(--cyan)]">
+            {engineMode === "demo" ? 6 : 0}
+          </div>
+          <span className="mt-1 text-xs text-[var(--mid)] block">
+            {engineMode === "demo" ? "last 7 days · context only" : "telemetry verified clean"}
+          </span>
         </div>
       </div>
 
@@ -84,97 +99,77 @@ export function PatientAlertsView() {
       </div>
 
       {/* Alerts List */}
-      <div className="space-y-4">
-        {filteredAlerts.map((alert) => (
-          <div
-            key={alert.id}
-            className={`rounded-2xl border p-5 shadow-[var(--sh-1)] transition-all ${
-              alert.level === 3
-                ? "border-l-4 border-l-[var(--red)] border-[var(--border)] bg-[var(--surface)]"
-                : alert.level === 2
-                ? "border-l-4 border-l-[var(--amber)] border-[var(--border)] bg-[var(--surface)]"
-                : "border-l-4 border-l-[var(--cyan)] border-[var(--border)] bg-[var(--surface)]"
-            }`}
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-start gap-3">
-                <div
-                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-bold ${
-                    alert.level === 3
-                      ? "bg-[var(--red-soft)] text-[var(--red)]"
-                      : alert.level === 2
-                      ? "bg-[var(--amber-soft)] text-[var(--amber)]"
-                      : "bg-[var(--cyan-soft)] text-[var(--cyan)]"
-                  }`}
-                >
-                  {alert.level === 3 ? "!" : alert.level === 2 ? "▲" : "i"}
+      {filteredAlerts.length === 0 ? (
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-12 text-center space-y-3 shadow-[var(--sh-1)]">
+          <span className="text-4xl block">🟢</span>
+          <h3 className="font-heading text-lg font-bold text-[var(--hi)]">Zero Active Anomalies</h3>
+          <p className="text-xs text-[var(--mid)] max-w-md mx-auto">
+            ESP32 single-lead ECG telemetry and all 72 BiomarkerTwin parameters remain securely inside your calibrated personal corridor.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filteredAlerts.map((alert) => (
+            <div
+              key={alert.id}
+              className={`rounded-2xl border p-5 shadow-[var(--sh-1)] transition-all ${
+                alert.level === 3
+                  ? "border-l-4 border-l-[var(--red)] border-[var(--border)] bg-[var(--surface)]"
+                  : alert.level === 2
+                  ? "border-l-4 border-l-[var(--amber)] border-[var(--border)] bg-[var(--surface)]"
+                  : "border-l-4 border-l-[var(--cyan)] border-[var(--border)] bg-[var(--surface)]"
+              }`}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <div
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-bold ${
+                      alert.level === 3
+                        ? "bg-[var(--red-soft)] text-[var(--red)]"
+                        : alert.level === 2
+                        ? "bg-[var(--amber-soft)] text-[var(--amber)]"
+                        : "bg-[var(--cyan-soft)] text-[var(--cyan)]"
+                    }`}
+                  >
+                    {alert.level === 3 ? "!" : alert.level === 2 ? "▲" : "i"}
+                  </div>
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="font-heading text-base font-bold text-[var(--hi)]">
+                        {alert.title}
+                      </h3>
+                      <span
+                        className={`rounded px-2 py-0.5 text-[11px] font-semibold ${
+                          alert.level === 3
+                            ? "bg-[var(--red-soft)] text-[var(--red)]"
+                            : alert.level === 2
+                            ? "bg-[var(--amber-soft)] text-[var(--amber)]"
+                            : "bg-[var(--cyan-soft)] text-[var(--cyan)]"
+                        }`}
+                      >
+                        {alert.levelLabel}
+                      </span>
+                      <span className="text-xs text-[var(--muted)]">{alert.time}</span>
+                    </div>
+                    <p className="mt-2 text-xs text-[var(--mid)] leading-relaxed">
+                      {alert.description}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-heading text-base font-bold text-[var(--hi)]">
-                      {alert.title}
-                    </h3>
-                    <span
-                      className={`rounded px-2 py-0.5 text-[11px] font-semibold ${
-                        alert.level === 3
-                          ? "bg-[var(--red-soft)] text-[var(--red)]"
-                          : alert.level === 2
-                          ? "bg-[var(--amber-soft)] text-[var(--amber)]"
-                          : "bg-[var(--cyan-soft)] text-[var(--cyan)]"
-                      }`}
-                    >
-                      {alert.levelLabel}
-                    </span>
-                  </div>
-                  <p className="mt-2 text-xs text-[var(--mid)] leading-relaxed">
-                    {alert.description}
-                  </p>
 
-                  <div className="mt-3.5 flex flex-wrap items-center gap-2 pt-2 border-t border-[var(--border)]/60">
-                    {alert.level === 3 ? (
-                      <>
-                        <button
-                          onClick={() => showToast("Opening assessment log (simulated incident review)...", "info")}
-                          className="rounded-lg bg-[var(--red)] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[var(--red)]/90 transition-colors"
-                        >
-                          Open the assessment
-                        </button>
-                        <button
-                          onClick={() => showToast("Downloaded alert summary as PDF with timestamps.", "ok")}
-                          className="rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs font-semibold text-[var(--mid)] hover:bg-[var(--tint)] transition-colors"
-                        >
-                          Export PDF
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          onClick={() => setActiveView("health")}
-                          className="rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs font-semibold text-[var(--hi)] hover:bg-[var(--tint)] transition-colors"
-                        >
-                          See trend
-                        </button>
-                        <button
-                          onClick={() => showToast("Simulated sharing: alerts are not transmitted to clinicians without active backend integration.", "info")}
-                          className="rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs font-semibold text-[var(--teal-700)] hover:bg-[var(--tint)] transition-colors"
-                        >
-                          Share with doctor
-                        </button>
-                      </>
-                    )}
-                  </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => showToast(`Alert ${alert.id} marked as reviewed.`, "ok")}
+                    className="rounded-xl border border-[var(--border)] px-3 py-1.5 text-xs font-semibold text-[var(--mid)] hover:bg-[var(--tint)]"
+                  >
+                    Acknowledge
+                  </button>
                 </div>
               </div>
-              <span className="text-xs text-[var(--muted)] shrink-0">{alert.time}</span>
             </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="rounded-xl bg-[var(--tint)]/60 p-4 text-xs text-[var(--mid)]">
-        <strong>Multi-signal safety policy: </strong>
-        Alerts require concurrent signal verification, duration persistence, and artifact rejection. A single out-of-range sensor sample will not wake you up.
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

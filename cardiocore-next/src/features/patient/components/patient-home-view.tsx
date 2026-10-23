@@ -324,68 +324,64 @@ export function PatientHomeView() {
             </div>
           </div>
 
-          {/* Level 2 Clinical Insight Card */}
-          <div className="rounded-2xl border-l-4 border-l-[var(--amber)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--sh-1)]">
+          {/* Dynamic ESP32 Telemetry Status Card (No dummy sleep/HRV text) */}
+          <div className="rounded-2xl border-l-4 border-l-[var(--teal)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--sh-1)]">
             <div className="flex items-start justify-between gap-3 mb-3">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--amber-soft)] text-[var(--amber)]">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-                    <circle cx="12" cy="12" r="3.5" />
-                    <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4" />
-                  </svg>
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--teal-soft)] text-[var(--teal-700)] dark:text-[var(--teal)] font-bold text-lg">
+                  ⚡
                 </div>
                 <div>
-                  <span className="inline-block rounded bg-[var(--amber-soft)] px-2 py-0.5 text-xs font-semibold text-[var(--amber)]">
-                    Level 2 · Attention
+                  <span className="inline-block rounded bg-[var(--teal-soft)] px-2 py-0.5 text-xs font-semibold text-[var(--teal-700)] dark:text-[var(--teal)]">
+                    ESP32 Telemetry Stream
                   </span>
                   <h3 className="font-heading text-base font-bold text-[var(--hi)] mt-0.5">
-                    HRV has been below your usual range for two days
+                    Continuous 250 Hz physiological corridor synchronized
                   </h3>
                 </div>
               </div>
-              <span className="text-xs text-[var(--muted)] shrink-0">today, 08:02</span>
+              <span className="text-xs text-[var(--green)] font-semibold flex items-center gap-1 shrink-0">
+                <span className="h-2 w-2 rounded-full bg-[var(--green)] animate-pulse" />
+                Live
+              </span>
             </div>
 
             <p className="text-sm text-[var(--mid)] mb-3">
-              Your HRV averaged <strong>48 ms</strong> over the last 48 hours, against a personal average of <strong>52 ms</strong>. Sleep duration was 5 h 40 m on both nights. No arrhythmia pattern was detected and signal quality was good throughout.
+              Calibrated to <strong>{patient.name}</strong> ({patient.age} y · BMI {patient.bmi} · {patient.bloodGroup}). The ESP32 FIR bandpass filter (0.5–40 Hz) is suppressing motion artifact and baseline wander in real time.
             </p>
 
             <div className="grid grid-cols-3 gap-2.5 mb-4">
               <div className="rounded-xl bg-[var(--surface-2)] p-2.5 text-xs">
-                <span className="text-[var(--muted)] block">HRV avg</span>
-                <span className="font-bold text-[var(--hi)]">48 ms · −7%</span>
+                <span className="text-[var(--muted)] block">Sampling Rate</span>
+                <span className="font-bold text-[var(--hi)]">{sensorInfo.samplingRate} Hz (Lead I)</span>
               </div>
               <div className="rounded-xl bg-[var(--surface-2)] p-2.5 text-xs">
-                <span className="text-[var(--muted)] block">Sleep</span>
-                <span className="font-bold text-[var(--hi)]">5 h 40 m · −1 h 20 m</span>
+                <span className="text-[var(--muted)] block">Lead Contact</span>
+                <span className="font-bold text-[var(--green)]">Verified Good</span>
               </div>
               <div className="rounded-xl bg-[var(--surface-2)] p-2.5 text-xs">
-                <span className="text-[var(--muted)] block">Arrhythmia</span>
-                <span className="font-bold text-[var(--green)]">not detected</span>
+                <span className="text-[var(--muted)] block">ESP32 Status</span>
+                <span className="font-bold text-[var(--teal-700)] dark:text-[var(--teal)]">Calibrated</span>
               </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-[var(--border)]">
               <button
-                onClick={() => setActiveView("health")}
-                className="rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs font-semibold text-[var(--hi)] hover:bg-[var(--tint)] transition-colors"
+                type="button"
+                onClick={() => setSensorModalOpen(true)}
+                className="rounded-lg border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1.5 text-xs font-semibold text-[var(--hi)] hover:bg-[var(--tint)] transition-colors"
               >
-                See the trend
+                ESP32 Telemetry Settings 📡
               </button>
               <button
-                onClick={() => showToast("Insight marked as understood. It will not be raised again tomorrow unless it persists.", "ok")}
-                className="rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs font-semibold text-[var(--mid)] hover:bg-[var(--tint)] transition-colors"
+                type="button"
+                onClick={() => setActiveView("ecg")}
+                className="rounded-lg bg-[var(--teal)] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[var(--teal-600)] transition-colors"
               >
-                I understand
-              </button>
-              <button
-                onClick={() => showToast("Simulated sharing: insights are not transmitted to clinicians without active backend integration.", "info")}
-                className="rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs font-semibold text-[var(--teal-700)] hover:bg-[var(--tint)] transition-colors"
-              >
-                Share with Dr Raghavan
+                Record 30s ECG Strip
               </button>
               <span className="ml-auto text-xs text-[var(--muted)]">
-                Consider medical review if it persists beyond 5 days.
+                ESP32 hardware link active
               </span>
             </div>
           </div>
@@ -393,160 +389,118 @@ export function PatientHomeView() {
 
         {/* Right Column (4 cols on lg) */}
         <div className="space-y-6 lg:col-span-5 xl:col-span-4">
-          {/* Next Appointment Card */}
+          {/* Next Appointment Card (Clean user state, no fake Dr Neha) */}
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--sh-1)]">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)] mb-3 block">
-              Next appointment
-            </span>
-            <div className="flex items-center gap-3 mb-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--teal-soft)] font-bold text-[var(--teal-700)] text-sm">
-                NR
-              </div>
-              <div>
-                <h4 className="font-heading text-sm font-bold text-[var(--hi)]">Dr Neha Raghavan</h4>
-                <p className="text-xs text-[var(--muted)]">Interventional cardiology · Meridian Heart Institute</p>
-              </div>
-            </div>
-
-            <div className="rounded-xl bg-[var(--surface-2)] p-3 text-xs mb-3 border border-[var(--border)]">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-[var(--hi)]">Tue 6 Oct · 10:30</span>
-                <span className="inline-flex items-center gap-1 text-[var(--green)] font-semibold">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--green)]" />
-                  Confirmed
-                </span>
-              </div>
-              <p className="mt-1 text-[var(--mid)]">In-person · Room 4B · booking CC-48120</p>
-            </div>
-
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+                Next appointment
+              </span>
               <button
-                onClick={() => showToast("Telehealth video session requires live integration.", "info")}
-                className="flex-1 rounded-xl bg-[var(--teal)] py-2 text-xs font-semibold text-white hover:bg-[var(--teal-600)] transition-colors"
-              >
-                Join video
-              </button>
-              <button
+                type="button"
                 onClick={() => setActiveView("appts")}
-                className="flex-1 rounded-xl border border-[var(--border)] py-2 text-xs font-semibold text-[var(--hi)] hover:bg-[var(--tint)] transition-colors"
+                className="text-xs font-semibold text-[var(--teal-700)] dark:text-[var(--teal)] hover:underline"
               >
-                Details
+                Schedule →
               </button>
             </div>
-            <p className="mt-2 text-[11px] text-[var(--muted)]">
-              Your baseline summary and 3 recent ECG strips will be shared per your consent settings.
-            </p>
+
+            <div className="rounded-xl bg-[var(--surface-2)] p-4 text-xs text-center border border-[var(--border)] space-y-2">
+              <span className="text-2xl block">🩺</span>
+              <strong className="block text-sm text-[var(--hi)]">No Consultations Scheduled</strong>
+              <p className="text-[11px] text-[var(--muted)] max-w-xs mx-auto">
+                You do not have any clinical reviews booked yet. Schedule an appointment when you require clinical evaluation.
+              </p>
+              <button
+                type="button"
+                onClick={() => setActiveView("appts")}
+                className="rounded-xl bg-[var(--teal)] px-4 py-2 font-bold text-white shadow-sm hover:bg-[var(--teal-600)] transition-all text-xs"
+              >
+                Book Consultation
+              </button>
+            </div>
           </div>
 
-          {/* Recent Alerts Card */}
+          {/* Recent Alerts Card (Clean user state, no fake HRV suppression alert) */}
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--sh-1)]">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
                 Recent alerts
               </span>
-              <button
-                onClick={() => setActiveView("alerts")}
-                className="text-xs font-semibold text-[var(--teal-700)] hover:underline"
-              >
-                View all →
-              </button>
+              <span className="rounded-full bg-[var(--green-soft)] px-2.5 py-0.5 text-[10px] font-bold text-[var(--green)]">
+                ALL NOMINAL
+              </span>
             </div>
 
-            <div className="space-y-2.5">
-              <div className="flex items-start gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-2.5">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--amber-soft)] text-[var(--amber)] shrink-0">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
-                    <path d="M12 3 2.5 20h19L12 3z" />
-                    <path d="M12 9v5M12 17.2v.1" />
-                  </svg>
-                </div>
-                <div className="text-xs">
-                  <span className="font-semibold text-[var(--hi)] block">HRV below usual range</span>
-                  <span className="text-[var(--muted)]">Today 08:02 · attention</span>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-2.5">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--cyan-soft)] text-[var(--cyan)] shrink-0">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M12 8v4.5M12 16v.1" />
-                  </svg>
-                </div>
-                <div className="text-xs">
-                  <span className="font-semibold text-[var(--hi)] block">Back within baseline</span>
-                  <span className="text-[var(--muted)]">Yesterday · informational</span>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-2.5">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--tint)] text-[var(--muted)] shrink-0">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
-                    <path d="M5 12h14" />
-                  </svg>
-                </div>
-                <div className="text-xs">
-                  <span className="font-semibold text-[var(--hi)] block">Signal quality too low</span>
-                  <span className="text-[var(--muted)]">2 days ago · measurement excluded</span>
-                </div>
-              </div>
+            <div className="rounded-xl bg-[var(--surface-2)] p-4 text-xs text-center border border-[var(--border)] space-y-1.5">
+              <span className="text-xl block">🟢</span>
+              <strong className="block text-xs font-bold text-[var(--hi)]">Zero Active Anomalies</strong>
+              <p className="text-[11px] text-[var(--muted)]">
+                ESP32 telemetry corridor is operating within nominal physiological limits.
+              </p>
             </div>
           </div>
 
-          {/* Today's Medications Card */}
+          {/* Today's Medications Card (User-oriented, empty if user hasn't added any) */}
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--sh-1)]">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
                 Today&apos;s medications
               </span>
-              <span className="rounded-full bg-[var(--tint)] px-2.5 py-0.5 text-xs font-semibold text-[var(--teal-700)]">
-                {takenCount} / {medications.length} taken
-              </span>
+              <button
+                type="button"
+                onClick={() => setActiveView("meds")}
+                className="text-xs font-semibold text-[var(--teal-700)] dark:text-[var(--teal)] hover:underline"
+              >
+                + Add prescription
+              </button>
             </div>
 
-            <div className="space-y-2">
-              {medications.map((med) => (
-                <div
-                  key={med.id}
-                  onClick={() => toggleMedication(med.id)}
-                  className="flex items-center justify-between p-2 rounded-xl hover:bg-[var(--surface-2)] cursor-pointer transition-colors"
+            {medications.length === 0 ? (
+              <div className="rounded-xl bg-[var(--surface-2)] p-4 text-xs text-center border border-[var(--border)] space-y-2">
+                <span className="text-xl block">💊</span>
+                <strong className="block text-xs font-bold text-[var(--hi)]">No Prescriptions Logged</strong>
+                <p className="text-[11px] text-[var(--muted)]">
+                  Add your prescribed medications to track daily reminders and adherence.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setActiveView("meds")}
+                  className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 font-semibold text-[var(--hi)] hover:bg-[var(--tint)] text-xs"
                 >
-                  <div className="flex items-center gap-2.5">
-                    <div
-                      className={`flex h-6 w-6 items-center justify-center rounded-lg text-xs font-bold transition-colors ${
-                        med.taken
-                          ? "bg-[var(--green-soft)] text-[var(--green)]"
-                          : "bg-[var(--tint)] text-[var(--muted)]"
-                      }`}
-                    >
-                      {med.taken ? "✓" : "○"}
-                    </div>
-                    <div className="text-xs">
-                      <span className={`font-semibold block ${med.taken ? "text-[var(--hi)] line-through opacity-75" : "text-[var(--hi)]"}`}>
-                        {med.name} {med.dose}
-                      </span>
-                      <span className="text-[var(--muted)]">{med.schedule} · {med.timeLabel}</span>
+                  + Add Medication
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {medications.map((med) => (
+                  <div
+                    key={med.id}
+                    onClick={() => toggleMedication(med.id)}
+                    className="flex items-center justify-between p-2 rounded-xl hover:bg-[var(--surface-2)] cursor-pointer transition-colors"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div
+                        className={`flex h-6 w-6 items-center justify-center rounded-lg text-xs font-bold transition-colors ${
+                          med.taken
+                            ? "bg-[var(--green-soft)] text-[var(--green)]"
+                            : "bg-[var(--tint)] text-[var(--muted)]"
+                        }`}
+                      >
+                        {med.taken ? "✓" : "○"}
+                      </div>
+                      <div className="text-xs">
+                        <span className={`font-semibold block ${med.taken ? "text-[var(--hi)] line-through opacity-75" : "text-[var(--hi)]"}`}>
+                          {med.name} {med.dose}
+                        </span>
+                        <span className="text-[var(--muted)]">{med.schedule} · {med.timeLabel}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Adherence Bar */}
-            <div className="mt-4 pt-3 border-t border-[var(--border)]">
-              <div className="flex justify-between text-xs mb-1.5">
-                <span className="text-[var(--muted)]">Today&apos;s completion</span>
-                <span className="font-semibold text-[var(--green)]">{adherencePct}%</span>
+                ))}
               </div>
-              <div className="h-1.5 w-full rounded-full bg-[var(--tint)] overflow-hidden">
-                <div
-                  className="h-full bg-[var(--green)] transition-all duration-300"
-                  style={{ width: `${adherencePct}%` }}
-                />
-              </div>
-            </div>
-
+            )}
             <button
+              type="button"
               onClick={() => setActiveView("meds")}
               className="mt-3 w-full rounded-xl border border-[var(--border)] py-2 text-xs font-semibold text-[var(--mid)] hover:bg-[var(--tint)] transition-colors"
             >

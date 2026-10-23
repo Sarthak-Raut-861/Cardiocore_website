@@ -17,6 +17,7 @@ import { PatientApptsView } from "./patient-appts-view";
 import { PatientMessagesView } from "./patient-messages-view";
 import { PatientOnboardingModal } from "./patient-onboarding-modal";
 import { SensorConnectionModal } from "./sensor-connection-modal";
+import { EntranceIntakeGate } from "./entrance-intake-gate";
 
 export function PatientShell() {
   const {
@@ -48,6 +49,19 @@ export function PatientShell() {
   const [labSi, setLabSi] = useState('11.2 pmol/L');
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Mandatory Entrance Gate: Ask for necessary details & calibrate ESP32 at entrance
+  if (!userBaseline?.onboardingComplete) {
+    return (
+      <EntranceIntakeGate
+        userName={patient.name}
+        userEmail={patient.email || ""}
+        onComplete={(baseline) => {
+          saveUserBaseline(baseline, "patch");
+        }}
+      />
+    );
+  }
 
   const monitoringItems: Array<{ id: PatientViewId; label: string; icon: string; badge?: string | number; badgeColor?: string }> = [
     { id: "home", label: "Home", icon: "🏠" },
