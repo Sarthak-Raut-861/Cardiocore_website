@@ -350,7 +350,7 @@ export function PatientShell() {
                   {patient.name}
                 </strong>
                 <span className="text-[11px] text-[var(--muted)] block truncate">
-                  {patient.age} y · Model active
+                  {patient.email || `${patient.age} y · Model active`}
                 </span>
               </div>
             </div>

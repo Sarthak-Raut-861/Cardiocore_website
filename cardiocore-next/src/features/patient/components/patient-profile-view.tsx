@@ -5,7 +5,7 @@ import { usePatientDashboard } from "../context/patient-dashboard-context";
 import { SAMPLE_PATIENT } from "../data/sample-patient";
 
 export function PatientProfileView() {
-  const { showToast } = usePatientDashboard();
+  const { showToast, patient } = usePatientDashboard();
   const [consentBaseline, setConsentBaseline] = useState(true);
   const [consentEcg, setConsentEcg] = useState(true);
   const [consentResearch, setConsentResearch] = useState(false);
@@ -28,12 +28,19 @@ export function PatientProfileView() {
       <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--sh-1)]">
         <div className="flex flex-col sm:flex-row sm:items-center gap-5">
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--teal-soft)] font-heading text-2xl font-bold text-[var(--teal-700)] shrink-0">
-            {SAMPLE_PATIENT.initials}
+            {patient.initials}
           </div>
           <div className="flex-1">
-            <h2 className="font-heading text-xl font-bold text-[var(--hi)]">{SAMPLE_PATIENT.name}</h2>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="font-heading text-xl font-bold text-[var(--hi)]">{patient.name}</h2>
+              {patient.email && (
+                <span className="rounded-full bg-[var(--teal-soft)] px-2.5 py-0.5 text-[11px] font-semibold text-[var(--teal-700)]">
+                  {patient.email}
+                </span>
+              )}
+            </div>
             <p className="text-xs text-[var(--mid)] mt-0.5">
-              {SAMPLE_PATIENT.age} y · {SAMPLE_PATIENT.heightCm} cm · {SAMPLE_PATIENT.weightKg} kg · BMI {SAMPLE_PATIENT.bmi} · {SAMPLE_PATIENT.bloodGroup}
+              {patient.age} y · {patient.heightCm} cm · {patient.weightKg} kg · BMI {patient.bmi} · {patient.bloodGroup}
             </p>
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--green-soft)] px-2.5 py-0.5 text-xs font-semibold text-[var(--green)]">
@@ -41,13 +48,13 @@ export function PatientProfileView() {
                 Baseline active (90d)
               </span>
               <span className="rounded-full bg-[var(--tint)] px-2.5 py-0.5 text-xs font-medium text-[var(--mid)]">
-                Wearable battery {SAMPLE_PATIENT.wearableBattery}%
+                Wearable battery {patient.wearableBattery}%
               </span>
               <span className="rounded-full bg-[var(--tint)] px-2.5 py-0.5 text-xs font-medium text-[var(--mid)]">
-                Member since {SAMPLE_PATIENT.memberSince}
+                Member since {patient.memberSince}
               </span>
               <span className="rounded-full bg-[var(--tint)] px-2.5 py-0.5 text-xs font-medium text-[var(--mid)]">
-                {SAMPLE_PATIENT.monitoredDays} days monitored
+                {patient.monitoredDays} days monitored
               </span>
             </div>
           </div>
@@ -168,14 +175,20 @@ export function PatientProfileView() {
             <div className="flex items-center gap-2.5 p-2 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] mb-2">
               <span className="text-lg">⌚</span>
               <div>
-                <strong className="block text-[var(--hi)]">{SAMPLE_PATIENT.wearableModel}</strong>
-                <span className="text-[11px] text-[var(--green)]">Connected · {SAMPLE_PATIENT.wearableBattery}% battery · {SAMPLE_PATIENT.firmwareVersion}</span>
+                <strong className="block text-[var(--hi)]">{patient.wearableModel}</strong>
+                <span className="text-[11px] text-[var(--green)]">Connected · {patient.wearableBattery}% battery · {patient.firmwareVersion}</span>
               </div>
             </div>
 
+            {patient.email && (
+              <div className="flex justify-between py-1 border-b border-[var(--border)]/50">
+                <span className="text-[var(--mid)]">Linked Account</span>
+                <strong className="text-[var(--teal-700)] dark:text-[var(--teal)] truncate max-w-[170px]">{patient.email}</strong>
+              </div>
+            )}
             <div className="flex justify-between py-1 border-b border-[var(--border)]/50">
               <span className="text-[var(--mid)]">Sync cadence</span>
-              <strong className="text-[var(--hi)]">{SAMPLE_PATIENT.syncInterval}</strong>
+              <strong className="text-[var(--hi)]">{patient.syncInterval}</strong>
             </div>
             <div className="flex justify-between py-1 border-b border-[var(--border)]/50">
               <span className="text-[var(--mid)]">Offline cache</span>

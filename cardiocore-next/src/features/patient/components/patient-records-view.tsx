@@ -5,7 +5,7 @@ import { usePatientDashboard } from "../context/patient-dashboard-context";
 import { SAMPLE_PATIENT, SAMPLE_LIPIDS, SAMPLE_MEDICAL_CONDITIONS, SAMPLE_FAMILY_HISTORY } from "../data/sample-patient";
 
 export function PatientRecordsView() {
-  const { setActiveView, showToast } = usePatientDashboard();
+  const { setActiveView, showToast, patient } = usePatientDashboard();
 
   return (
     <div className="space-y-6">
@@ -51,27 +51,33 @@ export function PatientRecordsView() {
           <div className="space-y-2.5 text-xs">
             <div className="flex justify-between border-b border-[var(--border)]/50 pb-2">
               <span className="text-[var(--mid)]">Full name</span>
-              <span className="font-semibold text-[var(--hi)]">{SAMPLE_PATIENT.name}</span>
+              <span className="font-semibold text-[var(--hi)]">{patient.name}</span>
             </div>
+            {patient.email && (
+              <div className="flex justify-between border-b border-[var(--border)]/50 pb-2">
+                <span className="text-[var(--mid)]">Email</span>
+                <span className="font-semibold text-[var(--teal-700)] dark:text-[var(--teal)]">{patient.email}</span>
+              </div>
+            )}
             <div className="flex justify-between border-b border-[var(--border)]/50 pb-2">
               <span className="text-[var(--mid)]">Date of birth</span>
-              <span className="font-semibold text-[var(--hi)]">{SAMPLE_PATIENT.dob} ({SAMPLE_PATIENT.age} y)</span>
+              <span className="font-semibold text-[var(--hi)]">{patient.dob} ({patient.age} y)</span>
             </div>
             <div className="flex justify-between border-b border-[var(--border)]/50 pb-2">
               <span className="text-[var(--mid)]">Sex at birth</span>
-              <span className="font-semibold text-[var(--hi)]">{SAMPLE_PATIENT.gender} · clinical reference</span>
+              <span className="font-semibold text-[var(--hi)]">{patient.gender} · clinical reference</span>
             </div>
             <div className="flex justify-between border-b border-[var(--border)]/50 pb-2">
               <span className="text-[var(--mid)]">Height / weight</span>
-              <span className="font-semibold text-[var(--hi)]">{SAMPLE_PATIENT.heightCm} cm · {SAMPLE_PATIENT.weightKg} kg</span>
+              <span className="font-semibold text-[var(--hi)]">{patient.heightCm} cm · {patient.weightKg} kg</span>
             </div>
             <div className="flex justify-between border-b border-[var(--border)]/50 pb-2">
               <span className="text-[var(--mid)]">Calculated BMI</span>
-              <span className="font-semibold text-[var(--amber)]">{SAMPLE_PATIENT.bmi} · slightly above target</span>
+              <span className="font-semibold text-[var(--amber)]">{patient.bmi} · slightly above target</span>
             </div>
             <div className="flex justify-between pb-1">
               <span className="text-[var(--mid)]">Blood group</span>
-              <span className="font-semibold text-[var(--hi)]">{SAMPLE_PATIENT.bloodGroup}</span>
+              <span className="font-semibold text-[var(--hi)]">{patient.bloodGroup}</span>
             </div>
           </div>
         </div>

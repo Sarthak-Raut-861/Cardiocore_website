@@ -8,7 +8,7 @@ import { EcgStripCanvas } from "./ecg-strip-canvas";
 import { SPARKLINE_DATA } from "../data/sample-charts";
 
 export function PatientHomeView() {
-  const { setActiveView, formatUnit, showToast, medications, toggleMedication, vitals, engineMode, twinState, runTwinSimulation, setLabModalOpen, customLabs, units } = usePatientDashboard();
+  const { setActiveView, formatUnit, showToast, medications, toggleMedication, vitals, engineMode, twinState, runTwinSimulation, setLabModalOpen, customLabs, units, patient } = usePatientDashboard();
 
   const hrFmt = formatUnit("hr", vitals.restingHr);
   const hrvFmt = formatUnit("hrv", vitals.hrv);
@@ -18,13 +18,21 @@ export function PatientHomeView() {
   const takenCount = medications.filter((m) => m.taken).length;
   const adherencePct = Math.round((takenCount / medications.length) * 100);
 
+  const firstName = patient.name.trim().split(/\s+/)[0] || "there";
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 17) return "Good afternoon";
+    return "Good evening";
+  };
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-heading text-2xl font-bold tracking-tight text-[var(--hi)] sm:text-3xl">
-            Good morning, Aarav
+            {getGreeting()}, {firstName}
           </h1>
           <p className="mt-1 text-sm text-[var(--mid)]">
             Sunday, 4 October 2026 · last sync 2 minutes ago ·{" "}

@@ -4,19 +4,20 @@ import React, { useState } from "react";
 import { usePatientDashboard } from "../context/patient-dashboard-context";
 
 export function PatientMessagesView() {
-  const { showToast } = usePatientDashboard();
+  const { showToast, patient } = usePatientDashboard();
+  const firstName = patient.name.trim().split(/\s+/)[0] || "there";
   const [messages, setMessages] = useState([
     {
       id: "msg-1",
       sender: "Dr Neha Raghavan",
       role: "Cardiologist",
       time: "Fri 2 Oct · 16:40",
-      text: "Hello Aarav, I reviewed your 90-day baseline summary and recent 30-second Lead-I strips. Your rhythm remains regular; let us discuss the recent HRV excursion during our Tuesday clinic appointment.",
+      text: `Hello ${firstName}, I reviewed your 90-day baseline summary and recent 30-second Lead-I strips. Your rhythm remains regular; let us discuss the recent HRV excursion during our Tuesday clinic appointment.`,
       isMe: false,
     },
     {
       id: "msg-2",
-      sender: "Aarav Menon",
+      sender: patient.name,
       role: "Patient",
       time: "Fri 2 Oct · 17:15",
       text: "Thank you Dr Raghavan. I have noted down my sleep duration as well — looking forward to our review on Tuesday.",
@@ -33,7 +34,7 @@ export function PatientMessagesView() {
       ...prev,
       {
         id: `msg-${Date.now()}`,
-        sender: "Aarav Menon",
+        sender: patient.name,
         role: "Patient",
         time: "Just now",
         text: inputVal.trim(),

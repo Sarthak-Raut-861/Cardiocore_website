@@ -10,6 +10,7 @@ export interface PatientProfile {
   id: string;
   name: string;
   initials: string;
+  email?: string;
   age: number;
   dob: string;
   gender: string;

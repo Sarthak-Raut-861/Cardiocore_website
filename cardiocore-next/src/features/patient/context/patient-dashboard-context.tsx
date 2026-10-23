@@ -1,7 +1,8 @@
 "use client";
 
 import React, { createContext, useContext, useState, useMemo, useCallback, useEffect } from "react";
-import { SAMPLE_PATIENT, SAMPLE_VITALS, SAMPLE_MEDICATIONS, PatientMedication } from "../data/sample-patient";
+import { SAMPLE_PATIENT, SAMPLE_VITALS, SAMPLE_MEDICATIONS, PatientMedication, PatientProfile } from "../data/sample-patient";
+import { useAuth } from "@/features/auth/context/auth-context";
 
 export type UnitSystem = "si" | "conv";
 
@@ -80,6 +81,7 @@ export function PatientDashboardProvider({
   children: React.ReactNode;
   initialView?: PatientViewId;
 }) {
+  const { user } = useAuth();
   const [activeView, setActiveView] = useState<PatientViewId>(initialView);
   const [units, setUnits] = useState<UnitSystem>("si");
   const [medications, setMedications] = useState<PatientMedication[]>(SAMPLE_MEDICATIONS);
@@ -91,6 +93,27 @@ export function PatientDashboardProvider({
     { id: "lab-1", name: "Calculated LDL-C", valueConv: "94 mg/dL", valueSi: "2.43 mmol/L", status: "Optimal", date: "Today" },
     { id: "lab-2", name: "hs-CRP Inflammatory", valueConv: "1.10 mg/L", valueSi: "10.5 nmol/L", status: "Normal", date: "Today" },
   ]);
+
+  const currentPatient = useMemo<PatientProfile>(() => {
+    if (!user) {
+      return SAMPLE_PATIENT;
+    }
+
+    const name = user.name?.trim() || SAMPLE_PATIENT.name;
+    const parts = name.split(/\s+/).filter(Boolean);
+    const initials =
+      parts.length >= 2
+        ? `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
+        : name.slice(0, 2).toUpperCase();
+
+    return {
+      ...SAMPLE_PATIENT,
+      id: user.id || SAMPLE_PATIENT.id,
+      name,
+      initials,
+      email: user.email || "patient@example.com",
+    };
+  }, [user]);
 
   const [twinState, setTwinState] = useState<TwinLiveState>({
     score: 88,
@@ -278,7 +301,7 @@ export function PatientDashboardProvider({
       toastMessage,
       toastType,
       showToast,
-      patient: SAMPLE_PATIENT,
+      patient: currentPatient,
       vitals: liveVitals,
       engineMode,
       setEngineMode,
@@ -298,6 +321,7 @@ export function PatientDashboardProvider({
       toastType,
       showToast,
       formatUnit,
+      currentPatient,
       liveVitals,
       engineMode,
       twinState,

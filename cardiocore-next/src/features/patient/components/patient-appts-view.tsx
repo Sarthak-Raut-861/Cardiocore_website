@@ -6,7 +6,7 @@ import { useCardioCoreSync, SyncedAppointment } from "@/lib/sync/cardiocore-sync
 import { DOCTORS } from "@/features/landing/data/doctors-data";
 
 export function PatientApptsView() {
-  const { showToast, twinState } = usePatientDashboard();
+  const { showToast, twinState, patient } = usePatientDashboard();
   const { shared, addAppointment, updateAppointmentStatus } = useCardioCoreSync();
 
   const [bookModalOpen, setBookModalOpen] = useState(false);
@@ -30,7 +30,7 @@ export function PatientApptsView() {
       datetime: slotInput,
       type: modeInput,
       room: modeInput === "Video Consult" ? "Encrypted WebRTC Room" : "Clinic Room 3A",
-      patientName: "Aarav Menon",
+      patientName: patient.name,
       reason: reasonInput,
     });
     setBookModalOpen(false);
