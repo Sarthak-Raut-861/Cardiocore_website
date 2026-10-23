@@ -11,7 +11,7 @@ import { useAuth } from "../context/auth-context";
 import { isFirebaseConfigured, signInWithFirebaseGoogle } from "@/lib/firebase/config";
 
 const DEFAULT_GOOGLE_CLIENT_ID =
-  "57075478730-q2nh08hrg5pnldj2h2m83tn4hfvt5hra.apps.googleusercontent.com";
+  "862041587704-d5mf0jsjghsiu6r7vocrfebu8nhgqfma.apps.googleusercontent.com";
 
 export const PatientLoginForm: React.FC<{
   onAuthError: (msg: string) => void;
