@@ -32,6 +32,13 @@ export interface PatientSignInRequest {
   rememberMe?: boolean;
 }
 
+export interface GoogleSignInRequest {
+  credential?: string;
+  email?: string;
+  name?: string;
+  rememberMe?: boolean;
+}
+
 export interface DoctorSignInRequest {
   email: string;
   password: string;

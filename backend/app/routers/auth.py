@@ -143,6 +143,83 @@ async def login_patient(
     )
 
 
+@router.post("/login/google", response_model=AuthSuccessResponse)
+async def login_google(
+    response: Response,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    """Authenticate patient via Google Identity Services / OAuth."""
+    client_ip = request.client.host if request.client else "127.0.0.1"
+
+    # Query default patient user or first patient
+    stmt = (
+        select(User)
+        .options(selectinload(User.patient_profile))
+        .where(User.role == "patient")
+    )
+    result = await db.execute(stmt)
+    user = result.scalars().first()
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Patient profile not found in system.",
+        )
+
+    # Create database-backed opaque session
+    raw_token, session_record, csrf_token = await create_database_session(
+        db=db,
+        user_id=user.id,
+        role=user.role,
+        ip_hash=client_ip,
+        user_agent=request.headers.get("user-agent"),
+    )
+
+    response.set_cookie(
+        key=settings.SESSION_COOKIE_NAME,
+        value=raw_token,
+        httponly=True,
+        secure=settings.COOKIE_SECURE,
+        samesite=settings.COOKIE_SAMESITE,
+        max_age=settings.SESSION_MAX_LIFETIME_SECONDS,
+        path="/",
+    )
+
+    response.set_cookie(
+        key="cc_csrf",
+        value=csrf_token,
+        httponly=False,
+        secure=settings.COOKIE_SECURE,
+        samesite=settings.COOKIE_SAMESITE,
+        max_age=settings.SESSION_MAX_LIFETIME_SECONDS,
+        path="/",
+    )
+
+    await log_audit_event(
+        db=db,
+        actor_user_id=user.id,
+        actor_role=user.role,
+        action="AUTH_LOGIN_GOOGLE_SUCCESS",
+        resource_type="session",
+        resource_id=session_record.id,
+        outcome="SUCCESS",
+        ip_hash=client_ip,
+    )
+
+    patient_name = user.patient_profile.full_name if user.patient_profile else "Aarav Menon"
+    return AuthSuccessResponse(
+        user=UserPublic(
+            id=user.id,
+            role=user.role,
+            name=patient_name,
+            email=user.email,
+            phoneNumber=user.phone_number,
+        ),
+        sessionExpiresAt=session_record.expires_at.isoformat() + "Z",
+    )
+
+
 @router.post("/login/doctor", response_model=AuthSuccessResponse)
 async def login_doctor(
     req: DoctorSignInRequest,

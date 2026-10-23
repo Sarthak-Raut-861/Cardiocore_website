@@ -9,6 +9,7 @@ import {
   AuthSuccessResponse,
   DoctorSignInRequest,
   ForgotPasswordRequest,
+  GoogleSignInRequest,
   OtpSendRequest,
   OtpVerifyRequest,
   PatientSignInRequest,
@@ -82,6 +83,13 @@ export class AuthApiClient {
    */
   async signInPatient(credentials: PatientSignInRequest): Promise<AuthSuccessResponse> {
     return this.post<AuthSuccessResponse>("/auth/login/patient", credentials);
+  }
+
+  /**
+   * Patient Google OAuth / One-tap sign-in
+   */
+  async signInWithGoogle(payload?: GoogleSignInRequest): Promise<AuthSuccessResponse> {
+    return this.post<AuthSuccessResponse>("/auth/login/google", payload || {});
   }
 
   /**
